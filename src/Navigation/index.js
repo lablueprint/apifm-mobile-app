@@ -1,15 +1,6 @@
-import { createSwitchNavigator, createAppContainer } from '@react-navigation/native';
+import { createAppContainer } from '@react-navigation/native';
 import AppNavigation from './AppNavigation';
 
-const SwitchNavigator = createSwitchNavigator(
-  {
-    App: AppNavigation,
-  },
-  {
-    initialRouteName: 'SignInScreen',
-  },
-);
-
-const AppContainer = createAppContainer(SwitchNavigator);
+const AppContainer = createAppContainer(AppNavigation);
 
 export default AppContainer;
