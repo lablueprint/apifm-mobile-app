@@ -3,7 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 
 const signInStyles = StyleSheet.create({
   container: {
@@ -25,17 +25,17 @@ const signInStyles = StyleSheet.create({
   },
 });
 
-export default function SignInScreen({ navigation }) {
+export default function SignInScreen() {
   return (
     <View style={signInStyles.container}>
       <Title style={signInStyles.titleText}> SignInScreen :) </Title>
       <Text style={signInStyles.bodyText}>
-        Nothing works right now, so this button will take you to the home page.
+        Nothing works right now including this button.
       </Text>
       <Button
         mode="contained"
         style={signInStyles.button}
-        onPress={() => navigation.navigate('HomeScreen')} // On press, switches to Home
+        // onPress={() => navigation.navigate('HomeScreen')} // On press, switches to Home
       >
         Home
       </Button>
@@ -43,27 +43,6 @@ export default function SignInScreen({ navigation }) {
   );
 }
 
-/* class SignInScreen extends React.Component {
-  render() {
-    const {
-      errorMessage, email, password, loading,
-    } = this.state;
-    const { navigation } = this.props;
-    return (
-      <View style={SignInStyles.container}>
-        <Button
-          style={SignInStyles.button}
-          disabled={loading}
-          mode="contained"
-          onPress={() => navigation.navigate('SignUpScreen')}
-        >
-          Don&apos;t have an account? Sign Up
-        </Button>
-      </View>
-    );
-  }
-} */
-
-SignInScreen.propTypes = {
+/* SignInScreen.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
-};
+}; */

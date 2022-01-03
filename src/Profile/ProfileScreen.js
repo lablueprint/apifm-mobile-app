@@ -4,7 +4,7 @@ import {
   Title, Text, Button,
 } from 'react-native-paper';
 
-const homeScreenStyles = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -24,14 +24,14 @@ const homeScreenStyles = StyleSheet.create({
   },
 });
 
-export default function HomeScreen() {
+export default function ProfileScreen() {
   return (
-    <View style={homeScreenStyles.container}>
-      <Title style={homeScreenStyles.titleText}> HomeScreen :) </Title>
-      <Text style={homeScreenStyles.bodyText}> This is the HomeScreen. </Text>
+    <View style={styles.container}>
+      <Title style={styles.titleText}> ProfileScreen :) </Title>
+      <Text style={styles.bodyText}> This is the Profile page. </Text>
       <Button
         mode="contained"
-        style={homeScreenStyles.button}
+        style={styles.button}
       >
         BUTTON
       </Button>

@@ -1,14 +1,15 @@
+import 'react-native-gesture-handler';
 import React from 'react';
 import {
   Text, View,
 } from 'react-native';
-import AppContainer from './Navigation';
+import SignInScreen from './SignIn/SignInScreen';
 
 function App() {
   return (
     <View>
       <Text> APIFM App </Text>
-      <AppContainer />
+      <SignInScreen />
     </View>
   );
 }
