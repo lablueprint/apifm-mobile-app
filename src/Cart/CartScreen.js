@@ -25,14 +25,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function SignInScreen({ navigation }) {
+export default function CartScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Title style={styles.titleText}> SignInScreen  :) </Title>
-      <Text style={styles.bodyText}>
-        Welcome to APIFM! This button will
-        take you to the marketplace.
-      </Text>
+      <Title style={styles.titleText}>
+        Cart
+      </Title>
+      <Text style={styles.bodyText}> I am a shopping cart. </Text>
       <Button
         mode="contained"
         style={styles.button}
@@ -44,6 +43,6 @@ export default function SignInScreen({ navigation }) {
   );
 }
 
-SignInScreen.propTypes = {
+CartScreen.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
 };

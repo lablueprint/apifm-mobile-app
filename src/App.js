@@ -1,16 +1,12 @@
 import React from 'react';
-import {
-  Text, View,
-} from 'react-native';
-import SignInScreen from './SignIn/SignInScreen';
+import { View, Text } from 'react-native';
+import AppNavigationContainer from './Navigation';
 
-function App() {
+export default function App() {
   return (
-    <View>
+    <View style={{ flex: 1 }}>
       <Text> APIFM App </Text>
-      <SignInScreen />
+      <AppNavigationContainer />
     </View>
   );
 }
-
-export default App;

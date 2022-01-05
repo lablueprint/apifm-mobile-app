@@ -3,12 +3,14 @@ import { View, StyleSheet } from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
+import PropTypes from 'prop-types';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    height: '100%',
   },
   titleText: {
     marginBottom: 10,
@@ -24,17 +26,25 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function ProfileScreen() {
+export default function ProfileScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Title style={styles.titleText}> ProfileScreen :) </Title>
-      <Text style={styles.bodyText}> This is the Profile page. </Text>
+      <Title style={styles.titleText}>
+        <Icon style={{ fontSize: 20 }} name="account-circle" />
+        ProfileScreen
+      </Title>
+      <Text style={styles.bodyText}> This is my account page. I am a happy farmer. </Text>
       <Button
         mode="contained"
         style={styles.button}
+        onPress={() => navigation.navigate('Marketplace')}
       >
-        BUTTON
+        MARKETPLACE
       </Button>
     </View>
   );
 }
+
+ProfileScreen.propTypes = {
+  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+};
