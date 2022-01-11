@@ -5,6 +5,8 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 
+import Icon from 'react-native-vector-icons/FontAwesome5';
+
 // const Airtable = require('airtable');
 
 // const airtableConfig = {
@@ -42,6 +44,7 @@ export default function SignInScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const [number, setNumber] = useState('');
   const [address, setAddress] = useState('');
+  const [hidePass, setHidePass] = useState(true);
 
   const handleSignUp = () => {
     // base('Users').create([
@@ -113,12 +116,21 @@ export default function SignInScreen({ navigation }) {
         placeholder="email"
         keyboardType="email-address"
       />
-      <TextInput
-        value={password}
-        onChangeText={setPassword}
-        placeholder="password"
-        secureTextEntry
-      />
+      <View style={{ flexDirection: 'row',  alignItems: 'center'}}>
+        <TextInput
+          value={password}
+          onChangeText={setPassword}
+          placeholder="password"
+          secureTextEntry = {hidePass ? true : false}
+        />
+        <Icon
+          name={hidePass ? 'eye-slash' : 'eye'}
+          size={15}
+          color="grey"
+          onPress={() => setHidePass(!hidePass)}
+        />
+      </View>
+      
       <TextInput
         value={number}
         onChangeText={setNumber}
