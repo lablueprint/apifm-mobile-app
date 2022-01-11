@@ -71,8 +71,7 @@ export default function SignInScreen({ navigation }) {
     console.log(password);
     console.log(number);
     console.log(address);
-    console.log(process.env.REACT_APP_AIRTABLE_BASE_ID);
-    console.log('here');
+    console.log(process.env.REACT_APP_AIRTABLE_BASE_KEY);
     setFirstName('');
     setLastName('');
     setEmail('');
