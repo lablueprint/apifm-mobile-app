@@ -1414,6 +1414,11 @@
   "resolved" "https://registry.npmjs.org/@types/node/-/node-17.0.5.tgz"
   "version" "17.0.5"
 
+"@types/node@>=8.0.0 <15":
+  "integrity" "sha512-LMy+vDDcQR48EZdEx5wRX1q/sEl6NdGuHXPnfeL8ixkwCOSZ2qnIyIZmcCbdX0MeRqHhAcHmX+haCbrS8Run+A=="
+  "resolved" "https://registry.npmjs.org/@types/node/-/node-14.18.5.tgz"
+  "version" "14.18.5"
+
 "@types/prettier@^2.1.5":
   "integrity" "sha512-ekoj4qOQYp7CvjX8ZDBgN86w3MqQhLE1hczEJbEIjgFEumDy+na/4AJAbLXfgEWFNB2pKadM5rPFtuSGMWK7xA=="
   "resolved" "https://registry.npmjs.org/@types/prettier/-/prettier-2.4.2.tgz"
@@ -1525,6 +1530,11 @@
   dependencies:
     "event-target-shim" "^5.0.0"
 
+"abortcontroller-polyfill@^1.4.0":
+  "integrity" "sha512-zetDJxd89y3X99Kvo4qFx8GKlt6GsvN3UcRZHwU6iFA/0KiOmhkTVhe8oRoTBiTVPZu09x3vCra47+w8Yz1+2Q=="
+  "resolved" "https://registry.npmjs.org/abortcontroller-polyfill/-/abortcontroller-polyfill-1.7.3.tgz"
+  "version" "1.7.3"
+
 "absolute-path@^0.0.0":
   "integrity" "sha1-p4di+9rftSl76ZsV01p4Wy8JW/c="
   "resolved" "https://registry.npmjs.org/absolute-path/-/absolute-path-0.0.0.tgz"
@@ -1572,6 +1582,17 @@
   "version" "6.0.2"
   dependencies:
     "debug" "4"
+
+"airtable@^0.11.1":
+  "integrity" "sha512-33zBuUDhLl+FWWAFxFjS1a+vJr/b+UK//EV943nuiimChWph6YykQjYPmu/GucQ30g7mgaqq+98uPD4rfDHOgg=="
+  "resolved" "https://registry.npmjs.org/airtable/-/airtable-0.11.1.tgz"
+  "version" "0.11.1"
+  dependencies:
+    "@types/node" ">=8.0.0 <15"
+    "abort-controller" "^3.0.0"
+    "abortcontroller-polyfill" "^1.4.0"
+    "lodash" "^4.17.21"
+    "node-fetch" "^2.6.1"
 
 "ajv@^6.10.0", "ajv@^6.12.4":
   "integrity" "sha512-j3fVLgvTo527anyYyJOGTYJbG+vnnQYvE0m5mmkc1TK+nxAppkCLMIL0aZ4dblVCNoGShhm+kzE4ZUykBoMg4g=="
@@ -5381,7 +5402,7 @@
   dependencies:
     "minimatch" "^3.0.2"
 
-"node-fetch@^2.2.0", "node-fetch@^2.6.0":
+"node-fetch@^2.2.0", "node-fetch@^2.6.0", "node-fetch@^2.6.1":
   "integrity" "sha512-Z8/6vRlTUChSdIgMa51jxQ4lrw/Jy5SOW10ObaA47/RElsAN2c5Pn8bTgFGWn/ibwzXTE8qwr1Yzx28vsecXEA=="
   "resolved" "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.6.tgz"
   "version" "2.6.6"
