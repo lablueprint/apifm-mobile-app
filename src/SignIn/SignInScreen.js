@@ -115,12 +115,12 @@ export default function SignInScreen({ navigation }) {
         placeholder="email"
         keyboardType="email-address"
       />
-      <View style={{ flexDirection: 'row',  alignItems: 'center'}}>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TextInput
           value={password}
           onChangeText={setPassword}
           placeholder="password"
-          secureTextEntry = {hidePass ? true : false}
+          secureTextEntry={!!hidePass}
         />
         <Icon
           name={hidePass ? 'eye-slash' : 'eye'}
@@ -129,7 +129,7 @@ export default function SignInScreen({ navigation }) {
           onPress={() => setHidePass(!hidePass)}
         />
       </View>
-      
+
       <TextInput
         value={number}
         onChangeText={setNumber}
