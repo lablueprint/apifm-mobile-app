@@ -1,9 +1,19 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, StyleSheet, TextInput } from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
+
+// const Airtable = require('airtable');
+
+// const airtableConfig = {
+//   apiKey: process.env.REACT_APP_AIRTABLE_USER_KEY,
+//   baseKey: process.env.REACT_APP_AIRTABLE_BASE_KEY,
+// };
+
+// const base = new Airtable({ apiKey: airtableConfig.apiKey })
+//   .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -26,6 +36,51 @@ const styles = StyleSheet.create({
 });
 
 export default function SignInScreen({ navigation }) {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [number, setNumber] = useState('');
+  const [address, setAddress] = useState('');
+
+  const handleSignUp = () => {
+    // base('Users').create([
+    //   {
+    //     fields: {
+    //       email,
+    //       password,
+    //       firstName,
+    //       lastName,
+    //       phoneNumber: number,
+    //       address,
+    //     },
+    //   },
+    // ], (err, records) => {
+    //   if (err) {
+    //     console.error(err);
+    //     return;
+    //   }
+    //   records.forEach((record) => {
+    //     console.log(record.getId());
+    //   });
+    // });
+
+    console.log(firstName);
+    console.log(lastName);
+    console.log(email);
+    console.log(password);
+    console.log(number);
+    console.log(address);
+    console.log(process.env.REACT_APP_AIRTABLE_BASE_ID);
+    console.log('here');
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPassword('');
+    setNumber('');
+    setAddress('');
+  };
+
   return (
     <View style={styles.container}>
       <Title style={styles.titleText}> SignInScreen  :) </Title>
@@ -39,6 +94,48 @@ export default function SignInScreen({ navigation }) {
         onPress={() => navigation.navigate('Marketplace')}
       >
         MARKETPLACE
+      </Button>
+
+      <Title style={styles.titleText}>Sign Up Form</Title>
+      <TextInput
+        value={firstName}
+        onChangeText={setFirstName}
+        placeholder="first name"
+      />
+      <TextInput
+        value={lastName}
+        onChangeText={setLastName}
+        placeholder="last name"
+      />
+      <TextInput
+        value={email}
+        onChangeText={setEmail}
+        placeholder="email"
+        keyboardType="email-address"
+      />
+      <TextInput
+        value={password}
+        onChangeText={setPassword}
+        placeholder="password"
+        secureTextEntry
+      />
+      <TextInput
+        value={number}
+        onChangeText={setNumber}
+        placeholder="phone number"
+        keyboardType="numeric"
+      />
+      <TextInput
+        value={address}
+        onChangeText={setAddress}
+        placeholder="address"
+      />
+      <Button
+        mode="contained"
+        style={styles.button}
+        onPress={handleSignUp}
+      >
+        Sign Up
       </Button>
     </View>
   );
