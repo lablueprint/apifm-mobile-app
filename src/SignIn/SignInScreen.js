@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import {
   Title, Text, Button,
@@ -45,6 +45,12 @@ export default function SignInScreen({ navigation }) {
   const [number, setNumber] = useState('');
   const [address, setAddress] = useState('');
   const [hidePass, setHidePass] = useState(true);
+
+  const lastNameInput = useRef();
+  const emailInput = useRef();
+  const passwordInput = useRef();
+  const numberInput = useRef();
+  const addressInput = useRef();
 
   const handleSignUp = () => {
     // base('Users').create([
@@ -103,24 +109,39 @@ export default function SignInScreen({ navigation }) {
         value={firstName}
         onChangeText={setFirstName}
         placeholder="first name"
+        returnKeyType="next"
+        onSubmitEditing={() => { lastNameInput.current.focus(); }}
+        blurOnSubmit={false}
       />
       <TextInput
         value={lastName}
         onChangeText={setLastName}
         placeholder="last name"
+        returnKeyType="next"
+        onSubmitEditing={() => { emailInput.current.focus(); }}
+        blurOnSubmit={false}
+        ref={lastNameInput}
       />
       <TextInput
         value={email}
         onChangeText={setEmail}
         placeholder="email"
         keyboardType="email-address"
+        returnKeyType="next"
+        onSubmitEditing={() => { passwordInput.current.focus(); }}
+        blurOnSubmit={false}
+        ref={emailInput}
       />
       <View style={{ flexDirection: 'row', alignItems: 'center' }}>
         <TextInput
           value={password}
           onChangeText={setPassword}
           placeholder="password"
+          returnKeyType="next"
           secureTextEntry={!!hidePass}
+          onSubmitEditing={() => { numberInput.current.focus(); }}
+          blurOnSubmit={false}
+          ref={passwordInput}
         />
         <Icon
           name={hidePass ? 'eye-slash' : 'eye'}
@@ -135,11 +156,16 @@ export default function SignInScreen({ navigation }) {
         onChangeText={setNumber}
         placeholder="phone number"
         keyboardType="numeric"
+        returnKeyType="next"
+        onSubmitEditing={() => { addressInput.current.focus(); }}
+        blurOnSubmit={false}
+        ref={numberInput}
       />
       <TextInput
         value={address}
         onChangeText={setAddress}
         placeholder="address"
+        ref={addressInput}
       />
       <Button
         mode="contained"
