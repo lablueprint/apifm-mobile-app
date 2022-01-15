@@ -3,19 +3,20 @@ import { View, StyleSheet, TextInput } from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
+// import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 
-// const Airtable = require('airtable');
+const Airtable = require('airtable');
 
-// const airtableConfig = {
-//   apiKey: process.env.REACT_APP_AIRTABLE_USER_KEY,
-//   baseKey: process.env.REACT_APP_AIRTABLE_BASE_KEY,
-// };
+const airtableConfig = {
+  apiKey: process.env.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: process.env.REACT_APP_AIRTABLE_BASE_KEY,
+};
 
-// const base = new Airtable({ apiKey: airtableConfig.apiKey })
-//   .base(airtableConfig.baseKey);
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -53,34 +54,32 @@ export default function SignInScreen({ navigation }) {
   const addressInput = useRef();
 
   const handleSignUp = () => {
-    // base('Users').create([
-    //   {
-    //     fields: {
-    //       email,
-    //       password,
-    //       firstName,
-    //       lastName,
-    //       phoneNumber: number,
-    //       address,
-    //     },
-    //   },
-    // ], (err, records) => {
-    //   if (err) {
-    //     console.error(err);
-    //     return;
-    //   }
-    //   records.forEach((record) => {
-    //     console.log(record.getId());
-    //   });
-    // });
-
-    console.log(firstName);
-    console.log(lastName);
-    console.log(email);
-    console.log(password);
-    console.log(number);
-    console.log(address);
-    console.log(process.env.REACT_APP_AIRTABLE_BASE_KEY);
+    base('Users').create([
+      {
+        fields: {
+          email,
+          password,
+          'first name': firstName,
+          lastName,
+          phoneNumber: number,
+          address,
+        },
+      },
+    ], (err, records) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      records.forEach((record) => {
+        console.log(record.getId());
+      });
+    });
+    // console.log(firstName);
+    // console.log(lastName);
+    // console.log(email);
+    // console.log(password);
+    // console.log(number);
+    // console.log(address);
     setFirstName('');
     setLastName('');
     setEmail('');
