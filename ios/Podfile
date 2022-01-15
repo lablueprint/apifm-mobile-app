@@ -16,6 +16,8 @@ target 'APIFM' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
   target 'APIFMTests' do
     inherit! :complete
     # Pods for testing
