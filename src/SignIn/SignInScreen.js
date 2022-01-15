@@ -3,7 +3,7 @@ import { View, StyleSheet, TextInput } from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
-// import Config from 'react-native-config';
+import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -11,8 +11,8 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 const Airtable = require('airtable');
 
 const airtableConfig = {
-  apiKey: process.env.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: process.env.REACT_APP_AIRTABLE_BASE_KEY,
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
 };
 
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
@@ -60,8 +60,8 @@ export default function SignInScreen({ navigation }) {
           email,
           password,
           'first name': firstName,
-          lastName,
-          phoneNumber: number,
+          'last name': lastName,
+          'phone number': number,
           address,
         },
       },
