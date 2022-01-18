@@ -65,21 +65,11 @@ export default function SignInScreen({ navigation }) {
           address,
         },
       },
-    ], (err, records) => {
+    ], (err) => {
       if (err) {
-        console.error(err);
-        return;
+        alert(err);
       }
-      records.forEach((record) => {
-        console.log(record.getId());
-      });
     });
-    // console.log(firstName);
-    // console.log(lastName);
-    // console.log(email);
-    // console.log(password);
-    // console.log(number);
-    // console.log(address);
     setFirstName('');
     setLastName('');
     setEmail('');
