@@ -4,6 +4,7 @@ import {
   Title, Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import ProduceCard from './ProduceCard';
 
 const styles = StyleSheet.create({
   container: {
@@ -67,6 +68,9 @@ export default function MarketplaceScreen({ navigation }) {
         >
           SIGN OUT
         </Button>
+      </View>
+      <View style={styles.centeredContainer}>
+        <ProduceCard name="Produce" price="4.99" />
       </View>
     </View>
   );
