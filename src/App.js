@@ -2,13 +2,13 @@ import React from 'react';
 import {
   Text, View,
 } from 'react-native';
-import SignInScreen from './SignIn/SignInScreen';
+import MarketplaceScreen from './Marketplace/MarketplaceScreen';
 
 function App() {
   return (
     <View>
-      <Text> APIFM App </Text>
-      <SignInScreen />
+      <Text> APIFM App</Text>
+      <MarketplaceScreen />
     </View>
   );
 }
