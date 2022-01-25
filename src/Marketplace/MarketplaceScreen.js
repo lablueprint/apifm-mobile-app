@@ -70,7 +70,7 @@ export default function MarketplaceScreen({ navigation }) {
         </Button>
       </View>
       <View style={styles.centeredContainer}>
-        <ProduceCard name="Produce" price="4.99" />
+        <ProduceCard navigation={navigation} name="Produce" price="4.99" />
       </View>
     </View>
   );

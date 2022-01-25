@@ -1,15 +1,17 @@
-import PropTypes from 'prop-types';
 import React from 'react';
-import { View, Image } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import PropTypes from 'prop-types';
+import { View, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
 
 function ProduceCard({
-  image, name, price, onPress,
+  navigation, name, price,
 }) {
+  const onPressCard = () => {
+    navigation.navigate('ProduceDetails');
+  };
   return (
-    <TouchableOpacity onPress={onPress}>
-      <Image source={image} />
+    <TouchableOpacity onPress={onPressCard}>
+      {/* <Image source={image} /> */}
       <View>
         <Text>{name}</Text>
         <Text>{price}</Text>
@@ -19,10 +21,9 @@ function ProduceCard({
 }
 
 ProduceCard.propTypes = {
-  image: PropTypes.func.isRequired,
+  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.string.isRequired,
-  onPress: PropTypes.func.isRequired,
 };
 
 export default ProduceCard;
