@@ -7,7 +7,8 @@ function ProduceCard({
   navigation, name, price,
 }) {
   const onPressCard = () => {
-    navigation.navigate('ProduceDetails');
+    navigation.navigate('ProduceDetails', { name, price });
+    // pass parameters
   };
   return (
     <TouchableOpacity onPress={onPressCard}>
