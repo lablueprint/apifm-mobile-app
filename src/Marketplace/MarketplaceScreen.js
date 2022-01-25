@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
-  Title, Text, Subheading, Button, Card,
+  Title, Text, Button, Card,
 } from 'react-native-paper';
 
 // AIRTABLE SETUP
