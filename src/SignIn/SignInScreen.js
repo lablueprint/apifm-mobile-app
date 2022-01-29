@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { View, StyleSheet, TextInput, Alert } from 'react-native';
+import {
+  View, StyleSheet, TextInput, Alert,
+} from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
@@ -57,31 +59,18 @@ export default function SignInScreen({ navigation }) {
   const busPhoneInput = useRef();
   const addressInput = useRef();
 
-  const buttonClickListener = () =>{
-    // console.log("firstname")
-    // console.log(firstName)
-    if (firstName == ""){
-      Alert.alert("Please enter the firstName to proceed")
-    }
-  }
-
   const handleSignUp = () => {
-    if (firstName == ""){
-      Alert.alert("Please enter the First Name to proceed")
-    }
-    else if (lastName == ""){
-      Alert.alert("Please enter the Last Name to proceed")
-    }
-    else if (email== ""){
-      Alert.alert("Please enter the Email to proceed")
-    }
-    else if (password == ""){
-      Alert.alert("Please enter the Password to proceed")
-    }
-    else if (number == ""){
-      Alert.alert("Please enter the Personal phone number to proceed")
-    }
-    else{
+    if (firstName === '') {
+      Alert.alert('Please enter the First Name to proceed');
+    } else if (lastName === '') {
+      Alert.alert('Please enter the Last Name to proceed');
+    } else if (email === '') {
+      Alert.alert('Please enter the Email to proceed');
+    } else if (password === '') {
+      Alert.alert('Please enter the Password to proceed');
+    } else if (number === '') {
+      Alert.alert('Please enter the Personal phone number to proceed');
+    } else {
       base('Users').create([
         {
           fields: {
@@ -97,7 +86,7 @@ export default function SignInScreen({ navigation }) {
         },
       ], (err) => {
         if (err) {
-          alert(err);
+          Alert.alert(err);
         }
       });
       setFirstName('');
@@ -114,18 +103,6 @@ export default function SignInScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* <Title style={styles.titleText}> SignInScreen  :) </Title>
-      <Text style={styles.bodyText}>
-        Welcome to APIFM! This button will
-        take you to the marketplace.
-      </Text>
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={() => navigation.navigate('Marketplace')}
-      >
-        MARKETPLACE
-      </Button> */}
 
       <Title style={styles.titleText}>Sign Up Form</Title>
       <TextInput
