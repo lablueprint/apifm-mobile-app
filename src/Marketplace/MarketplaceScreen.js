@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { Image, View, StyleSheet, ScrollView } from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
 
 export default function MarketplaceScreen({ navigation }) {
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.buttonContainer}>
         <Button
           mode="outlined"
@@ -70,9 +70,9 @@ export default function MarketplaceScreen({ navigation }) {
         </Button>
       </View>
       <View style={styles.centeredContainer}>
-        <ProduceCard navigation={navigation} name="Produce" price="4.99" />
+        <ProduceCard navigation={navigation} image={require('../assets/carrot.png')} name="Carrots" price="4.99" />
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
