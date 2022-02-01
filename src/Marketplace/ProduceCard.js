@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { View, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Text } from 'react-native-paper';
-import 'react-native-vector-icons';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const styles = StyleSheet.create({
   container: {
@@ -26,12 +26,11 @@ function ProduceCard({
 }) {
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', { image, name, price });
-    // pass parameters
   };
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-        {/* <Icon name="heart" size={30} /> */}
+        <Icon name="heart" size={20} />
         <Image style={styles.image} source={image} />
         <Text>{name}</Text>
         <Text>${price} each</Text>
