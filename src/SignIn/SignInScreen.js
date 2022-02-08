@@ -46,59 +46,42 @@ export default function SignInScreen({ navigation }) {
   const [organization, setOrganization] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [number, setNumber] = useState('');
   const [busPhone, setBusPhone] = useState('');
-  const [address, setAddress] = useState('');
   const [hidePass, setHidePass] = useState(true);
+  const [hidePassConf, setHidePassConf] = useState(true);
 
   const lastNameInput = useRef();
   const organizationInput = useRef();
   const emailInput = useRef();
   const passwordInput = useRef();
+  const confirmPasswordInput = useRef();
   const numberInput = useRef();
   const busPhoneInput = useRef();
-  const addressInput = useRef();
 
   const handleSignUp = () => {
     if (firstName === '') {
       Alert.alert('Please enter the First Name to proceed');
+      // return 1;
     } else if (lastName === '') {
       Alert.alert('Please enter the Last Name to proceed');
+      // return 1;
     } else if (email === '') {
       Alert.alert('Please enter the Email to proceed');
+      // return 1;
     } else if (password === '') {
       Alert.alert('Please enter the Password to proceed');
+      // return 1;
     } else if (number === '') {
       Alert.alert('Please enter the Personal phone number to proceed');
+      // return 1;
+    } else if (password !== confirmPassword) {
+      Alert.alert('Password Confirmation does not match Password');
     } else {
-      base('Users').create([
-        {
-          fields: {
-            email,
-            password,
-            'first name': firstName,
-            'last name': lastName,
-            organization,
-            'phone number': number,
-            'business phone': busPhone,
-            address,
-          },
-        },
-      ], (err) => {
-        if (err) {
-          Alert.alert(err);
-        }
-      });
-      setFirstName('');
-      setLastName('');
-      setOrganization('');
-      setEmail('');
-      setPassword('');
-      setNumber('');
-      setBusPhone('');
-      setBusPhone('');
-      setAddress('');
+      navigation.navigate('SignIn2');
     }
+    // return 0;
   };
 
   return (
@@ -148,7 +131,7 @@ export default function SignInScreen({ navigation }) {
           placeholder="Password"
           returnKeyType="next"
           secureTextEntry={!!hidePass}
-          onSubmitEditing={() => { numberInput.current.focus(); }}
+          onSubmitEditing={() => { confirmPasswordInput.current.focus(); }}
           blurOnSubmit={false}
           ref={passwordInput}
         />
@@ -157,6 +140,25 @@ export default function SignInScreen({ navigation }) {
           size={15}
           color="grey"
           onPress={() => setHidePass(!hidePass)}
+        />
+      </View>
+
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <TextInput
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          placeholder="Confirm Password"
+          returnKeyType="next"
+          secureTextEntry={!!hidePassConf}
+          onSubmitEditing={() => { numberInput.current.focus(); }}
+          blurOnSubmit={false}
+          ref={confirmPasswordInput}
+        />
+        <Icon
+          name={hidePassConf ? 'eye-slash' : 'eye'}
+          size={15}
+          color="grey"
+          onPress={() => setHidePassConf(!hidePassConf)}
         />
       </View>
 
@@ -177,23 +179,18 @@ export default function SignInScreen({ navigation }) {
         placeholder="Business phone number (optional)"
         keyboardType="numeric"
         returnKeyType="next"
-        onSubmitEditing={() => { addressInput.current.focus(); }}
         blurOnSubmit={false}
         ref={busPhoneInput}
       />
 
-      <TextInput
-        value={address}
-        onChangeText={setAddress}
-        placeholder="Address"
-        ref={addressInput}
-      />
       <Button
         mode="contained"
         style={styles.button}
-        onPress={handleSignUp}
+        onPress={() => {
+          handleSignUp();
+        }}
       >
-        Sign Up
+        Continue
       </Button>
 
     </View>
