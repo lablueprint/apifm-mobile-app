@@ -1,13 +1,17 @@
-import React from 'react';
-import { Image, View, StyleSheet, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View, StyleSheet, ScrollView,
+} from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 import ProduceCard from './ProduceCard';
 
-import Config from 'react-native-config';
 const Airtable = require('airtable');
+const carrotImage = require('../assets/carrot.png');
+
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -45,16 +49,36 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  const [produceList, setProduceList] = useState([]);
+
   const getProduce = () => {
+    const list = [];
     base('Produce').select({
       maxRecords: 20,
-    }).eachPage(function page(records, fextNextPage) {
-      records.forEach(function(record) {
-        console.log(record.fields);
-        // append to an object to get all the fields and map from there
-      })
-    })
-  }
+    }).eachPage((records) => {
+      records.forEach((record) => {
+        list.push(record.fields);
+      });
+    });
+    console.log('here');
+    return list;
+  };
+
+  const produceCards = produceList.map((produce) => (
+    <ProduceCard
+      key={produce.Name}
+      navigation={navigation}
+      image={carrotImage}
+      name={produce.Name}
+      price={produce.Price}
+      unit={produce.Unit}
+    />
+  ));
+
+  useEffect(() => {
+    setProduceList(getProduce());
+    console.log(produceList);
+  }, []);
 
   return (
     <ScrollView style={styles.container}>
@@ -89,11 +113,8 @@ export default function MarketplaceScreen({ navigation }) {
           SIGN OUT
         </Button>
       </View>
-      <View style={styles.centeredContainer}>
-        <ProduceCard navigation={navigation} image={require('../assets/carrot.png')} name="Carrots" price="4.99" />
-      </View>
-      <View style={styles.centeredContainer}>
-        <Button style={styles.button} onPress={getProduce}>Test</Button>
+      <View>
+        { produceCards }
       </View>
     </ScrollView>
   );
