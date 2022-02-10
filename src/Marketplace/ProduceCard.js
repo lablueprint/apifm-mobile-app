@@ -8,18 +8,49 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    margin: 10,
     backgroundColor: '#C4C4C4',
     width: 154,
     height: 206,
     borderRadius: 15,
   },
   cardContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
   },
+  favoriteIcon: {
+    wdith: 15,
+    height: 15,
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginEnd: 10,
+  },
   image: {
-    width: 70,
-    height: 70,
+    width: 120,
+    height: 120,
+  },
+  name: {
+    height: 20,
+    alignSelf: 'flex-start',
+    fontSize: 14,
+    marginStart: 10,
+    fontWeight: '700',
+  },
+  bottom: {
+    height: 20,
+    alignSelf: 'flex-start',
+    flexDirection: 'row',
+    marginStart: 10,
+  },
+  price: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  quantity: {
+    fontSize: 10,
+    fontWeight: '500',
+    marginTop: 7,
   },
 });
 
@@ -34,15 +65,19 @@ function ProduceCard({
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-        <Icon name="heart" size={20} />
+        <Icon style={styles.favoriteIcon} name="heart" size={15} />
         <Image style={styles.image} source={image} />
-        <Text>{name}</Text>
-        <Text>
-          $
-          {price}
-          {' '}
-          {unit}
-        </Text>
+        <Text style={styles.name}>{name}</Text>
+        <View style={styles.bottom}>
+          <Text style={styles.price}>
+            $
+            {price}
+          </Text>
+          <Text style={styles.quantity}>
+            {' '}
+            {unit}
+          </Text>
+        </View>
       </View>
     </TouchableOpacity>
   );

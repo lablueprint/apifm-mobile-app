@@ -46,6 +46,16 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     alignSelf: 'flex-end',
   },
+  produceCardsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'space-around',
+  },
+  produceCard: {
+    padding: 15,
+  },
 });
 
 export default function MarketplaceScreen({ navigation }) {
@@ -59,13 +69,13 @@ export default function MarketplaceScreen({ navigation }) {
       records.forEach((record) => {
         list.push(record.fields);
       });
+      setProduceList(list);
     });
-    console.log('here');
-    return list;
   };
 
   const produceCards = produceList.map((produce) => (
     <ProduceCard
+      style={styles.produceCard}
       key={produce.Name}
       navigation={navigation}
       image={carrotImage}
@@ -76,8 +86,7 @@ export default function MarketplaceScreen({ navigation }) {
   ));
 
   useEffect(() => {
-    setProduceList(getProduce());
-    console.log(produceList);
+    getProduce();
   }, []);
 
   return (
@@ -113,7 +122,7 @@ export default function MarketplaceScreen({ navigation }) {
           SIGN OUT
         </Button>
       </View>
-      <View>
+      <View style={styles.produceCardsContainer}>
         { produceCards }
       </View>
     </ScrollView>
