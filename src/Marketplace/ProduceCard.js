@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   favoriteIcon: {
-    wdith: 15,
+    width: 15,
     height: 15,
     alignSelf: 'flex-end',
     marginTop: 10,
