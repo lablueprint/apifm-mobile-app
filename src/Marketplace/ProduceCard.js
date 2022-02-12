@@ -62,11 +62,13 @@ function ProduceCard({
       image, name, price, unit,
     });
   };
+
+  const imageurl = { uri: image };
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
         <Icon style={styles.favoriteIcon} name="heart" size={15} />
-        <Image style={styles.image} source={image} />
+        <Image style={styles.image} source={imageurl} />
         <Text style={styles.name}>{name}</Text>
         <View style={styles.bottom}>
           <Text style={styles.price}>
@@ -85,7 +87,7 @@ function ProduceCard({
 
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
-  image: PropTypes.node.isRequired,
+  image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   unit: PropTypes.string.isRequired,

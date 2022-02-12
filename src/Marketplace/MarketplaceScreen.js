@@ -10,7 +10,6 @@ import Config from 'react-native-config';
 import ProduceCard from './ProduceCard';
 
 const Airtable = require('airtable');
-const carrotImage = require('../assets/carrot.png');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -63,13 +62,39 @@ export default function MarketplaceScreen({ navigation }) {
 
   const getProduce = () => {
     const list = [];
-    base('Produce').select({
-      maxRecords: 20,
-    }).eachPage((records) => {
+    base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
-        list.push(record.fields);
+        const produce = record;
+
+        if (!('Name' in record.fields)) {
+          produce.fields.Name = '';
+        }
+        if (!('Image' in record.fields)) {
+          produce.fields.Image = [{ url: 'test' }];
+        }
+        if (!('Quantity' in record.fields)) {
+          produce.fields.Quantity = 1;
+        }
+        if (!('Unit' in record.fields)) {
+          produce.fields.Unit = 'Uknown';
+        }
+        if (!('Seller' in record.fields)) {
+          produce.fields.Seller = 'Unknown';
+        }
+        if (!('Minimum Quantity' in record.fields)) {
+          produce.fields['Minimum Quantity'] = 1;
+        }
+        if (!('Price' in record.fields)) {
+          produce.fields.Price = 'Unknown';
+        }
+        if (!('Type Tags' in record.fields)) {
+          produce.fields['Type Tags'] = 'Unknown';
+        }
+
+        list.push(produce.fields);
       });
       setProduceList(list);
+      fetchNextPage();
     });
   };
 
@@ -78,7 +103,7 @@ export default function MarketplaceScreen({ navigation }) {
       style={styles.produceCard}
       key={produce.Name}
       navigation={navigation}
-      image={carrotImage}
+      image={produce.Image[0].url}
       name={produce.Name}
       price={produce.Price}
       unit={produce.Unit}
