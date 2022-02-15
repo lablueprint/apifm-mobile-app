@@ -6,12 +6,12 @@ import { Text } from 'react-native-paper';
 const styles = StyleSheet.create({
   image: {
     width: 205,
-    height: 386
-  }
-})
+    height: 386,
+  },
+});
 
 function ProduceDetailsScreen({ route }) {
-  const { image, name, price } = route.params; // need help figuring out how to get the prop types
+  const { image, name, price } = route.params;
 
   return (
     <View>
@@ -24,7 +24,7 @@ function ProduceDetailsScreen({ route }) {
 }
 
 ProduceDetailsScreen.propTypes = {
-  route: PropTypes.shape({ route: PropTypes.func }).isRequired,
+  route: PropTypes.shape({ params: PropTypes.func }).isRequired,
 };
 
 export default ProduceDetailsScreen;
