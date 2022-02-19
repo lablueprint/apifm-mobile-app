@@ -39,6 +39,13 @@ export default function CartScreen({ navigation }) {
       >
         MARKETPLACE
       </Button>
+      <Button
+        mode="contained"
+        style={styles.button}
+        onPress={() => navigation.navigate('Checkout')}
+      >
+        CHECKOUT
+      </Button>
     </View>
   );
 }

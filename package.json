@@ -5,7 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "start": "react-native start",
+    "start": "react-scripts --openssl-legacy-provider start",
     "test": "jest",
     "lint": "eslint ."
   },
@@ -20,11 +20,12 @@
     "react": "17.0.2",
     "react-native": "0.66.4",
     "react-native-config": "^1.4.5",
+    "react-native-elements": "^3.4.2",
     "react-native-gesture-handler": "^2.1.0",
     "react-native-paper": "^4.11.1",
     "react-native-safe-area-context": "^3.3.2",
     "react-native-screens": "^3.10.1",
-    "react-native-vector-icons": "^9.0.0",
+    "react-native-vector-icons": "^9.1.0",
     "react-navigation": "^4.4.4",
     "react-navigation-stack": "^2.10.4",
     "react-navigation-tabs": "^2.11.1"
