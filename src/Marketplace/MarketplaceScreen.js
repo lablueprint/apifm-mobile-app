@@ -10,7 +10,6 @@ import Config from 'react-native-config';
 import ProduceCard from './ProduceCard';
 
 const Airtable = require('airtable');
-const carrotImage = require('../assets/carrot.png');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -105,7 +104,7 @@ export default function MarketplaceScreen({ navigation }) {
       key={produce.Name}
       navigation={navigation}
       favorited={produce.Favorited}
-      image={carrotImage}
+      image={produce.Image[0].url}
       name={produce.Name}
       price={produce.Price}
       unit={produce.Unit}

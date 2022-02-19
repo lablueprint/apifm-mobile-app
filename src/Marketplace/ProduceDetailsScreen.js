@@ -13,10 +13,12 @@ const styles = StyleSheet.create({
 function ProduceDetailsScreen({ route }) {
   const { image, name, price } = route.params;
 
+  const imageurl = { uri: image };
+
   return (
     <View>
       <Text>Produce Details</Text>
-      <Image style={styles.image} source={image} />
+      <Image style={styles.image} source={imageurl} />
       <Text>{name}</Text>
       <Text>{price}</Text>
     </View>
@@ -24,7 +26,13 @@ function ProduceDetailsScreen({ route }) {
 }
 
 ProduceDetailsScreen.propTypes = {
-  route: PropTypes.shape({ params: PropTypes.func }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      image: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      price: PropTypes.number.isRequired,
+    }),
+  }).isRequired,
 };
 
 export default ProduceDetailsScreen;

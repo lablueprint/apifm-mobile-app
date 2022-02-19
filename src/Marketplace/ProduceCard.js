@@ -72,13 +72,15 @@ function ProduceCard({
     setFavorite(newFav);
   };
 
+  const imageurl = { uri: image };
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
         <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
           <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
         </TouchableOpacity>
-        <Image style={styles.image} source={image} />
+        <Image style={styles.image} source={imageurl} />
         <Text style={styles.name}>{name}</Text>
         <View style={styles.bottom}>
           <Text style={styles.price}>
