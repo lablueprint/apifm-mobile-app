@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-// import { Divider } from 'react-native-elements';
 import {
   Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
-// import './Checkout.css'
 
 const styles = StyleSheet.create({
   container: {
