@@ -90,7 +90,7 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-
+        produce.fields.Favorited = 0;
         list.push(produce.fields);
       });
       setProduceList(list);
@@ -103,6 +103,7 @@ export default function MarketplaceScreen({ navigation }) {
       style={styles.produceCard}
       key={produce.Name}
       navigation={navigation}
+      favorited={produce.Favorited}
       image={produce.Image[0].url}
       name={produce.Name}
       price={produce.Price}
