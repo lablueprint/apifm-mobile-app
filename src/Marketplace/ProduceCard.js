@@ -58,11 +58,11 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, favorited, image, name, price, unit,
+  navigation, favorited, image, name, price, unit, seller, quantity, minQuantity,
 }) {
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      image, name, price, unit,
+      favorited, image, name, price, unit, seller, quantity, minQuantity,
     });
   };
 
@@ -104,6 +104,9 @@ ProduceCard.propTypes = {
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   unit: PropTypes.string.isRequired,
+  seller: PropTypes.string.isRequired,
+  quantity: PropTypes.number.isRequired,
+  minQuantity: PropTypes.number.isRequired,
 };
 
 export default ProduceCard;

@@ -16,7 +16,13 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
-      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
+      <stackNavig.Screen
+        name="ProduceDetails"
+        component={ProduceDetailsScreen}
+        options={{
+          title: '',
+        }}
+      />
     </stackNavig.Navigator>
   );
 }

@@ -65,7 +65,6 @@ export default function MarketplaceScreen({ navigation }) {
     base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const produce = record;
-
         if (!('Name' in record.fields)) {
           produce.fields.Name = '';
         }
@@ -90,6 +89,10 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
+
+        produce.fields.Quantity = Number(record.fields.Quantity);
+        produce.fields['Minimum Quantity'] = Number(record.fields['Minimum Quantity']);
+
         produce.fields.Favorited = 0;
         list.push(produce.fields);
       });
@@ -108,6 +111,9 @@ export default function MarketplaceScreen({ navigation }) {
       name={produce.Name}
       price={produce.Price}
       unit={produce.Unit}
+      seller={produce.Seller}
+      quantity={produce.Quantity}
+      minQuantity={produce['Minimum Quantity']}
     />
   ));
 
