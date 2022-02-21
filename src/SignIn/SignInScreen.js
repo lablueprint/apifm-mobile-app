@@ -3,7 +3,7 @@ import {
   View, StyleSheet, TextInput, Alert,
 } from 'react-native';
 import {
-  Title, Text, Button,
+  Title, Button,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
@@ -195,7 +195,13 @@ export default function SignInScreen({ navigation }) {
       >
         Sign Up
       </Button>
-
+      <Button
+        mode="contained"
+        style={styles.button}
+        onPress={() => navigation.navigate('Marketplace')}
+      >
+        Kaylee's button
+      </Button>
     </View>
   );
 }
