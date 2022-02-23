@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   button: {
-    width: '30%',
+    width: '60%',
     marginTop: 10,
     backgroundColor: '#0492c2',
   },
@@ -35,7 +35,12 @@ export default function SignInScreen({ navigation }) {
       <Text> review your information, and your account should</Text>
       <Text> be approved within 1-3 business days.</Text>
 
-      <Button> Start ordering!</Button>
+      <Button
+        mode="contained"
+        style={styles.button}
+      >
+        Start ordering!
+      </Button>
 
     </View>
   );
