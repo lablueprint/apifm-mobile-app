@@ -1,9 +1,20 @@
+<<<<<<< HEAD
 import React, { useState, setState, useRef } from 'react';
 import {
   View, StyleSheet, TextInput, Alert,
 } from 'react-native';
+=======
+import React, { useState, useRef } from 'react';
+<<<<<<< HEAD
+import { View, StyleSheet, TextInput, Alert } from 'react-native';
+=======
+>>>>>>> fb6aa09e9710ae69d642ec9e8997912f94c60289
+>>>>>>> master
 import {
-  Title, Text, Button,
+  View, StyleSheet, TextInput, Alert,
+} from 'react-native';
+import {
+  Title, Button,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
@@ -64,6 +75,7 @@ export default function SignInScreen({ navigation }) {
   const numberInput = useRef();
   const busPhoneInput = useRef();
 
+<<<<<<< HEAD
   // second page states:
   const [address, setAddress] = useState('');
   const [apt, setApt] = useState('');
@@ -102,6 +114,19 @@ export default function SignInScreen({ navigation }) {
       Alert.alert('Please enter the Address to proceed');
     } else if (zip === '') {
       Alert.alert('Please enter the Zipcode to proceed');
+=======
+  const handleSignUp = () => {
+    if (firstName === '') {
+      Alert.alert('Please enter the First Name to proceed');
+    } else if (lastName === '') {
+      Alert.alert('Please enter the Last Name to proceed');
+    } else if (email === '') {
+      Alert.alert('Please enter the Email to proceed');
+    } else if (password === '') {
+      Alert.alert('Please enter the Password to proceed');
+    } else if (number === '') {
+      Alert.alert('Please enter the Personal phone number to proceed');
+>>>>>>> master
     } else {
       base('Users').create([
         {
@@ -121,7 +146,11 @@ export default function SignInScreen({ navigation }) {
         },
       ], (err) => {
         if (err) {
+<<<<<<< HEAD
           Alert.alert(err, err.message);
+=======
+          Alert.alert(err);
+>>>>>>> master
         }
       });
       setFirstName('');
@@ -311,7 +340,11 @@ export default function SignInScreen({ navigation }) {
       >
         Sign Up
       </Button>
+<<<<<<< HEAD
 
+=======
+      <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('Marketplace')} />
+>>>>>>> master
     </View>
   );
 }
