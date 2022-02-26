@@ -3,7 +3,10 @@ import {
   View, StyleSheet, TextInput, Alert,
 } from 'react-native';
 import {
-  Title, Text, Button,
+  View, StyleSheet, TextInput, Alert,
+} from 'react-native';
+import {
+  Title, Button,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
@@ -13,13 +16,13 @@ import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolic
 import { State } from 'react-native-gesture-handler';
 // import SignInScreen2 from './SignInScreen2';
 
+
 const Airtable = require('airtable');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
 };
-// {boolean ? <> : <>}
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
@@ -50,6 +53,7 @@ export default function SignInScreen({ navigation }) {
   const [organization, setOrganization] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
   const [confirmPassword, setConfirmPassword] = useState('');
   const [number, setNumber] = useState('');
   const [busPhone, setBusPhone] = useState('');
@@ -60,6 +64,7 @@ export default function SignInScreen({ navigation }) {
   const organizationInput = useRef();
   const emailInput = useRef();
   const passwordInput = useRef();
+  
   const confirmPasswordInput = useRef();
   const numberInput = useRef();
   const busPhoneInput = useRef();
@@ -304,6 +309,7 @@ export default function SignInScreen({ navigation }) {
         The address will be used for delivery and to calculate the order minimum for delivery.
       </Text>
 
+
       <Button
         mode="contained"
         style={styles.button}
@@ -311,7 +317,6 @@ export default function SignInScreen({ navigation }) {
       >
         Sign Up
       </Button>
-
     </View>
   );
 }
