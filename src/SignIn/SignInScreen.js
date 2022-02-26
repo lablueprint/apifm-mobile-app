@@ -63,33 +63,6 @@ export default function SignInScreen({ navigation }) {
   const busPhoneInput = useRef();
   const addressInput = useRef();
 
-<<<<<<< HEAD
-  const buttonClickListener = () =>{
-    // console.log("firstname")
-    // console.log(firstName)
-    if (firstName == ""){
-      Alert.alert("Please enter the firstName to proceed")
-    }
-  }
-
-  const handleSignUp = () => {
-    if (firstName == ""){
-      Alert.alert("Please enter the First Name to proceed")
-    }
-    else if (lastName == ""){
-      Alert.alert("Please enter the Last Name to proceed")
-    }
-    else if (email== ""){
-      Alert.alert("Please enter the Email to proceed")
-    }
-    else if (password == ""){
-      Alert.alert("Please enter the Password to proceed")
-    }
-    else if (number == ""){
-      Alert.alert("Please enter the Personal phone number to proceed")
-    }
-    else{
-=======
   const handleSignUp = () => {
     if (firstName === '') {
       Alert.alert('Please enter the First Name to proceed');
@@ -102,7 +75,6 @@ export default function SignInScreen({ navigation }) {
     } else if (number === '') {
       Alert.alert('Please enter the Personal phone number to proceed');
     } else {
->>>>>>> fb6aa09e9710ae69d642ec9e8997912f94c60289
       base('Users').create([
         {
           fields: {
@@ -118,11 +90,7 @@ export default function SignInScreen({ navigation }) {
         },
       ], (err) => {
         if (err) {
-<<<<<<< HEAD
-          alert(err);
-=======
           Alert.alert(err);
->>>>>>> fb6aa09e9710ae69d642ec9e8997912f94c60289
         }
       });
       setFirstName('');
@@ -139,107 +107,6 @@ export default function SignInScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-<<<<<<< HEAD
-      {/* <Title style={styles.titleText}> SignInScreen  :) </Title>
-      <Text style={styles.bodyText}>
-        Welcome to APIFM! This button will
-        take you to the marketplace.
-      </Text>
-=======
-
-      <Title style={styles.titleText}>Sign Up Form</Title>
-      <TextInput
-        value={firstName}
-        onChangeText={setFirstName}
-        placeholder="First name"
-        returnKeyType="next"
-        onSubmitEditing={() => { lastNameInput.current.focus(); }}
-        blurOnSubmit={false}
-      />
-      <TextInput
-        value={lastName}
-        onChangeText={setLastName}
-        placeholder="Last name"
-        returnKeyType="next"
-        onSubmitEditing={() => { organizationInput.current.focus(); }}
-        blurOnSubmit={false}
-        ref={lastNameInput}
-      />
-      <TextInput
-        value={organization}
-        onChangeText={setOrganization}
-        placeholder="Organization (optional)"
-        returnKeyType="next"
-        onSubmitEditing={() => { emailInput.current.focus(); }}
-        blurOnSubmit={false}
-        ref={organizationInput}
-      />
-      <TextInput
-        value={email}
-        onChangeText={setEmail}
-        placeholder="Email address"
-        keyboardType="email-address"
-        returnKeyType="next"
-        onSubmitEditing={() => { passwordInput.current.focus(); }}
-        blurOnSubmit={false}
-        ref={emailInput}
-      />
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <TextInput
-          value={password}
-          onChangeText={setPassword}
-          placeholder="Password"
-          returnKeyType="next"
-          secureTextEntry={!!hidePass}
-          onSubmitEditing={() => { numberInput.current.focus(); }}
-          blurOnSubmit={false}
-          ref={passwordInput}
-        />
-        <Icon
-          name={hidePass ? 'eye-slash' : 'eye'}
-          size={15}
-          color="grey"
-          onPress={() => setHidePass(!hidePass)}
-        />
-      </View>
-
-      <TextInput
-        value={number}
-        onChangeText={setNumber}
-        placeholder="Personal phone number"
-        keyboardType="numeric"
-        returnKeyType="next"
-        onSubmitEditing={() => { busPhoneInput.current.focus(); }}
-        blurOnSubmit={false}
-        ref={numberInput}
-      />
-
-      <TextInput
-        value={busPhone}
-        onChangeText={setBusPhone}
-        placeholder="Business phone number (optional)"
-        keyboardType="numeric"
-        returnKeyType="next"
-        onSubmitEditing={() => { addressInput.current.focus(); }}
-        blurOnSubmit={false}
-        ref={busPhoneInput}
-      />
-
-      <TextInput
-        value={address}
-        onChangeText={setAddress}
-        placeholder="Address"
-        ref={addressInput}
-      />
->>>>>>> fb6aa09e9710ae69d642ec9e8997912f94c60289
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleSignUp}
-      >
-<<<<<<< HEAD
-        MARKETPLACE
-      </Button> */}
 
       <Title style={styles.titleText}>Sign Up Form</Title>
       <TextInput
@@ -330,8 +197,6 @@ export default function SignInScreen({ navigation }) {
         style={styles.button}
         onPress={handleSignUp}
       >
-=======
->>>>>>> fb6aa09e9710ae69d642ec9e8997912f94c60289
         Sign Up
       </Button>
       <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('Marketplace')} />
