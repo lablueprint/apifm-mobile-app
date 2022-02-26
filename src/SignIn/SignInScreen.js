@@ -1,15 +1,7 @@
-<<<<<<< HEAD
 import React, { useState, setState, useRef } from 'react';
 import {
   View, StyleSheet, TextInput, Alert,
 } from 'react-native';
-=======
-import React, { useState, useRef } from 'react';
-<<<<<<< HEAD
-import { View, StyleSheet, TextInput, Alert } from 'react-native';
-=======
->>>>>>> fb6aa09e9710ae69d642ec9e8997912f94c60289
->>>>>>> master
 import {
   View, StyleSheet, TextInput, Alert,
 } from 'react-native';
@@ -24,13 +16,13 @@ import symbolicateStackTrace from 'react-native/Libraries/Core/Devtools/symbolic
 import { State } from 'react-native-gesture-handler';
 // import SignInScreen2 from './SignInScreen2';
 
+
 const Airtable = require('airtable');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
 };
-// {boolean ? <> : <>}
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
@@ -61,6 +53,7 @@ export default function SignInScreen({ navigation }) {
   const [organization, setOrganization] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  
   const [confirmPassword, setConfirmPassword] = useState('');
   const [number, setNumber] = useState('');
   const [busPhone, setBusPhone] = useState('');
@@ -71,11 +64,11 @@ export default function SignInScreen({ navigation }) {
   const organizationInput = useRef();
   const emailInput = useRef();
   const passwordInput = useRef();
+  
   const confirmPasswordInput = useRef();
   const numberInput = useRef();
   const busPhoneInput = useRef();
 
-<<<<<<< HEAD
   // second page states:
   const [address, setAddress] = useState('');
   const [apt, setApt] = useState('');
@@ -114,19 +107,6 @@ export default function SignInScreen({ navigation }) {
       Alert.alert('Please enter the Address to proceed');
     } else if (zip === '') {
       Alert.alert('Please enter the Zipcode to proceed');
-=======
-  const handleSignUp = () => {
-    if (firstName === '') {
-      Alert.alert('Please enter the First Name to proceed');
-    } else if (lastName === '') {
-      Alert.alert('Please enter the Last Name to proceed');
-    } else if (email === '') {
-      Alert.alert('Please enter the Email to proceed');
-    } else if (password === '') {
-      Alert.alert('Please enter the Password to proceed');
-    } else if (number === '') {
-      Alert.alert('Please enter the Personal phone number to proceed');
->>>>>>> master
     } else {
       base('Users').create([
         {
@@ -146,11 +126,7 @@ export default function SignInScreen({ navigation }) {
         },
       ], (err) => {
         if (err) {
-<<<<<<< HEAD
           Alert.alert(err, err.message);
-=======
-          Alert.alert(err);
->>>>>>> master
         }
       });
       setFirstName('');
@@ -333,6 +309,7 @@ export default function SignInScreen({ navigation }) {
         The address will be used for delivery and to calculate the order minimum for delivery.
       </Text>
 
+
       <Button
         mode="contained"
         style={styles.button}
@@ -340,11 +317,6 @@ export default function SignInScreen({ navigation }) {
       >
         Sign Up
       </Button>
-<<<<<<< HEAD
-
-=======
-      <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('Marketplace')} />
->>>>>>> master
     </View>
   );
 }
