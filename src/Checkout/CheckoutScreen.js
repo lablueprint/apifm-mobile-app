@@ -62,6 +62,8 @@ export default function CheckoutScreen({ navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [freeFee, setFreeFee] = useState(0);
 
   const calcTotal = () => {
     base('Cart').select({ filterByFormula: "({Users UPDATED}='helen@gmail.com')" }).all()
@@ -97,6 +99,16 @@ export default function CheckoutScreen({ navigation }) {
         }
       });
     calcTotal();
+
+    base('Orders').select({
+      filterByFormula: '{user_id} = "helen@gmail.com"',
+    }).firstPage()
+      .then((records) => {
+        if (records[0].fields['delivery fee (temp)'] > 0) {
+          setDeliveryFee(records[0].fields['delivery fee (temp)']);
+          setFreeFee(records[0].fields['fee to be free (temp)']);
+        }
+      });
   }, []);
 
   return (
@@ -164,14 +176,6 @@ export default function CheckoutScreen({ navigation }) {
             {total}
           </Text>
         </View>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-            Discount:
-          </Text>
-          <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-            TBD
-          </Text>
-        </View>
         <View style={{
           flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '0%',
         }}
@@ -180,9 +184,28 @@ export default function CheckoutScreen({ navigation }) {
             Delivery Fee:
           </Text>
           <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-            TBD
+            $
+            {deliveryFee}
           </Text>
         </View>
+        {deliveryFee > 0
+        && (
+        <View style={{
+          flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '30%', marginBottom: '3%',
+        }}
+        >
+          <Text style={[styles.subdetails, {
+            marginLeft: '0%',
+          }]}
+          >
+            Add
+            {' $'}
+            {freeFee}
+            {' '}
+            to qualify for free shipping!
+          </Text>
+        </View>
+        )}
         <View style={{
           flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
         }}
