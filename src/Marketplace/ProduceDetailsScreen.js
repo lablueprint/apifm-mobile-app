@@ -5,6 +5,9 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import IconButton from 'react-native-vector-icons/Feather';
+
+const missingImage = require('../assets/missingImage.png');
 
 const styles = StyleSheet.create({
   detailsContainer: {
@@ -14,6 +17,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     width: 380,
     height: 380,
+  },
+  text: {
+    fontSize: 30,
   },
 });
 
@@ -29,21 +35,51 @@ function ProduceDetailsScreen({ route }) {
     setFavorite(newFav);
   };
   // does not favorite on the main screen, probably need to pass in function that does the work?
+  // produce.fields.Quantity = Number(record.fields.Quantity);
+  // produce.fields['Minimum Quantity'] = Number(record.fields['Minimum Quantity']);
 
   const imageurl = { uri: image };
 
+  const [orderQuantity, setOrderQuantity] = useState(Number(minQuantity));
+
   return (
     <View style={styles.detailsContainer}>
-      <Image style={styles.imageContainer} source={imageurl} />
-      <Text>{name}</Text>
-      <Text>{seller}</Text>
+      <Image style={styles.imageContainer} source={image === '' ? missingImage : imageurl} />
+      <Text style={styles.text}>{name}</Text>
+      <Text style={styles.text}>{seller}</Text>
       <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
         <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
       </TouchableOpacity>
-      <Text>{price}</Text>
-      <Text>{unit.substring(0, 2)}</Text>
+      <Text style={styles.text}>{price}</Text>
+      <Text style={styles.text}>{unit.substring(0, 2)}</Text>
+      <IconButton
+        name="minus-circle"
+        size={15}
+        onPress={() => {
+          if (orderQuantity - 1 > 0) {
+            const updatedValue = orderQuantity - 1;
+            setOrderQuantity(updatedValue);
+          }
+        }}
+      />
+      <Text style={styles.text}>{orderQuantity}</Text>
+      {/* <TextInput
+        type="number"
+        value={orderQuantity}
+        onChangeText={setOrderQuantity}
+        keyboardType="numeric"
+      /> */}
+      <IconButton
+        name="plus-circle"
+        size={15}
+        onPress={() => {
+          if (orderQuantity + 1 <= quantity) {
+            const updatedValue = orderQuantity + 1;
+            setOrderQuantity(updatedValue);
+          }
+        }}
+      />
       <Text>{quantity}</Text>
-      <Text>{minQuantity}</Text>
     </View>
   );
 }

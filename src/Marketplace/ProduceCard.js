@@ -6,6 +6,8 @@ import {
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+const missingImage = require('../assets/missingImage.png');
+
 const styles = StyleSheet.create({
   container: {
     margin: 10,
@@ -81,7 +83,7 @@ function ProduceCard({
         <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
           <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
         </TouchableOpacity>
-        <Image style={styles.image} source={imageurl} />
+        <Image style={styles.image} source={image === '' ? missingImage : imageurl} />
         <Text style={styles.name}>{name}</Text>
         <View style={styles.bottom}>
           <Text style={styles.price}>

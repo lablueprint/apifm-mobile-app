@@ -65,14 +65,15 @@ export default function MarketplaceScreen({ navigation }) {
     base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const produce = record;
+
         if (!('Name' in record.fields)) {
           produce.fields.Name = '';
         }
         if (!('Image' in record.fields)) {
-          produce.fields.Image = [{ url: 'test' }];
+          produce.fields.Image = [{ url: '' }];
         }
         if (!('Quantity' in record.fields)) {
-          produce.fields.Quantity = 1;
+          produce.fields.Quantity = '1';
         }
         if (!('Unit' in record.fields)) {
           produce.fields.Unit = 'Uknown';
@@ -81,7 +82,7 @@ export default function MarketplaceScreen({ navigation }) {
           produce.fields.Seller = 'Unknown';
         }
         if (!('Minimum Quantity' in record.fields)) {
-          produce.fields['Minimum Quantity'] = 1;
+          produce.fields['Minimum Quantity'] = '1';
         }
         if (!('Price' in record.fields)) {
           produce.fields.Price = 'Unknown';
@@ -89,9 +90,6 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-
-        produce.fields.Quantity = Number(record.fields.Quantity);
-        produce.fields['Minimum Quantity'] = Number(record.fields['Minimum Quantity']);
 
         produce.fields.Favorited = 0;
         list.push(produce.fields);
