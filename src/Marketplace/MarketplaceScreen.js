@@ -73,7 +73,7 @@ export default function MarketplaceScreen({ navigation }) {
           produce.fields.Image = [{ url: '' }];
         }
         if (!('Quantity' in record.fields)) {
-          produce.fields.Quantity = '1';
+          produce.fields.Quantity = 1;
         }
         if (!('Unit' in record.fields)) {
           produce.fields.Unit = 'Uknown';
@@ -81,16 +81,12 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Seller' in record.fields)) {
           produce.fields.Seller = 'Unknown';
         }
-        if (!('Minimum Quantity' in record.fields)) {
-          produce.fields['Minimum Quantity'] = '1';
-        }
         if (!('Price' in record.fields)) {
           produce.fields.Price = 'Unknown';
         }
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-
         produce.fields.Favorited = 0;
         list.push(produce.fields);
       });
@@ -110,8 +106,7 @@ export default function MarketplaceScreen({ navigation }) {
       price={produce.Price}
       unit={produce.Unit}
       seller={produce.Seller}
-      quantity={produce.Quantity}
-      minQuantity={produce['Minimum Quantity']}
+      maxQuantity={produce.Quantity}
     />
   ));
 

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity,
+  ScrollView, View, Image, StyleSheet, TouchableOpacity, TextInput,
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    favorited, image, name, price, unit, seller, quantity, minQuantity,
+    favorited, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorite, setFavorite] = useState(favorited);
@@ -35,52 +35,71 @@ function ProduceDetailsScreen({ route }) {
     setFavorite(newFav);
   };
   // does not favorite on the main screen, probably need to pass in function that does the work?
-  // produce.fields.Quantity = Number(record.fields.Quantity);
-  // produce.fields['Minimum Quantity'] = Number(record.fields['Minimum Quantity']);
 
   const imageurl = { uri: image };
 
-  const [orderQuantity, setOrderQuantity] = useState(Number(minQuantity));
+  const [orderQuantity, setOrderQuantity] = useState('1');
+
+  const onChangeQuantity = (e) => {
+    if (e === '') {
+      setOrderQuantity('');
+    } else {
+      const value = Number(e);
+      if (value > 0 && value <= maxQuantity) {
+        setOrderQuantity(value.toString());
+      }
+    }
+  };
+
+  const onSubmitQuantity = () => {
+    if (orderQuantity === '') {
+      setOrderQuantity('1');
+    }
+  };
 
   return (
-    <View style={styles.detailsContainer}>
-      <Image style={styles.imageContainer} source={image === '' ? missingImage : imageurl} />
-      <Text style={styles.text}>{name}</Text>
-      <Text style={styles.text}>{seller}</Text>
-      <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
-        <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
-      </TouchableOpacity>
-      <Text style={styles.text}>{price}</Text>
-      <Text style={styles.text}>{unit.substring(0, 2)}</Text>
-      <IconButton
-        name="minus-circle"
-        size={15}
-        onPress={() => {
-          if (orderQuantity - 1 > 0) {
-            const updatedValue = orderQuantity - 1;
-            setOrderQuantity(updatedValue);
-          }
-        }}
-      />
-      <Text style={styles.text}>{orderQuantity}</Text>
-      {/* <TextInput
-        type="number"
-        value={orderQuantity}
-        onChangeText={setOrderQuantity}
-        keyboardType="numeric"
-      /> */}
-      <IconButton
-        name="plus-circle"
-        size={15}
-        onPress={() => {
-          if (orderQuantity + 1 <= quantity) {
-            const updatedValue = orderQuantity + 1;
-            setOrderQuantity(updatedValue);
-          }
-        }}
-      />
-      <Text>{quantity}</Text>
-    </View>
+    <ScrollView>
+      <View style={styles.detailsContainer}>
+        <Image style={styles.imageContainer} source={image === '' ? missingImage : imageurl} />
+        <Text style={styles.text}>{name}</Text>
+        <Text style={styles.text}>{seller}</Text>
+        <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
+          <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
+        </TouchableOpacity>
+        <Text style={styles.text}>{price}</Text>
+        <Text style={styles.text}>{unit.substring(0, 2)}</Text>
+        <IconButton
+          name="minus-circle"
+          size={30}
+          onPress={() => {
+            if (Number(orderQuantity) - 1 > 0) {
+              const updatedValue = Number(orderQuantity) - 1;
+              setOrderQuantity(updatedValue.toString());
+            }
+          }}
+        />
+        <TextInput
+          style={styles.text}
+          value={orderQuantity}
+          onChangeText={onChangeQuantity}
+          onSubmitEditing={onSubmitQuantity}
+          onEndEditing={onSubmitQuantity}
+          placeholder={orderQuantity}
+          placeholderTextColor="black"
+          keyboardType="numeric"
+        />
+        <IconButton
+          name="plus-circle"
+          size={30}
+          onPress={() => {
+            if (Number(orderQuantity) + 1 <= maxQuantity) {
+              const updatedValue = Number(orderQuantity) + 1;
+              setOrderQuantity(updatedValue.toString());
+            }
+          }}
+        />
+      </View>
+    </ScrollView>
   );
 }
 
@@ -93,8 +112,7 @@ ProduceDetailsScreen.propTypes = {
       price: PropTypes.number.isRequired,
       unit: PropTypes.string.isRequired,
       seller: PropTypes.string.isRequired,
-      quantity: PropTypes.number.isRequired,
-      minQuantity: PropTypes.number.isRequired,
+      maxQuantity: PropTypes.number.isRequired,
     }),
   }).isRequired,
 };
