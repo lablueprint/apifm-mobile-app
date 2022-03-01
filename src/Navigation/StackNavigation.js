@@ -10,6 +10,7 @@ import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
 import OrdersScreen from '../Orders/OrdersScreen';
 import ContactScreen from '../Contact/ContactScreen';
+import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -30,11 +31,12 @@ function DrawerRoutes() {
 /* Stack navigators push/pop screens from a navigation stack (similar to web browser) */
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Marketplace">
+    <stackNavig.Navigator initialRouteName="SignIn">
       <stackNavig.Screen name="SignIn" component={SignInScreen} options={{ headerShown: true }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
       <stackNavig.Screen name="Cart" component={CartScreen} options={{ headerShown: true }} />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
     </stackNavig.Navigator>
   );
 }

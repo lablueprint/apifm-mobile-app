@@ -195,7 +195,7 @@ export default function SignInScreen({ navigation }) {
       >
         Sign Up
       </Button>
-
+      <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('Marketplace')} />
     </View>
   );
 }
