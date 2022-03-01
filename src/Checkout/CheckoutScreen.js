@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     marginTop: '.5%',
     // marginLeft: '2%',
     marginBottom: '.5%',
-    color: 'grey',
+    color: '#636363',
   },
   subcontainer: {
     marginHorizontal: '8%',
@@ -62,6 +62,7 @@ export default function CheckoutScreen({ navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
+  const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
 
@@ -108,6 +109,9 @@ export default function CheckoutScreen({ navigation }) {
           setDeliveryFee(records[0].fields['delivery fee (temp)']);
           setFreeFee(records[0].fields['fee to be free (temp)']);
         }
+        if (records[0].fields['delivery date (temp)'] !== '') {
+          setDeliveryDate(records[0].fields['delivery date (temp)']);
+        }
       });
   }, []);
 
@@ -152,7 +156,10 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
           <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
             Delivery Date:
+            {' '}
+            {deliveryDate}
           </Text>
+
         </View>
         <Text style={[styles.bodyText, { marginBottom: '4%' }]}> Cart (multiple produce cards) reused here  </Text>
       </View>
@@ -195,6 +202,7 @@ export default function CheckoutScreen({ navigation }) {
         }}
         >
           <Text style={[styles.subdetails, {
+            color: '#C4C4C4',
             marginLeft: '0%',
           }]}
           >
@@ -215,7 +223,7 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
           <Text style={[styles.title, { marginRight: '0%' }]}>
             $
-            {total}
+            {total + deliveryFee}
           </Text>
         </View>
       </View>
