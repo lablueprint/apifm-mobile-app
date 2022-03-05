@@ -1,8 +1,7 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-// import { NavigationContainer } from '@react-navigation/native';
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignInScreen from '../SignIn/SignInScreen';
@@ -16,14 +15,84 @@ const stackNavig = createNativeStackNavigator();
 
 const Drawer = createDrawerNavigator();
 
+const marketplaceIcon = () => (
+  <Icon
+    size={23}
+    name="food-apple-outline"
+  />
+);
+
+const profileIcon = () => (
+  <Icon
+    size={23}
+    name="account-outline"
+  />
+);
+
+const cartIcon = () => (
+  <Icon
+    size={23}
+    name="cart-outline"
+  />
+);
+
+const contactIcon = () => (
+  <Icon
+    size={23}
+    name="phone-outline"
+  />
+);
+
+const logoutIcon = () => (
+  <Icon
+    size={23}
+    name="logout-variant"
+  />
+);
+
 function DrawerRoutes() {
   return (
     <Drawer.Navigator initialRouteName="Back">
-      <Drawer.Screen name="Back" component={MarketplaceScreen} options={{ title: 'Marketplace' }} />
-      <Drawer.Screen name="ProfileDrawer" component={ProfileScreen} options={{ title: 'Profile' }} />
-      <Drawer.Screen name="Orders" component={OrdersScreen} options={{ title: 'View Orders' }} />
-      <Drawer.Screen name="Contact" component={ContactScreen} options={{ title: 'Contact Us' }} />
-      <Drawer.Screen name="SignInDrawer" component={SignInScreen} options={{ title: 'Log Out' }} />
+      <Drawer.Screen
+        name="Back"
+        component={MarketplaceScreen}
+        options={{
+          title: 'Marketplace',
+          drawerIcon: marketplaceIcon,
+        }}
+      />
+      <Drawer.Screen
+        name="ProfileDrawer"
+        component={ProfileScreen}
+        options={{
+          title: 'Profile',
+          drawerIcon: profileIcon,
+        }}
+      />
+      <Drawer.Screen
+        name="Orders"
+        component={OrdersScreen}
+        options={{
+          title: 'View Orders',
+          drawerIcon: cartIcon,
+        }}
+      />
+      <Drawer.Screen
+        name="Contact"
+        component={ContactScreen}
+        options={{
+          title: 'Contact Us',
+          drawerIcon: contactIcon,
+        }}
+      />
+      <Drawer.Screen
+        name="SignInDrawer"
+        component={SignInScreen}
+        options={{
+          title: 'Log Out',
+          drawerIcon: logoutIcon,
+        }}
+      />
     </Drawer.Navigator>
   );
 }
@@ -31,7 +100,7 @@ function DrawerRoutes() {
 /* Stack navigators push/pop screens from a navigation stack (similar to web browser) */
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="SignIn">
+    <stackNavig.Navigator initialRouteName="Marketplace">
       <stackNavig.Screen name="SignIn" component={SignInScreen} options={{ headerShown: true }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
