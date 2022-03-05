@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import {
   ScrollView, View, Image, StyleSheet, TouchableOpacity, TextInput,
 } from 'react-native';
-import { Text } from 'react-native-paper';
+import { Button, Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconButton from 'react-native-vector-icons/Feather';
 
@@ -11,30 +11,65 @@ const missingImage = require('../assets/missingImage.png');
 
 const styles = StyleSheet.create({
   detailsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
     alignItems: 'center',
   },
   imageContainer: {
     alignSelf: 'center',
-    width: 380,
     height: 380,
+    width: '100%',
   },
-  text: {
+  bottomContainer: {
+    height: 366,
+    width: '100%',
+    borderRadius: 15,
+    backgroundColor: '#868686',
+  },
+  icons: {
+    color: '#FFFFFF',
+  },
+  textName: {
+    fontSize: 28,
+    color: '#FFFFFF',
+  },
+  textSeller: {
+    fontSize: 16,
+    color: '#FFFFFF',
+  },
+  textPrice: {
     fontSize: 30,
+    color: '#FFFFFF',
+  },
+  textInput: {
+    fontSize: 32,
+    color: '#FFFFFF',
+  },
+  sameLineContainer: {
+    flexDirection: 'row',
+  },
+  cartButton: {
+    height: 50,
+    width: 328,
+    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    fontSize: 22,
   },
 });
 
 function ProduceDetailsScreen({ route }) {
   const {
-    favorited, image, name, price, unit, seller, maxQuantity,
+    favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
   } = route.params;
-
-  const [favorite, setFavorite] = useState(favorited);
 
   const onPressHeart = () => {
     const newFav = !favorite;
     setFavorite(newFav);
   };
   // does not favorite on the main screen, probably need to pass in function that does the work?
+
+  // add to cart functionality: need to create a new record in the airtable with a unique ID and
+  // the user's email (default for now)
 
   const imageurl = { uri: image };
 
@@ -61,43 +96,52 @@ function ProduceDetailsScreen({ route }) {
     <ScrollView>
       <View style={styles.detailsContainer}>
         <Image style={styles.imageContainer} source={image === '' ? missingImage : imageurl} />
-        <Text style={styles.text}>{name}</Text>
-        <Text style={styles.text}>{seller}</Text>
-        <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
-          <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
-        </TouchableOpacity>
-        <Text style={styles.text}>{price}</Text>
-        <Text style={styles.text}>{unit.substring(0, 2)}</Text>
-        <IconButton
-          name="minus-circle"
-          size={30}
-          onPress={() => {
-            if (Number(orderQuantity) - 1 > 0) {
-              const updatedValue = Number(orderQuantity) - 1;
-              setOrderQuantity(updatedValue.toString());
-            }
-          }}
-        />
-        <TextInput
-          style={styles.text}
-          value={orderQuantity}
-          onChangeText={onChangeQuantity}
-          onSubmitEditing={onSubmitQuantity}
-          onEndEditing={onSubmitQuantity}
-          placeholder={orderQuantity}
-          placeholderTextColor="black"
-          keyboardType="numeric"
-        />
-        <IconButton
-          name="plus-circle"
-          size={30}
-          onPress={() => {
-            if (Number(orderQuantity) + 1 <= maxQuantity) {
-              const updatedValue = Number(orderQuantity) + 1;
-              setOrderQuantity(updatedValue.toString());
-            }
-          }}
-        />
+        <View style={styles.bottomContainer}>
+          <View style={styles.sameLineContainer}>
+            <Text style={styles.textName}>{name}</Text>
+            <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
+              <Icon style={styles.icons} name={favorite ? 'heart' : 'heart-o'} size={20} />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.textSeller}>{seller}</Text>
+          <View style={styles.sameLineContainer}>
+            <Text style={styles.textPrice}>{price}</Text>
+            <Text style={styles.textSeller}>{unit.substring(0, 2)}</Text>
+            <IconButton
+              style={styles.icons}
+              name="minus-circle"
+              size={24}
+              onPress={() => {
+                if (Number(orderQuantity) - 1 > 0) {
+                  const updatedValue = Number(orderQuantity) - 1;
+                  setOrderQuantity(updatedValue.toString());
+                }
+              }}
+            />
+            <TextInput
+              style={styles.textInput}
+              value={orderQuantity}
+              onChangeText={onChangeQuantity}
+              onSubmitEditing={onSubmitQuantity}
+              onEndEditing={onSubmitQuantity}
+              placeholder={orderQuantity}
+              placeholderTextColor="black"
+              keyboardType="numeric"
+            />
+            <IconButton
+              style={styles.icons}
+              name="plus-circle"
+              size={24}
+              onPress={() => {
+                if (Number(orderQuantity) + 1 <= maxQuantity) {
+                  const updatedValue = Number(orderQuantity) + 1;
+                  setOrderQuantity(updatedValue.toString());
+                }
+              }}
+            />
+          </View>
+          <Button style={styles.cartButton} color="#868686">Add to Cart</Button>
+        </View>
       </View>
     </ScrollView>
   );
@@ -106,7 +150,8 @@ function ProduceDetailsScreen({ route }) {
 ProduceDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      favorited: PropTypes.number.isRequired,
+      favorite: PropTypes.bool.isRequired,
+      setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,

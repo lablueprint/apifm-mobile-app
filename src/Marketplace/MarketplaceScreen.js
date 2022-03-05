@@ -87,7 +87,7 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-        produce.fields.Favorited = 0;
+        produce.fields.Favorited = false;
         list.push(produce.fields);
       });
       setProduceList(list);

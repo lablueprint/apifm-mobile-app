@@ -62,13 +62,13 @@ const styles = StyleSheet.create({
 function ProduceCard({
   navigation, favorited, image, name, price, unit, seller, maxQuantity,
 }) {
+  const [favorite, setFavorite] = useState(favorited);
+
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      favorited, image, name, price, unit, seller, maxQuantity,
+      favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
     });
   };
-
-  const [favorite, setFavorite] = useState(favorited);
 
   const onPressHeart = () => {
     const newFav = !favorite;
@@ -101,7 +101,7 @@ function ProduceCard({
 
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
-  favorited: PropTypes.number.isRequired,
+  favorited: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
