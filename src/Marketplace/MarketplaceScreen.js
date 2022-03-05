@@ -1,9 +1,22 @@
-import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+  View, StyleSheet, ScrollView,
+} from 'react-native';
 import {
   Title, Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
+import ProduceCard from './ProduceCard';
+
+const Airtable = require('airtable');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -32,11 +45,78 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     alignSelf: 'flex-end',
   },
+  produceCardsContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    alignContent: 'center',
+    justifyContent: 'space-around',
+  },
+  produceCard: {
+    padding: 15,
+  },
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  const [produceList, setProduceList] = useState([]);
+
+  const getProduce = () => {
+    const list = [];
+    base('Produce').select({}).eachPage((records, fetchNextPage) => {
+      records.forEach((record) => {
+        const produce = record;
+
+        if (!('Name' in record.fields)) {
+          produce.fields.Name = '';
+        }
+        if (!('Image' in record.fields)) {
+          produce.fields.Image = [{ url: 'test' }];
+        }
+        if (!('Quantity' in record.fields)) {
+          produce.fields.Quantity = 1;
+        }
+        if (!('Unit' in record.fields)) {
+          produce.fields.Unit = 'Uknown';
+        }
+        if (!('Seller' in record.fields)) {
+          produce.fields.Seller = 'Unknown';
+        }
+        if (!('Minimum Quantity' in record.fields)) {
+          produce.fields['Minimum Quantity'] = 1;
+        }
+        if (!('Price' in record.fields)) {
+          produce.fields.Price = 'Unknown';
+        }
+        if (!('Type Tags' in record.fields)) {
+          produce.fields['Type Tags'] = 'Unknown';
+        }
+        produce.fields.Favorited = 0;
+        list.push(produce.fields);
+      });
+      setProduceList(list);
+      fetchNextPage();
+    });
+  };
+
+  const produceCards = produceList.map((produce) => (
+    <ProduceCard
+      style={styles.produceCard}
+      key={produce.Name}
+      navigation={navigation}
+      favorited={produce.Favorited}
+      image={produce.Image[0].url}
+      name={produce.Name}
+      price={produce.Price}
+      unit={produce.Unit}
+    />
+  ));
+
+  useEffect(() => {
+    getProduce();
+  }, []);
+
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.buttonContainer}>
         <Button
           mode="outlined"
@@ -68,7 +148,10 @@ export default function MarketplaceScreen({ navigation }) {
           SIGN OUT
         </Button>
       </View>
-    </View>
+      <View style={styles.produceCardsContainer}>
+        { produceCards }
+      </View>
+    </ScrollView>
   );
 }
 

@@ -200,7 +200,7 @@ export default function SignInScreen({ navigation }) {
         style={styles.button}
         onPress={() => navigation.navigate('Marketplace')}
       >
-        Kaylee's button
+        Marketplace
       </Button>
     </View>
   );
