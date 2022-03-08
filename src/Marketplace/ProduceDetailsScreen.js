@@ -3,9 +3,12 @@ import PropTypes from 'prop-types';
 import {
   ScrollView, View, Image, StyleSheet, TouchableOpacity, TextInput,
 } from 'react-native';
-import { Button, Text } from 'react-native-paper';
+import {
+  Button, Text, Provider, Portal, Modal,
+} from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconButton from 'react-native-vector-icons/Feather';
+import IconAdded from 'react-native-vector-icons/AntDesign';
 
 const missingImage = require('../assets/missingImage.png');
 
@@ -105,6 +108,21 @@ const styles = StyleSheet.create({
   cartText: {
     fontSize: 20,
   },
+  addedPopUpContainer: {
+    height: 232,
+    width: 252,
+    borderRadius: 15,
+    backgroundColor: '#FFFFFF',
+    alignSelf: 'center',
+    alignItems: 'center',
+  },
+  addedIcon: {
+    color: '#000000',
+    margin: 10,
+  },
+  addedText: {
+    fontSize: 24,
+  },
 });
 
 function ProduceDetailsScreen({ route }) {
@@ -119,10 +137,6 @@ function ProduceDetailsScreen({ route }) {
     setFavorited(newFav);
     setFavorite(newFav);
   };
-  // does not favorite on the main screen, probably need to pass in function that does the work?
-
-  // add to cart functionality: need to create a new record in the airtable with a unique ID and
-  // the user's email (default for now)
 
   const imageurl = { uri: image };
 
@@ -145,73 +159,97 @@ function ProduceDetailsScreen({ route }) {
     }
   };
 
+  const [visible, setVisible] = useState(false);
+
+  // const onAddToCart = () => {
+
+  // };
+  // add to cart functionality: need to create a new record in the airtable with a unique ID and
+  // the user's email (default for now)
+
   return (
-    <ScrollView>
-      <View style={styles.detailsContainer}>
-        <Image style={styles.imageContainer} source={image === '' ? missingImage : imageurl} />
-        <View style={styles.bottomContainer}>
-          <View style={styles.sameLineContainer}>
-            <Text style={styles.textName}>{name}</Text>
-            <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
-              <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
+    <Provider>
+      <ScrollView>
+
+        <Portal>
+          <Modal
+            visible={visible}
+            onDismiss={() => {
+              setVisible(false);
+            }}
+            contentContainerStyle={styles.addedPopUpContainer}
+          >
+            <IconAdded style={styles.addedIcon} name="checkcircleo" size={50} />
+            <Text style={styles.addedText}>Added!</Text>
+          </Modal>
+        </Portal>
+
+        <View style={styles.detailsContainer}>
+          <Image style={styles.imageContainer} source={image === '' ? missingImage : imageurl} />
+          <View style={styles.bottomContainer}>
+            <View style={styles.sameLineContainer}>
+              <Text style={styles.textName}>{name}</Text>
+              <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
+                <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.textSeller}>{seller}</Text>
+            <View style={styles.sameLineContainer}>
+              <View style={styles.priceUnitLine}>
+                <Text style={styles.textPrice}>
+                  $
+                  {price}
+                </Text>
+                <Text style={styles.textUnit}>{unit}</Text>
+              </View>
+              <View style={styles.numberChange}>
+                <TouchableOpacity
+                  onPress={() => {
+                    if (Number(orderQuantity) - 1 > 0) {
+                      const updatedValue = Number(orderQuantity) - 1;
+                      setOrderQuantity(updatedValue.toString());
+                    }
+                  }}
+                >
+                  <IconButton
+                    style={styles.icons}
+                    name="minus-circle"
+                    size={24}
+                  />
+                </TouchableOpacity>
+                <TextInput
+                  style={styles.textInput}
+                  value={orderQuantity}
+                  onChangeText={onChangeQuantity}
+                  onSubmitEditing={onSubmitQuantity}
+                  onEndEditing={onSubmitQuantity}
+                  placeholder={orderQuantity}
+                  placeholderTextColor="black"
+                  keyboardType="numeric"
+                />
+                <TouchableOpacity
+                  onPress={() => {
+                    if (Number(orderQuantity) + 1 <= maxQuantity) {
+                      const updatedValue = Number(orderQuantity) + 1;
+                      setOrderQuantity(updatedValue.toString());
+                    }
+                  }}
+                >
+                  <IconButton
+                    style={styles.icons}
+                    name="plus-circle"
+                    size={24}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+            <TouchableOpacity onPress={() => setVisible(true)}>
+              <Button style={styles.cartButton} color="#868686"><Text>Add to Cart</Text></Button>
             </TouchableOpacity>
           </View>
-          <Text style={styles.textSeller}>{seller}</Text>
-          <View style={styles.sameLineContainer}>
-            <View style={styles.priceUnitLine}>
-              <Text style={styles.textPrice}>
-                $
-                {price}
-              </Text>
-              <Text style={styles.textUnit}>{unit}</Text>
-            </View>
-            <View style={styles.numberChange}>
-              <TouchableOpacity
-                onPress={() => {
-                  if (Number(orderQuantity) - 1 > 0) {
-                    const updatedValue = Number(orderQuantity) - 1;
-                    setOrderQuantity(updatedValue.toString());
-                  }
-                }}
-              >
-                <IconButton
-                  style={styles.icons}
-                  name="minus-circle"
-                  size={24}
-                />
-              </TouchableOpacity>
-              <TextInput
-                style={styles.textInput}
-                value={orderQuantity}
-                onChangeText={onChangeQuantity}
-                onSubmitEditing={onSubmitQuantity}
-                onEndEditing={onSubmitQuantity}
-                placeholder={orderQuantity}
-                placeholderTextColor="black"
-                keyboardType="numeric"
-              />
-              <TouchableOpacity
-                onPress={() => {
-                  if (Number(orderQuantity) + 1 <= maxQuantity) {
-                    const updatedValue = Number(orderQuantity) + 1;
-                    setOrderQuantity(updatedValue.toString());
-                  }
-                }}
-              >
-                <IconButton
-                  style={styles.icons}
-                  name="plus-circle"
-                  size={24}
-                />
-              </TouchableOpacity>
-            </View>
-          </View>
-          <TouchableOpacity>
-            <Button style={styles.cartButton} color="#868686"><Text>Add to Cart</Text></Button>
-          </TouchableOpacity>
         </View>
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </Provider>
   );
 }
 
