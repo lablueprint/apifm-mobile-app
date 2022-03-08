@@ -66,7 +66,7 @@ function ProduceCard({
 
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      favorite, image, name, price, unit, seller, maxQuantity,
+      favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
     });
   };
 

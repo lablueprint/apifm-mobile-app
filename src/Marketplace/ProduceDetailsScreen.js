@@ -32,11 +32,12 @@ const styles = StyleSheet.create({
   },
   favoriteIcon: {
     alignSelf: 'flex-end',
-    marginEnd: 18,
+    marginEnd: 13,
     marginTop: 25,
   },
   icons: {
     color: '#FFFFFF',
+    margin: 5,
   },
   textName: {
     fontSize: 28,
@@ -71,9 +72,12 @@ const styles = StyleSheet.create({
   textInput: {
     fontSize: 32,
     color: '#FFFFFF',
-    margin: 10,
+    marginStart: 10,
+    marginEnd: 10,
     borderColor: '#FFFFFF',
+    borderWidth: 1,
     borderRadius: 5,
+    height: '90%',
   },
   numberChange: {
     display: 'flex',
@@ -105,7 +109,7 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    favorite, image, name, price, unit, seller, maxQuantity,
+    favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
@@ -113,6 +117,7 @@ function ProduceDetailsScreen({ route }) {
   const onPressHeart = () => {
     const newFav = !favorited;
     setFavorited(newFav);
+    setFavorite(newFav);
   };
   // does not favorite on the main screen, probably need to pass in function that does the work?
 
@@ -158,7 +163,7 @@ function ProduceDetailsScreen({ route }) {
                 $
                 {price}
               </Text>
-              <Text style={styles.textUnit}>{unit.substring(0, 2)}</Text>
+              <Text style={styles.textUnit}>{unit}</Text>
             </View>
             <View style={styles.numberChange}>
               <TouchableOpacity
@@ -214,6 +219,7 @@ ProduceDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
       favorite: PropTypes.bool.isRequired,
+      setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,
