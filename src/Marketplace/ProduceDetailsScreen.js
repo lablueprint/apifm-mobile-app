@@ -9,8 +9,18 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconButton from 'react-native-vector-icons/Feather';
 import IconAdded from 'react-native-vector-icons/AntDesign';
+import Config from 'react-native-config';
 
+const Airtable = require('airtable');
 const missingImage = require('../assets/missingImage.png');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   detailsContainer: {
@@ -127,7 +137,7 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
+    produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
@@ -161,11 +171,18 @@ function ProduceDetailsScreen({ route }) {
 
   const [visible, setVisible] = useState(false);
 
-  // const onAddToCart = () => {
+  const onAddToCart = () => {
+    setVisible(true);
+    base('Cart TBD').create([
+      {
+        fields: {
+          'Produce Record': [produceId],
+          Quantity: Number(orderQuantity),
 
-  // };
-  // add to cart functionality: need to create a new record in the airtable with a unique ID and
-  // the user's email (default for now)
+        },
+      },
+    ]);
+  };
 
   return (
     <Provider>
@@ -243,7 +260,7 @@ function ProduceDetailsScreen({ route }) {
                 </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity onPress={() => setVisible(true)}>
+            <TouchableOpacity onPress={onAddToCart}>
               <Button style={styles.cartButton} color="#868686"><Text>Add to Cart</Text></Button>
             </TouchableOpacity>
           </View>
@@ -256,6 +273,7 @@ function ProduceDetailsScreen({ route }) {
 ProduceDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
+      produceId: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
       setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,

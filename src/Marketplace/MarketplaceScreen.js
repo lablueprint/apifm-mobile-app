@@ -66,6 +66,8 @@ export default function MarketplaceScreen({ navigation }) {
       records.forEach((record) => {
         const produce = record;
 
+        produce.fields.produceId = produce.id;
+
         if (!('Name' in record.fields)) {
           produce.fields.Name = '';
         }
@@ -100,6 +102,7 @@ export default function MarketplaceScreen({ navigation }) {
       style={styles.produceCard}
       key={produce.Name}
       navigation={navigation}
+      produceId={produce.produceId}
       favorited={produce.Favorited}
       image={produce.Image[0].url}
       name={produce.Name}

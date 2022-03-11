@@ -60,13 +60,13 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, favorited, image, name, price, unit, seller, maxQuantity,
+  navigation, produceId, favorited, image, name, price, unit, seller, maxQuantity,
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
+      produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
     });
   };
 
@@ -101,6 +101,7 @@ function ProduceCard({
 
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  produceId: PropTypes.string.isRequired,
   favorited: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
