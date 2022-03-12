@@ -5,9 +5,8 @@ import SignInScreen from '../SignIn/SignInScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
-import OrdersScreen from '../Orders/OrdersScreen';
-import ContactScreen from '../Contact/ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
+import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -21,6 +20,7 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Cart" component={CartScreen} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
+      <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
     </stackNavig.Navigator>
   );
 }

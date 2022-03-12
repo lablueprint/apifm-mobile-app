@@ -238,9 +238,9 @@ export default function CheckoutScreen({ navigation }) {
         <Button
           mode="contained"
           style={styles.button}
-          onPress={() => navigation.navigate('Marketplace')}
+          onPress={() => navigation.navigate('Order Successful')}
         >
-          Buy TBD
+          Confirm
         </Button>
       </View>
     </View>
