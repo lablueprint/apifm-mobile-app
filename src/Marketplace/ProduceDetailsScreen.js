@@ -171,17 +171,57 @@ function ProduceDetailsScreen({ route }) {
 
   const [visible, setVisible] = useState(false);
 
-  const onAddToCart = () => {
-    setVisible(true);
-    base('Cart TBD').create([
-      {
-        fields: {
-          'Produce Record': [produceId],
-          Quantity: Number(orderQuantity),
-
-        },
-      },
-    ]);
+  const onAddToCart = async () => {
+    try {
+      setVisible(true);
+      const quantityToUpdate = [];
+      await base('Cart TBD').select({
+      }).eachPage((records, fetchNextPage) => {
+        records.forEach(
+          (record) => {
+            if (produceId === record.fields['Produce Record'][0] && record.fields['Users UPDATED'][0] === 'recueNGdOeb1eoCff') {
+            // currently updates only for users with Chandra's ID
+              quantityToUpdate.push(record);
+            }
+            fetchNextPage();
+          },
+          (err) => {
+            if (err) { console.error(err); }
+          },
+        );
+      });
+      if (quantityToUpdate.length) {
+        const newQuantity = quantityToUpdate[0].fields.Quantity + Number(orderQuantity);
+        await base('Cart TBD').update([
+          {
+            id: quantityToUpdate[0].id,
+            fields: {
+              Quantity: newQuantity,
+            },
+          },
+        ], (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      } else {
+        await base('Cart TBD').create([
+          {
+            fields: {
+              'Produce Record': [produceId],
+              Quantity: Number(orderQuantity),
+              'Users UPDATED': ['recueNGdOeb1eoCff'],
+            },
+          },
+        ], (err) => {
+          if (err) {
+            console.error(err);
+          }
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
