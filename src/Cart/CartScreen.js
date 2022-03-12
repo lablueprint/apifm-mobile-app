@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import {
   Title, Button,
 } from 'react-native-paper';
-import PropTypes from 'prop-types';
+import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
+
 import CartProduct from './CartProduct';
 
 // airtable
@@ -46,55 +47,79 @@ const styles = StyleSheet.create({
     backgroundColor: '#0492c2',
   },
   scrollView: {
-    // flex: 1,
-    marginHorizontal: '-225%',
-    marginVertical: '0%',
+    flex: 1,
+    width: '100%',
+    marginBottom: 10,
   },
 });
 
 // const fakeItems = { name: 'daikon', quantity: '2' };
 
 export default function CartScreen({ navigation }) {
-  const handleCheckout = (event) => {
-    event.preventDefault();
-    base('Cart').update([
-      {
-        id: 'recPlXD1RrF9teBn2',
-        fields: {
-          Quantity: 5,
-          Name: 'carrot',
-          'Users UPDATED': [
-            'recuN6ZapErmTq8nq',
-          ],
-        },
-      },
-    ], (err, records) => {
-      if (err) {
-        console.error(err);
-        return;
-      }
+  const [itemList, setItemList] = useState([]);
+  const [refresh, setRefresh] = useState(0);
+
+  const getItems = () => {
+    const list = [];
+    base('Cart').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
-        console.log(record.get('Users UPDATED'));
+        const item = record;
+        console.log(record.fields);
+        list.push(item.fields);
       });
+      setItemList(list);
+      fetchNextPage();
     });
   };
+
+// LEFT TO DO LATER BECAUSE RIGHT NOW IT DOESNT WORK 
+  // const handleCheckout = (itemList) => {
+  //   forEach (something) => {
+  //     base('Cart').update([
+  //       {
+  //         id: item.item_id,
+  //         fields: {
+  //           checkout: 'checked out',
+  //         },
+  //       },
+  //     ], (err, records) => {
+  //       if (err) {
+  //         console.error(err);
+  //         return;
+  //       }
+  //       records.forEach((record) => {
+  //         console.log(record.get('type'));
+  //       });
+  //     });
+  //   }
+  // };
+
+  const products = itemList.map((item) => (
+    <CartProduct
+      itemID={item.item_id}
+      key={item.item_id}
+      setRefresh={setRefresh}
+      refresh={refresh}
+    />
+  ));
+
+  useEffect(() => {
+    getItems();
+  }, [refresh]);
 
   return (
     <View style={styles.container}>
       <Title style={styles.titleText}>
-        Cart
+        best cart ever omg who made this she must be hot
       </Title>
-      {/* <Text style={styles.bodyext}> */}
-      {/* <ScrollView style={styles.scrollView}> */}
-        <View style={styles.container}>
-          <CartProduct />
-          <CartProduct />
-          <CartProduct />
-        </View>
-      {/* </ScrollView> */}
+      {/* probably need this later <Text style={styles.bodyext}> */}
+      <ScrollView style={styles.scrollView}>
+        {products}
+
+      </ScrollView>
       <Button
         mode="contained"
-        onPress={handleCheckout}
+        onPress={console.log ('pressed')}
       >
         CHECKOUT
       </Button>
