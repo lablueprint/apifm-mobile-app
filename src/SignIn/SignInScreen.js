@@ -198,10 +198,11 @@ export default function SignInScreen({ navigation }) {
       <Button
         mode="contained"
         style={styles.button}
-        onPress={() => navigation.navigate('Marketplace')}
+        onPress={() => navigation.navigate('Cart')}
       >
-        Kaylee's button
+        Kaylee button
       </Button>
+      <Button mode="contained" style={styles.button} onPress={() => navigation.navigate('Marketplace')} />
     </View>
   );
 }

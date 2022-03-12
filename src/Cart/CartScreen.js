@@ -72,7 +72,7 @@ export default function CartScreen({ navigation }) {
     });
   };
 
-// LEFT TO DO LATER BECAUSE RIGHT NOW IT DOESNT WORK 
+  // LEFT TO DO LATER BECAUSE RIGHT NOW IT DOESNT WORK
   // const handleCheckout = (itemList) => {
   //   forEach (something) => {
   //     base('Cart').update([
@@ -119,7 +119,7 @@ export default function CartScreen({ navigation }) {
       </ScrollView>
       <Button
         mode="contained"
-        onPress={console.log ('pressed')}
+        onPress={console.log('pressed')}
       >
         CHECKOUT
       </Button>

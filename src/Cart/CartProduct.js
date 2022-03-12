@@ -1,12 +1,12 @@
 /* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Image, TextPropTypes,
+  View, StyleSheet, Image,
 } from 'react-native';
 import {
   Text, Button, TextInput,
 } from 'react-native-paper';
-import { PropTypes, array } from 'prop-types';
+import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -222,6 +222,6 @@ export default function CartProduct(props) {
 
 CartProduct.propTypes = {
   itemID: PropTypes.string.isRequired,
-  // there: PropTypes.bool.isRequired,
-  // setThere: PropTypes.func.isRequired,
+  refresh: PropTypes.number.isRequired,
+  setRefresh: PropTypes.func.isRequired,
 };
