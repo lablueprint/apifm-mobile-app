@@ -1,11 +1,18 @@
-import React, { useState, useRef } from 'react';
+// import React from 'react';
+// import {
+//   View, StyleSheet,
+// } from 'react-native';
+// import {
+//   Text, Button,
+// } from 'react-native-paper';
+
+import React from 'react';
 import {
-  View, StyleSheet, TextInput, Alert,
+  View, StyleSheet, Text,
 } from 'react-native';
 import {
-  Title, Text, Button,
+  Button,
 } from 'react-native-paper';
-import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 const styles = StyleSheet.create({
@@ -13,28 +20,39 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    fontSize: 34,
+    marginLeft: 32,
+    width: 327,
+    height: 467,
   },
   titleText: {
     marginBottom: 10,
   },
   bodyText: {
-    marginLeft: 5,
-    marginRight: 5,
+    fontSize: 34,
+
   },
   button: {
-    width: '60%',
-    marginTop: 10,
-    backgroundColor: '#0492c2',
+    width: 300,
+    // marginTop: 10,
+    backgroundColor: '#C4C4C4',
+    borderRadius: 30,
+    marginBottom: 58,
+
   },
 });
 
 export default function SignInScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text>Thank you for signing up with Food Roots! Our staff will</Text>
-      <Text> review your information, and your account should</Text>
-      <Text> be approved within 1-3 business days.</Text>
+      <View style={styles.container}>
+        <Text style={styles.bodyText}>
+          Thank you for
+          signing up with Food Roots! Our staff will review your information,
+          and your account should be approved within 1-3 business days.
+        </Text>
 
+      </View>
       <Button
         mode="contained"
         style={styles.button}
@@ -45,3 +63,7 @@ export default function SignInScreen({ navigation }) {
     </View>
   );
 }
+
+SignInScreen.propTypes = {
+  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+};

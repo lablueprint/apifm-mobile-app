@@ -13,8 +13,8 @@ const stackNavig = createNativeStackNavigator();
 export default function StackNavigation() {
   return (
     <stackNavig.Navigator initialRouteName="SignIn">
-      <stackNavig.Screen name="SignIn" component={SignInScreen} />
-      <stackNavig.Screen name="SignIn2" component={SignInScreen2} />
+      <stackNavig.Screen name="SignIn" component={SignInScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Sign In Confirmation" component={SignInScreen2} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
