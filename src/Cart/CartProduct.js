@@ -177,7 +177,7 @@ export default function CartProduct(props) {
     });
     setRefresh(refresh + 1);
   };
-
+  // yay product
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={image} />
