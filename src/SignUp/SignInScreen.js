@@ -80,7 +80,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     textAlignVertical: 'top',
   },
-
+  header: {
+    textAlign: 'left',
+    width: '100%',
+    fontSize: 18,
+    marginLeft: 60,
+  },
   text: {
     marginLeft: 17,
     marginTop: 5,
@@ -361,7 +366,7 @@ export default function SignUpScreen({ navigation }) {
 
       <Title style={styles.titleText}>Sign Up</Title>
 
-      <Text style={styles.text}>Delivery Address</Text>
+      <Title style={styles.header}>Delivery Address</Title>
 
       <View style={styles.inputs}>
         <TextInput
