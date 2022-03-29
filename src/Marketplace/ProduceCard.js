@@ -66,7 +66,7 @@ function ProduceCard({
 
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
+      produceId, favorite, image, name, price, unit, seller, maxQuantity,
     });
   };
 
@@ -87,8 +87,7 @@ function ProduceCard({
         <Text style={styles.name}>{name}</Text>
         <View style={styles.bottom}>
           <Text style={styles.price}>
-            $
-            {price}
+            {`$${price}`}
           </Text>
           <Text style={styles.quantity}>
             {unit}

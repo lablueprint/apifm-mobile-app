@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  ScrollView, View, Image, StyleSheet, TouchableOpacity, TextInput,
+  View, Image, StyleSheet, TouchableOpacity, TextInput,
 } from 'react-native';
 import {
   Button, Text, Provider, Portal, Modal,
@@ -31,13 +31,13 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignSelf: 'center',
-    height: 380,
+    height: '55%',
     width: '100%',
   },
   bottomContainer: {
     display: 'flex',
     flexDirection: 'column',
-    height: 366,
+    height: '45%',
     width: '100%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
@@ -74,13 +74,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFFFFF',
     marginStart: 18,
-    marginTop: 100,
+    marginTop: 60,
   },
   textUnit: {
     fontSize: 16,
     color: '#FFFFFF',
     marginStart: 5,
-    marginTop: 115,
+    marginTop: 75,
   },
   textInput: {
     fontSize: 32,
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'space-around',
     marginEnd: 15,
-    marginTop: 80,
+    marginTop: 40,
   },
   sameLineContainer: {
     display: 'flex',
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
+    produceId, favorite, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
@@ -145,7 +145,18 @@ function ProduceDetailsScreen({ route }) {
   const onPressHeart = () => {
     const newFav = !favorited;
     setFavorited(newFav);
-    setFavorite(newFav);
+    base('Produce').update([
+      {
+        id: produceId,
+        fields: {
+          Favorited: favorited,
+        },
+      },
+    ], (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
   };
 
   const imageurl = { uri: image };
@@ -226,8 +237,7 @@ function ProduceDetailsScreen({ route }) {
 
   return (
     <Provider>
-      <ScrollView>
-
+      <View>
         <Portal>
           <Modal
             visible={visible}
@@ -305,7 +315,7 @@ function ProduceDetailsScreen({ route }) {
             </TouchableOpacity>
           </View>
         </View>
-      </ScrollView>
+      </View>
     </Provider>
   );
 }
@@ -315,7 +325,6 @@ ProduceDetailsScreen.propTypes = {
     params: PropTypes.shape({
       produceId: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
-      setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,
