@@ -143,9 +143,10 @@ export default function MarketplaceScreen({ navigation }) {
         <Button
           mode="contained"
           style={styles.button}
-          onPress={() => navigation.navigate('SignIn')}
+          onPress={() => navigation.navigate('Contact')}
         >
-          SIGN OUT
+          {/* TODO: CHANGE THIS BACK TO SIGN OUT navigates to sign in */}
+          Contact Screen
         </Button>
       </View>
       <View style={styles.produceCardsContainer}>
