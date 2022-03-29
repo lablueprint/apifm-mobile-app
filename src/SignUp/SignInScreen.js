@@ -1,4 +1,4 @@
-import React, { useState, setState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   View, StyleSheet, TextInput, Alert, Text, Image,
 } from 'react-native';
@@ -9,7 +9,6 @@ import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Header } from 'react-native/Libraries/NewAppScreen';
 
 const Airtable = require('airtable');
 
@@ -27,8 +26,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // marginLeft: 32,
-    // marginRight: 32,
     backgroundColor: '#FFFFFF',
     height: 844,
     width: 390,
@@ -39,32 +36,25 @@ const styles = StyleSheet.create({
   },
   button: {
     width: 300,
-    // marginTop: 10,
     backgroundColor: '#C4C4C4',
     borderRadius: 30,
-    // marginBottom: 61,
 
   },
   back: {
     width: 20,
     marginRight: 18,
-    // marginTop: 10,
     backgroundColor: '#C4C4C4',
-    // marginBottom: 61,
 
   },
   image: {
     width: 201,
     height: 55,
-    // paddingTop: 1,
-    // marginTop: 5,
   },
   icon: {
     marginRight: 5,
   },
   inputs: {
     borderWidth: 1,
-    // width: 330,
     height: 38,
     margin: 8.5,
     marginLeft: 30,
@@ -75,9 +65,12 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     textAlignVertical: 'top',
   },
+  textInput: {
+    marginLeft: 7,
+  },
   multiline: {
+    marginLeft: 17,
     borderWidth: 1,
-    // width: 330,
     height: 38,
     margin: 8.5,
     flexDirection: 'row',
@@ -87,20 +80,20 @@ const styles = StyleSheet.create({
     borderColor: 'gray',
     textAlignVertical: 'top',
   },
+
   text: {
-    // borderWidth: 1,
+    marginLeft: 17,
+    marginTop: 5,
     width: 330,
-    // height: 38,
     margin: 8.5,
-    // paddingLeft: 30,
     flexDirection: 'row',
     alignItems: 'center',
-    textAlignVertical: 'top',
-    // textAlign: 'center',
+    textAlignVertical: 'center',
+    textAlign: 'center',
   },
 });
 
-export default function SignInScreen({ navigation }) {
+export default function SignUpScreen({ navigation }) {
   // first page states:
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -153,14 +146,13 @@ export default function SignInScreen({ navigation }) {
     } else {
       return true;
     }
+    return false;
   };
 
   const handleSignUp = () => {
-    if (recipient === '') {
+    if (address === '') {
       Alert.alert('Please enter the Address to proceed');
-    } else if (address === '') {
-      Alert.alert('Please enter the Address to proceed');
-    } else if (zip === '') {
+    } else if (zip === '' || isNaN(zip)) {
       Alert.alert('Please enter the Zipcode to proceed');
     } else {
       base('Users').create([
@@ -197,20 +189,18 @@ export default function SignInScreen({ navigation }) {
       setApt('');
       setZip('');
       setInstr('');
-      navigation.navigate('Sign In Confirmation');
+      navigation.navigate('Sign Up Confirmation');
     }
   };
 
   if (page1) {
     return (
       <View style={styles.container}>
-
         <Image style={styles.image} source={headerImage} />
-
         <Title style={styles.titleText}>Sign Up</Title>
-
         <View style={styles.inputs}>
           <TextInput
+            style={styles.textInput}
             value={firstName}
             onChangeText={setFirstName}
             placeholder="First name"
@@ -218,13 +208,12 @@ export default function SignInScreen({ navigation }) {
             onSubmitEditing={() => { lastNameInput.current.focus(); }}
             blurOnSubmit={false}
             width={330}
-
           />
-
         </View>
 
         <View style={styles.inputs}>
           <TextInput
+            style={styles.textInput}
             value={lastName}
             onChangeText={setLastName}
             placeholder="Last name"
@@ -238,6 +227,7 @@ export default function SignInScreen({ navigation }) {
 
         <View style={styles.inputs}>
           <TextInput
+            style={styles.textInput}
             value={organization}
             onChangeText={setOrganization}
             placeholder="Organization (optional)"
@@ -251,21 +241,52 @@ export default function SignInScreen({ navigation }) {
 
         <View style={styles.inputs}>
           <TextInput
+            style={styles.textInput}
             value={email}
             onChangeText={setEmail}
             placeholder="Email address"
             keyboardType="email-address"
             returnKeyType="next"
-            onSubmitEditing={() => { passwordInput.current.focus(); }}
+            onSubmitEditing={() => { numberInput.current.focus(); }}
             blurOnSubmit={false}
             ref={emailInput}
             width={330}
-            // underlineColorAndroid="gray"
           />
         </View>
 
         <View style={styles.inputs}>
           <TextInput
+            style={styles.textInput}
+            value={number}
+            onChangeText={setNumber}
+            placeholder="Personal phone number"
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => { busPhoneInput.current.focus(); }}
+            blurOnSubmit={false}
+            ref={numberInput}
+            width={330}
+          />
+        </View>
+
+        <View style={styles.inputs}>
+          <TextInput
+            style={styles.textInput}
+            value={busPhone}
+            onChangeText={setBusPhone}
+            placeholder="Business phone number (optional)"
+            keyboardType="numeric"
+            returnKeyType="next"
+            onSubmitEditing={() => { passwordInput.current.focus(); }}
+            blurOnSubmit={false}
+            ref={busPhoneInput}
+            width={330}
+          />
+        </View>
+
+        <View style={styles.inputs}>
+          <TextInput
+            style={styles.textInput}
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
@@ -274,9 +295,7 @@ export default function SignInScreen({ navigation }) {
             onSubmitEditing={() => { confirmPasswordInput.current.focus(); }}
             blurOnSubmit={false}
             ref={passwordInput}
-            // underlineColorAndroid="gray"
             width={306}
-
           />
           <Icon
             style={styles.icon}
@@ -289,15 +308,15 @@ export default function SignInScreen({ navigation }) {
 
         <View style={styles.inputs}>
           <TextInput
+            style={styles.textInput}
             value={confirmPassword}
             onChangeText={setConfirmPassword}
             placeholder="Confirm Password"
             returnKeyType="next"
             secureTextEntry={!!hidePassConf}
-            onSubmitEditing={() => { numberInput.current.focus(); }}
+            // onSubmitEditing={() => { numberInput.current.focus(); }}
             blurOnSubmit={false}
             ref={confirmPasswordInput}
-            // underlineColorAndroid="gray"
             width={306}
           />
           <Icon
@@ -306,35 +325,6 @@ export default function SignInScreen({ navigation }) {
             size={15}
             color="grey"
             onPress={() => setHidePassConf(!hidePassConf)}
-          />
-        </View>
-
-        <View style={styles.inputs}>
-          <TextInput
-            value={number}
-            onChangeText={setNumber}
-            placeholder="Personal phone number"
-            keyboardType="numeric"
-            returnKeyType="next"
-            onSubmitEditing={() => { busPhoneInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={numberInput}
-            width={330}
-            // underlineColorAndroid="gray"
-          />
-        </View>
-
-        <View style={styles.inputs}>
-          <TextInput
-            value={busPhone}
-            onChangeText={setBusPhone}
-            placeholder="Business phone number (optional)"
-            keyboardType="numeric"
-            returnKeyType="next"
-            blurOnSubmit={false}
-            ref={busPhoneInput}
-            width={330}
-            // underlineColorAndroid="gray"
           />
         </View>
 
@@ -357,10 +347,8 @@ export default function SignInScreen({ navigation }) {
   // second page:
   return (
     <View style={styles.container}>
-
       <View style={styles.text}>
         <Button
-          // mode="contained"
           style={styles.back}
           onPress={() => {
             setPage1(!page1);
@@ -368,7 +356,6 @@ export default function SignInScreen({ navigation }) {
         >
           Back
         </Button>
-
         <Image style={styles.image} source={headerImage} />
       </View>
 
@@ -378,9 +365,10 @@ export default function SignInScreen({ navigation }) {
 
       <View style={styles.inputs}>
         <TextInput
+          style={styles.textInput}
           value={recipient}
           onChangeText={setRecipient}
-          placeholder="Delivery Recipient"
+          placeholder="Organization name (optional)"
           returnKeyType="next"
           onSubmitEditing={() => { addrInput.current.focus(); }}
           blurOnSubmit={false}
@@ -390,6 +378,7 @@ export default function SignInScreen({ navigation }) {
 
       <View style={styles.inputs}>
         <TextInput
+          style={styles.textInput}
           value={address}
           onChangeText={setAddress}
           placeholder="Street address"
@@ -403,9 +392,10 @@ export default function SignInScreen({ navigation }) {
 
       <View style={styles.inputs}>
         <TextInput
+          style={styles.textInput}
           value={apt}
           onChangeText={setApt}
-          placeholder="Address Line 2 (optional)"
+          placeholder="Apt # (optional)"
           returnKeyType="next"
           onSubmitEditing={() => { zipInput.current.focus(); }}
           blurOnSubmit={false}
@@ -416,9 +406,10 @@ export default function SignInScreen({ navigation }) {
 
       <View style={styles.inputs}>
         <TextInput
+          style={styles.textInput}
           value={zip}
           onChangeText={setZip}
-          placeholder="Zip Code"
+          placeholder="Zip code"
           returnKeyType="next"
           textAlign="left"
           onSubmitEditing={() => { instrInput.current.focus(); }}
@@ -433,19 +424,20 @@ export default function SignInScreen({ navigation }) {
           style={styles.multiline}
           value={instr}
           onChangeText={setInstr}
-          placeholder="Instructions for delivery (optional)"
+          placeholder="  Instructions for delivery (optional)"
           returnKeyType="next"
           blurOnSubmit={false}
           ref={instrInput}
           height={112}
           multiline
-          width={330}
+          numberOfLines={5}
+          width={340}
         />
 
       </View>
 
-      <View style={styles.text}>
-        <Text>
+      <View>
+        <Text style={styles.text}>
           The address will be used for delivery and to calculate the order minimum for delivery.
         </Text>
       </View>
@@ -462,6 +454,6 @@ export default function SignInScreen({ navigation }) {
   );
 }
 
-SignInScreen.propTypes = {
+SignUpScreen.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
 };

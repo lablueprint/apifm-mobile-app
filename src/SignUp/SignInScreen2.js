@@ -1,11 +1,3 @@
-// import React from 'react';
-// import {
-//   View, StyleSheet,
-// } from 'react-native';
-// import {
-//   Text, Button,
-// } from 'react-native-paper';
-
 import React from 'react';
 import {
   View, StyleSheet, Text,
@@ -30,11 +22,9 @@ const styles = StyleSheet.create({
   },
   bodyText: {
     fontSize: 34,
-
   },
   button: {
     width: 300,
-    // marginTop: 10,
     backgroundColor: '#C4C4C4',
     borderRadius: 30,
     marginBottom: 58,
@@ -42,7 +32,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function SignInScreen({ navigation }) {
+export default function SignUpConfirmation({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.container}>
@@ -64,6 +54,6 @@ export default function SignInScreen({ navigation }) {
   );
 }
 
-SignInScreen.propTypes = {
+SignUpConfirmation.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
 };
