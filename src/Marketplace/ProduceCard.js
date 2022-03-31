@@ -6,6 +6,8 @@ import {
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+const missingImage = require('../assets/missingImage.png');
+
 const styles = StyleSheet.create({
   container: {
     margin: 10,
@@ -27,6 +29,7 @@ const styles = StyleSheet.create({
     marginEnd: 10,
   },
   image: {
+    marginTop: 5,
     width: 120,
     height: 120,
   },
@@ -57,15 +60,15 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, favorited, image, name, price, unit,
+  navigation, produceId, favorited, image, name, price, unit, seller, maxQuantity,
 }) {
+  const [favorite, setFavorite] = useState(favorited);
+
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      image, name, price, unit,
+      produceId, favorite, image, name, price, unit, seller, maxQuantity,
     });
   };
-
-  const [favorite, setFavorite] = useState(favorited);
 
   const onPressHeart = () => {
     const newFav = !favorite;
@@ -80,12 +83,11 @@ function ProduceCard({
         <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
           <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
         </TouchableOpacity>
-        <Image style={styles.image} source={imageurl} />
+        <Image style={styles.image} source={image === '' ? missingImage : imageurl} />
         <Text style={styles.name}>{name}</Text>
         <View style={styles.bottom}>
           <Text style={styles.price}>
-            $
-            {price}
+            {`$${price}`}
           </Text>
           <Text style={styles.quantity}>
             {unit}
@@ -98,11 +100,14 @@ function ProduceCard({
 
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
-  favorited: PropTypes.number.isRequired,
-  image: PropTypes.node.isRequired,
+  produceId: PropTypes.string.isRequired,
+  favorited: PropTypes.bool.isRequired,
+  image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   unit: PropTypes.string.isRequired,
+  seller: PropTypes.string.isRequired,
+  maxQuantity: PropTypes.number.isRequired,
 };
 
 export default ProduceCard;
