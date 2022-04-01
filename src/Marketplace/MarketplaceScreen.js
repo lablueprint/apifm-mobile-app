@@ -7,7 +7,7 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import ProduceCard from './ProduceCard';
+import ProduceGrid from './ProduceViews/ProduceGrid';
 
 const Airtable = require('airtable');
 
@@ -44,16 +44,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
     alignItems: 'flex-end',
     alignSelf: 'flex-end',
-  },
-  produceCardsContainer: {
-    display: 'flex',
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    alignContent: 'center',
-    justifyContent: 'space-around',
-  },
-  produceCard: {
-    padding: 15,
   },
 });
 
@@ -97,22 +87,6 @@ export default function MarketplaceScreen({ navigation }) {
     });
   };
 
-  const produceCards = produceList.map((produce) => (
-    <ProduceCard
-      style={styles.produceCard}
-      key={produce.Name}
-      navigation={navigation}
-      produceId={produce.produceId}
-      favorited={produce.Favorited}
-      image={produce.Image[0].url}
-      name={produce.Name}
-      price={produce.Price}
-      unit={produce.Unit}
-      seller={produce.Seller}
-      maxQuantity={produce.Quantity}
-    />
-  ));
-
   useEffect(() => {
     getProduce();
   }, []);
@@ -150,8 +124,8 @@ export default function MarketplaceScreen({ navigation }) {
           SIGN OUT
         </Button>
       </View>
-      <View style={styles.produceCardsContainer}>
-        { produceCards }
+      <View>
+        <ProduceGrid navigation={navigation} produceList={produceList} />
       </View>
     </ScrollView>
   );
