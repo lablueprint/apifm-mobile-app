@@ -7,7 +7,7 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import ProduceGrid from './ProduceViews/ProduceGrid';
+import ProduceGrid from './ProduceGrid';
 
 const Airtable = require('airtable');
 
@@ -50,6 +50,8 @@ const styles = StyleSheet.create({
 export default function MarketplaceScreen({ navigation }) {
   const [produceList, setProduceList] = useState([]);
 
+  const [subscriptions, setSubscriptions] = useState(false);
+
   const getProduce = () => {
     const list = [];
     base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -91,44 +93,58 @@ export default function MarketplaceScreen({ navigation }) {
     getProduce();
   }, []);
 
-  return (
-    <ScrollView style={styles.container}>
-      <View style={styles.buttonContainer}>
-        <Button
-          mode="outlined"
-          icon="account-circle"
-          style={styles.button}
-          color="white" // Text + icon colour
-          onPress={() => navigation.navigate('Profile')}
-        >
-          Profile
-        </Button>
-        <Button
-          mode="outlined"
-          icon="cart"
-          style={styles.button}
-          color="white"
-          onPress={() => navigation.navigate('Cart')}
-        >
-          Cart
-        </Button>
-      </View>
-      <View style={styles.centeredContainer}>
-        <Title style={styles.titleText}> MarketplaceScreen :) </Title>
-        <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={() => navigation.navigate('SignIn')}
-        >
-          SIGN OUT
-        </Button>
-      </View>
-      <View>
-        <ProduceGrid navigation={navigation} produceList={produceList} />
-      </View>
-    </ScrollView>
-  );
+  if (!subscriptions) {
+    return (
+      <ScrollView style={styles.container}>
+        <View style={styles.buttonContainer}>
+          <Button
+            mode="outlined"
+            icon="account-circle"
+            style={styles.button}
+            color="white" // Text + icon colour
+            onPress={() => navigation.navigate('Profile')}
+          >
+            Profile
+          </Button>
+          <Button
+            mode="outlined"
+            icon="cart"
+            style={styles.button}
+            color="white"
+            onPress={() => navigation.navigate('Cart')}
+          >
+            Cart
+          </Button>
+        </View>
+        <View style={styles.centeredContainer}>
+          <Title style={styles.titleText}> MarketplaceScreen :) </Title>
+          <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={() => navigation.navigate('SignIn')}
+          >
+            SIGN OUT
+          </Button>
+          <Button
+            style={styles.button}
+            onPress={() => { setSubscriptions(false); }}
+          >
+            MARKETPLACE
+          </Button>
+          <Button
+            style={styles.button}
+            onPress={() => { setSubscriptions(true); }}
+          >
+            SUBSCRIPTIONS
+          </Button>
+        </View>
+        <View>
+          <ProduceGrid navigation={navigation} produceList={produceList} />
+        </View>
+      </ScrollView>
+    );
+  }
 }
 
 MarketplaceScreen.propTypes = {

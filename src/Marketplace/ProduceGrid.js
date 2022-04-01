@@ -3,7 +3,7 @@ import {
   View, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import ProduceCard from '../ProduceCard';
+import ProduceCard from './ProduceCard';
 
 const styles = StyleSheet.create({
   produceCardsContainer: {
