@@ -9,7 +9,6 @@ import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
 
 import CartProduct from './CartProduct';
-import SubscribeForm from './Subscribe';
 
 // airtable
 const Airtable = require('airtable');
@@ -166,11 +165,6 @@ export default function CartScreen({ navigation }) {
             </Title>
             <Text style={styles.subscribeContainerText}>
               Make this order a repeated order.
-              <View style={styles.subscribeToggleContainer}>
-                <SubscribeForm
-                  hide={!isSubscribed}
-                />
-              </View>
             </Text>
           </View>
         </View>
