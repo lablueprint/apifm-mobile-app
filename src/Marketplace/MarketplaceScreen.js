@@ -3,11 +3,12 @@ import {
   View, StyleSheet, ScrollView,
 } from 'react-native';
 import {
-  Title, Text, Button,
+  Title, Text, Button, Provider, Portal, Modal,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import ProduceGrid from './ProduceGrid';
+import FilterPopup from './FilterPopup';
 
 const Airtable = require('airtable');
 
@@ -25,6 +26,11 @@ const styles = StyleSheet.create({
   centeredContainer: {
     marginTop: '40%',
     alignItems: 'center',
+  },
+  filterPopup: {
+    width: 330,
+    height: 470,
+    alignSelf: 'center',
   },
   titleText: {
     marginBottom: 10,
@@ -51,6 +57,8 @@ export default function MarketplaceScreen({ navigation }) {
   const [produceList, setProduceList] = useState([]);
 
   const [subscriptions, setSubscriptions] = useState(false);
+
+  const [filterVisibility, setFilterVisibility] = useState(false);
 
   const getProduce = () => {
     const list = [];
@@ -95,54 +103,76 @@ export default function MarketplaceScreen({ navigation }) {
 
   if (!subscriptions) {
     return (
-      <ScrollView style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <Button
-            mode="outlined"
-            icon="account-circle"
-            style={styles.button}
-            color="white" // Text + icon colour
-            onPress={() => navigation.navigate('Profile')}
-          >
-            Profile
-          </Button>
-          <Button
-            mode="outlined"
-            icon="cart"
-            style={styles.button}
-            color="white"
-            onPress={() => navigation.navigate('Cart')}
-          >
-            Cart
-          </Button>
-        </View>
-        <View style={styles.centeredContainer}>
-          <Title style={styles.titleText}> MarketplaceScreen :) </Title>
-          <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={() => navigation.navigate('SignIn')}
-          >
-            SIGN OUT
-          </Button>
-          <Button
-            style={styles.button}
-            onPress={() => { setSubscriptions(false); }}
-          >
-            MARKETPLACE
-          </Button>
-          <Button
-            style={styles.button}
-            onPress={() => { setSubscriptions(true); }}
-          >
-            SUBSCRIPTIONS
-          </Button>
-        </View>
-        <View>
-          <ProduceGrid navigation={navigation} produceList={produceList} />
-        </View>
-      </ScrollView>
+      <Provider>
+        <ScrollView style={styles.container}>
+          <View style={styles.buttonContainer}>
+            <Button
+              mode="outlined"
+              icon="account-circle"
+              style={styles.button}
+              color="white" // Text + icon colour
+              onPress={() => navigation.navigate('Profile')}
+            >
+              Profile
+            </Button>
+            <Button
+              mode="outlined"
+              icon="cart"
+              style={styles.button}
+              color="white"
+              onPress={() => navigation.navigate('Cart')}
+            >
+              Cart
+            </Button>
+          </View>
+          <View style={styles.centeredContainer}>
+            <Title style={styles.titleText}> MarketplaceScreen :) </Title>
+            <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
+            <Button
+              mode="contained"
+              style={styles.button}
+              onPress={() => navigation.navigate('SignIn')}
+            >
+              SIGN OUT
+            </Button>
+            <Button
+              style={styles.button}
+              onPress={() => { setSubscriptions(false); }}
+            >
+              MARKETPLACE
+            </Button>
+            <Button
+              style={styles.button}
+              onPress={() => { setSubscriptions(true); }}
+            >
+              SUBSCRIPTIONS
+            </Button>
+          </View>
+          <View>
+            <Button
+              style={styles.button}
+              onPress={() => { setFilterVisibility(true); }}
+            >
+              Sort and Filter
+            </Button>
+            <View>
+              <Portal>
+                <Modal
+                  visible={filterVisibility}
+                  onDismiss={() => {
+                    setFilterVisibility(false);
+                  }}
+                  contentContainerStyle={styles.filterPopup}
+                >
+                  <FilterPopup />
+                </Modal>
+              </Portal>
+            </View>
+            <ProduceGrid navigation={navigation} produceList={produceList} />
+          </View>
+        </ScrollView>
+      </Provider>
+
     );
   }
 }
