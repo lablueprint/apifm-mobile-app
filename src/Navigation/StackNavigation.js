@@ -17,7 +17,7 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
-      <stackNavig.Screen name="Contact" component={ContactScreen} />
+      <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
     </stackNavig.Navigator>
   );

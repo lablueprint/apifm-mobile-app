@@ -31,6 +31,10 @@ export default function ContactScreen({ navigation }) {
   const [message, setMessage] = useState(null);
 
   const sendEmailOnPress = () => {
+    if (!name || !email || !subject || !message) {
+      Alert.alert('Missing value', 'All fields (name, email, subject, and message) must be filled');
+      return;
+    }
     base('ContactEmail').create([{ // Create email record
       fields: {
         name,
