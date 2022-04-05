@@ -123,22 +123,26 @@ const styles = StyleSheet.create({
 });
 
 export default function CartProduct(props) {
-  const [item, setItem] = useState([]);
-  const [quantity, setQuantity] = React.useState('');
-
   const {
     itemID,
     refresh,
     setRefresh,
+    name,
+    price,
+    type,
+    initialQuantity,
   } = props;
+
+  const [item, setItem] = useState([]);
+  const [quantity, setQuantity] = React.useState(String(initialQuantity));
 
   const getItem = () => {
     base('Cart').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
       .then((records) => {
         const newItem = records[0].fields;
         setItem(newItem);
-        setQuantity(String(newItem.Quantity));
-        console.log(`new item${newItem.Quantity}`);
+        setQuantity(String(newItem.quantity));
+        console.log(`new item${newItem.quantity}`);
       });
   };
 
@@ -149,7 +153,7 @@ export default function CartProduct(props) {
       {
         id: String(itemID),
         fields: {
-          Quantity: Number(newQuantity),
+          quantity: Number(newQuantity),
         },
       },
     ], (err, records) => {
@@ -158,9 +162,10 @@ export default function CartProduct(props) {
         return;
       }
       records.forEach((record) => {
-        console.log(record.get('Users UPDATED'));
+        console.log(record.get('users'));
       });
     });
+    setRefresh(refresh + 1);
   };
 
   useEffect(() => {
@@ -183,7 +188,7 @@ export default function CartProduct(props) {
       <Image style={styles.image} source={image} />
       <View style={styles.container3}>
         <Text style={styles.itemName}>
-          {item.Name}
+          {name}
         </Text>
         <View style={styles.quantityContainer}>
           <TextInput
@@ -193,18 +198,18 @@ export default function CartProduct(props) {
             onChangeText={handleQuantityChange2}
           />
           <Text style={styles.itemQuantityType}>
-            {item.type}
+            {type}
           </Text>
         </View>
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
           $
-          {item.price * quantity}
+          {(price) * quantity}
         </Text>
         <Text style={styles.itemPricePer}>
           $
-          {item.price}
+          {price}
           {' '}
           ea
         </Text>
@@ -224,4 +229,9 @@ CartProduct.propTypes = {
   itemID: PropTypes.string.isRequired,
   refresh: PropTypes.number.isRequired,
   setRefresh: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  price: PropTypes.number.isRequired,
+  type: PropTypes.string.isRequired,
+  initialQuantity: PropTypes.string.isRequired,
+
 };
