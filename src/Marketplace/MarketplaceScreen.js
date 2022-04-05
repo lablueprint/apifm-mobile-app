@@ -101,6 +101,14 @@ export default function MarketplaceScreen({ navigation }) {
     getProduce();
   }, []);
 
+  const [seasonalFilter, setSeasonalFilter] = useState(false);
+  const [vegetableFilter, setVegetableFilter] = useState(false);
+  const [fruitsFilter, setFruitsFilter] = useState(false);
+
+  const filterProduce = () => {
+
+  };
+
   if (!subscriptions) {
     return (
       <Provider>
@@ -164,7 +172,14 @@ export default function MarketplaceScreen({ navigation }) {
                   }}
                   contentContainerStyle={styles.filterPopup}
                 >
-                  <FilterPopup />
+                  <FilterPopup
+                    seasonal={seasonalFilter}
+                    setSeasonal={setSeasonalFilter}
+                    vegetable={vegetableFilter}
+                    setVegetable={setVegetableFilter}
+                    fruits={fruitsFilter}
+                    setFruits={setFruitsFilter}
+                  />
                 </Modal>
               </Portal>
             </View>

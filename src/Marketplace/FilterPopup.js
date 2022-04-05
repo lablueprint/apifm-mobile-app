@@ -1,8 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import {
   View, Text, StyleSheet,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+// checkbox-blank-outline
+// close-box-outline
+// radiobox-blank
+// radiobox-marked
 
 const styles = StyleSheet.create({
   popupContainer: {
@@ -13,28 +19,39 @@ const styles = StyleSheet.create({
 });
 
 function FilterPopup({
-  sortOptions, updateSort, filterOptions, updateFilter,
+  seasonal, setSeasonal, vegetable, setVegetable, fruits, setFruits,
 }) {
   return (
     <View style={styles.popupContainer}>
-      <Text>
-        Here
-      </Text>
+      <View>
+        <Text>Seasonal</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setSeasonal(!seasonal); }} name={seasonal ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text>vegetable</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setVegetable(!vegetable); }} name={vegetable ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text>Fruits</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setFruits(!fruits); }} name={fruits ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
 
-// FilterPopup.propTypes = {
-//   sortOptions: PropTypes.arrayOf(PropTypes.shape({
-//     label: PropTypes.string.isRequired,
-//     active: PropTypes.bool.isRequired,
-//   })).isRequired,
-//   updateSort: PropTypes.func.isRequired,
-//   filterOptions: PropTypes.arrayOf(PropTypes.shape({
-//     label: PropTypes.string.isRequired,
-//     active: PropTypes.bool.isRequired,
-//   })).isRequired,
-//   updateFilter: PropTypes.func.isRequired,
-// };
+FilterPopup.propTypes = {
+  seasonal: PropTypes.bool.isRequired,
+  setSeasonal: PropTypes.func.isRequired,
+  vegetable: PropTypes.bool.isRequired,
+  setVegetable: PropTypes.func.isRequired,
+  fruits: PropTypes.bool.isRequired,
+  setFruits: PropTypes.func.isRequired,
+};
 
 export default FilterPopup;
