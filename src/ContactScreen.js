@@ -4,6 +4,16 @@ import {
   View, StyleSheet, TextInput, Button, Alert,
 } from 'react-native';
 import { Text } from 'react-native-paper';
+import Config from 'react-native-config';
+
+const Airtable = require('airtable');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 // eslint-disable-next-line no-unused-vars
 const styles = StyleSheet.create({
@@ -19,6 +29,26 @@ export default function ContactScreen({ navigation }) {
   const [email, setEmail] = useState(null);
   const [subject, setSubject] = useState(null);
   const [message, setMessage] = useState(null);
+
+  const sendEmailOnPress = () => {
+    base('ContactEmail').create([{ // Create email record
+      fields: {
+        name,
+        email,
+        subject,
+        message,
+      },
+    }], (err) => {
+      if (err) {
+        Alert.alert(err.error, err.message);
+      }
+    });
+    Alert.alert('Thanks! Your email has been sent to APIFM.');
+    setName(''); // Reset all values for next email
+    setEmail('');
+    setSubject('');
+    setMessage('');
+  };
 
   return (
     <View>
@@ -48,7 +78,7 @@ export default function ContactScreen({ navigation }) {
       <Button
         title="Send"
         color="#f194ff"
-        onPress={() => Alert.alert('Send button pressed')}
+        onPress={sendEmailOnPress}
       />
       <Text>
         We&rsquo;re located at the Special Service for Asian Pacific Islander Forward Movement
