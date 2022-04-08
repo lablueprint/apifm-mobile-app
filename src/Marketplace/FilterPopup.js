@@ -5,8 +5,6 @@ import {
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-// checkbox-blank-outline
-// close-box-outline
 // radiobox-blank
 // radiobox-marked
 
@@ -19,26 +17,51 @@ const styles = StyleSheet.create({
 });
 
 function FilterPopup({
+  aZ, setAZ, zA, setZA, lowHigh, setLowHigh, highLow, setHighLow,
   seasonal, setSeasonal, vegetables, setVegetables, fruits, setFruits,
 }) {
   return (
     <View style={styles.popupContainer}>
       <View>
-        <Text>Seasonal</Text>
+        <Text>A to Z (Alphabetical)</Text>
         <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setSeasonal(!seasonal); }} name={seasonal ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+          <CheckboxIcon onPress={() => { setAZ(!aZ); }} name={aZ ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
         </TouchableOpacity>
       </View>
       <View>
-        <Text>vegetable</Text>
+        <Text>Z to A (Alphabetical)</Text>
         <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setVegetables(!vegetables); }} name={vegetables ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+          <CheckboxIcon onPress={() => { setZA(!zA); }} name={zA ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text>Price Low to High</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setLowHigh(!lowHigh); }} name={lowHigh ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text>Price High to Low</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setHighLow(!highLow); }} name={highLow ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text>Seasonal</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setSeasonal(!seasonal); }} name={seasonal ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
+        </TouchableOpacity>
+      </View>
+      <View>
+        <Text>Vegetables</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setVegetables(!vegetables); }} name={vegetables ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
         </TouchableOpacity>
       </View>
       <View>
         <Text>Fruits</Text>
         <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setFruits(!fruits); }} name={fruits ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+          <CheckboxIcon onPress={() => { setFruits(!fruits); }} name={fruits ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
         </TouchableOpacity>
       </View>
     </View>

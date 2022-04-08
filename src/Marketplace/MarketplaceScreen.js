@@ -7,6 +7,8 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ProduceGrid from './ProduceGrid';
 import FilterPopup from './FilterPopup';
 
@@ -103,6 +105,15 @@ export default function MarketplaceScreen({ navigation }) {
     getProduce();
   }, []);
 
+  const [aZSort, setAZSort] = useState(false);
+  const [zASort, setZASort] = useState(false);
+  const [lowHighSort, setLowHighSort] = useState(false);
+  const [highLowSort, setHighLowSort] = useState(false);
+
+  // const sortProduce = () => {
+
+  // };
+
   const [seasonalFilter, setSeasonalFilter] = useState(false);
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
@@ -177,12 +188,11 @@ export default function MarketplaceScreen({ navigation }) {
             </Button>
           </View>
           <View>
-            <Button
-              style={styles.button}
-              onPress={() => { setFilterVisibility(true); }}
-            >
-              Sort and Filter
-            </Button>
+            <View>
+              <TouchableOpacity>
+                <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
+              </TouchableOpacity>
+            </View>
             <View>
               <Portal>
                 <Modal
@@ -193,6 +203,14 @@ export default function MarketplaceScreen({ navigation }) {
                   contentContainerStyle={styles.filterPopup}
                 >
                   <FilterPopup
+                    aZ={aZSort}
+                    setAZ={setAZSort}
+                    zA={zASort}
+                    setZA={setZASort}
+                    lowHigh={lowHighSort}
+                    setLowHigh={setLowHighSort}
+                    highLow={highLowSort}
+                    setHighLow={setHighLowSort}
                     seasonal={seasonalFilter}
                     setSeasonal={setSeasonalFilter}
                     vegetables={vegetablesFilter}
