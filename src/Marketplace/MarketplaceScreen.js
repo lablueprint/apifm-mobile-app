@@ -106,8 +106,20 @@ export default function MarketplaceScreen({ navigation }) {
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
   const filterProduce = () => {
-
+    // const filteredList = [];
+    if (seasonalFilter) {
+      const produce = produceList.filter((item) => item['Type Tags'] === 'Seasonal');
+      setProduceList(produce);
+      // filteredList.push(produce);
+    }
+    // if (filteredList.length) {
+    //   setProduceList(filteredList);
+    // }
   };
+
+  useEffect(() => {
+    filterProduce();
+  }, [seasonalFilter]);
 
   if (!subscriptions) {
     return (
