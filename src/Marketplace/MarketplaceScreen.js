@@ -54,15 +54,16 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  const [allProduce, setAllProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);
 
   const [subscriptions, setSubscriptions] = useState(false);
 
   const [filterVisibility, setFilterVisibility] = useState(false);
 
-  const getProduce = () => {
+  const getProduce = async () => {
     const list = [];
-    base('Produce').select({}).eachPage((records, fetchNextPage) => {
+    await base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const produce = record;
 
@@ -92,6 +93,7 @@ export default function MarketplaceScreen({ navigation }) {
         produce.fields.Favorited = false;
         list.push(produce.fields);
       });
+      setAllProduce(list);
       setProduceList(list);
       fetchNextPage();
     });
@@ -102,24 +104,30 @@ export default function MarketplaceScreen({ navigation }) {
   }, []);
 
   const [seasonalFilter, setSeasonalFilter] = useState(false);
-  const [vegetableFilter, setVegetableFilter] = useState(false);
+  const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
   const filterProduce = () => {
-    // const filteredList = [];
+    let filteredList = [];
     if (seasonalFilter) {
-      const produce = produceList.filter((item) => item['Type Tags'] === 'Seasonal');
-      setProduceList(produce);
-      // filteredList.push(produce);
+      filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Seasonal'));
     }
-    // if (filteredList.length) {
-    //   setProduceList(filteredList);
-    // }
+    if (vegetablesFilter) {
+      filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Vegetables'));
+    }
+    if (fruitsFilter) {
+      filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Fruits'));
+    }
+    if (filteredList.length) {
+      setProduceList(filteredList);
+    } else {
+      setProduceList(allProduce);
+    }
   };
 
   useEffect(() => {
     filterProduce();
-  }, [seasonalFilter]);
+  }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   if (!subscriptions) {
     return (
@@ -187,8 +195,8 @@ export default function MarketplaceScreen({ navigation }) {
                   <FilterPopup
                     seasonal={seasonalFilter}
                     setSeasonal={setSeasonalFilter}
-                    vegetable={vegetableFilter}
-                    setVegetable={setVegetableFilter}
+                    vegetables={vegetablesFilter}
+                    setVegetables={setVegetablesFilter}
                     fruits={fruitsFilter}
                     setFruits={setFruitsFilter}
                   />

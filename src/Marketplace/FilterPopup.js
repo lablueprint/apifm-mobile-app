@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
 });
 
 function FilterPopup({
-  seasonal, setSeasonal, vegetable, setVegetable, fruits, setFruits,
+  seasonal, setSeasonal, vegetables, setVegetables, fruits, setFruits,
 }) {
   return (
     <View style={styles.popupContainer}>
@@ -32,7 +32,7 @@ function FilterPopup({
       <View>
         <Text>vegetable</Text>
         <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setVegetable(!vegetable); }} name={vegetable ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
+          <CheckboxIcon onPress={() => { setVegetables(!vegetables); }} name={vegetables ? 'close-box-outline' : 'checkbox-blank-outline'} size={30} />
         </TouchableOpacity>
       </View>
       <View>
@@ -48,8 +48,8 @@ function FilterPopup({
 FilterPopup.propTypes = {
   seasonal: PropTypes.bool.isRequired,
   setSeasonal: PropTypes.func.isRequired,
-  vegetable: PropTypes.bool.isRequired,
-  setVegetable: PropTypes.func.isRequired,
+  vegetables: PropTypes.bool.isRequired,
+  setVegetables: PropTypes.func.isRequired,
   fruits: PropTypes.bool.isRequired,
   setFruits: PropTypes.func.isRequired,
 };
