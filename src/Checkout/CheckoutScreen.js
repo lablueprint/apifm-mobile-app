@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import {
   Text, Button,
 } from 'react-native-paper';
@@ -25,21 +25,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: '#0492c2',
   },
-  topIcon: {
-    height: 70,
-    marginHorizontal: 8.0,
-    paddingTop: 12.0,
-  },
   title: {
     fontSize: 18,
-    // marginLeft: '2%',
     marginBottom: '2%',
     color: 'black',
   },
   subdetails: {
     fontSize: 14,
     marginTop: '.5%',
-    // marginLeft: '2%',
     marginBottom: '.5%',
     color: '#636363',
   },
@@ -66,13 +59,15 @@ export default function CheckoutScreen({ navigation }) {
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
 
-  const calcTotal = () => {
-    base('Cart').select({ filterByFormula: "({Users UPDATED}='helen@gmail.com')" }).all()
+  const calcTotal = (useremail) => {
+    base('Cart TBD').select({ filterByFormula: `({user}='${useremail}')` }).all()
       .then((items) => {
         let sum = 0;
         let c = 0;
+        // eslint-disable-next-line array-callback-return
         items.map((item) => {
-          sum += item.fields.Quantity * item.fields.price;
+          const price = item.get('price of produce');
+          sum += item.fields.quantity * price;
           c += 1;
         });
         setTotal(sum);
@@ -80,41 +75,54 @@ export default function CheckoutScreen({ navigation }) {
       });
   };
 
-  useEffect(() => {
-    base('Users UPDATED').select({
-      filterByFormula: '{email} = "helen@gmail.com"',
+  const setOrderDetails = (useremail) => {
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
       .then((records) => {
         if (`${records[0].fields['apartment number']}` !== '') {
           setShippingAddress({
             address: records[0].fields.address,
-            zipcode: records[0].fields['zip code'],
+            zipcode: records[0].fields.zipcode,
             apartmentLine: ` Apt ${records[0].fields['apartment number']}`,
           });
         } else {
           setShippingAddress({
             address: records[0].fields.address,
-            zipcode: records[0].fields['zip code'],
+            zipcode: records[0].fields.zipcode,
             apartmentLine: '',
           });
         }
       });
-    calcTotal();
+  };
 
-    base('Orders').select({
-      filterByFormula: '{user_id} = "helen@gmail.com"',
-    }).firstPage()
-      .then((records) => {
-        if (records[0].fields['delivery fee (temp)'] > 0) {
-          setDeliveryFee(records[0].fields['delivery fee (temp)']);
-          setFreeFee(records[0].fields['fee to be free (temp)']);
-        }
-        if (records[0].fields['delivery date (temp)'] !== '') {
-          setDeliveryDate(records[0].fields['delivery date (temp)']);
-        }
-      });
+  useEffect(() => {
+    setOrderDetails('helen@gmail.com');
+    calcTotal('helen@gmail.com');
+    setDeliveryFee(10);
+    setFreeFee(20);
+    setDeliveryDate('January 2023!');
   }, []);
 
+  const pushToOrderTable = (useremail) => {
+    base('Cart TBD').select({ filterByFormula: `({user}="${useremail}")` }).all()
+      .then((items) => {
+      // eslint-disable-next-line array-callback-return
+        items.map((item) => {
+          base('Orders').create({
+            user_id: useremail,
+            'produce_id_simple (temp)': 'recpZYWLboES4Uqtr',
+            Quantity: item.get('quantity'),
+            'delivery fee (temp)': deliveryFee,
+            'fee to be free (temp)': freeFee,
+          }, (err) => {
+            if (err) {
+              Alert.alert(err.message);
+            }
+          });
+        });
+      });
+  };
   return (
     <View>
       <View style={[styles.subcontainer, {
@@ -180,7 +188,7 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
           <Text style={[styles.subdetails, { marginRight: '0%' }]}>
             $
-            {total}
+            {parseFloat(total).toFixed(2)}
           </Text>
         </View>
         <View style={{
@@ -192,7 +200,7 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
           <Text style={[styles.subdetails, { marginRight: '0%' }]}>
             $
-            {deliveryFee}
+            {parseFloat(deliveryFee).toFixed(2)}
           </Text>
         </View>
         {deliveryFee > 0
@@ -208,7 +216,7 @@ export default function CheckoutScreen({ navigation }) {
           >
             Add
             {' $'}
-            {freeFee}
+            {parseFloat(freeFee).toFixed(2)}
             {' '}
             to qualify for free shipping!
           </Text>
@@ -223,7 +231,7 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
           <Text style={[styles.title, { marginRight: '0%' }]}>
             $
-            {total + deliveryFee}
+            {parseFloat(total + deliveryFee).toFixed(2)}
           </Text>
         </View>
       </View>
@@ -231,14 +239,10 @@ export default function CheckoutScreen({ navigation }) {
         <Button
           mode="contained"
           style={styles.button}
-          onPress={() => navigation.navigate('Marketplace')}
-        >
-          MARKET
-        </Button>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={() => navigation.navigate('Order Successful')}
+          onPress={() => {
+            pushToOrderTable('helen@gmail.com');
+            navigation.navigate('Order Successful');
+          }}
         >
           Confirm
         </Button>

@@ -1,9 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, Image } from 'react-native';
 import {
   Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 import logo from '../assets/imgs/square_logo.png';
 
 const styles = StyleSheet.create({
@@ -29,7 +30,38 @@ const styles = StyleSheet.create({
   },
 });
 
+const Airtable = require('airtable');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
+
 export default function OrderSuccessfulScreen({ navigation }) {
+  const [total, setTotal] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(0);
+
+  const calcTotal = (useremail) => {
+    base('Cart TBD').select({ filterByFormula: `({user}='${useremail}')` }).all()
+      .then((items) => {
+        let sum = 0;
+        // eslint-disable-next-line array-callback-return
+        items.map((item) => {
+          const price = item.get('price of produce');
+          sum += item.fields.quantity * price;
+        });
+        setTotal(sum);
+      });
+  };
+
+  useEffect(() => {
+    calcTotal('helen@gmail.com');
+    setDeliveryFee(10);
+  }, []);
+
   return (
     <View>
       <View style={[styles.subcontainer, {
@@ -64,7 +96,8 @@ export default function OrderSuccessfulScreen({ navigation }) {
             Total due at delivery:
           </Text>
           <Text style={[styles.titleText, { marginRight: '0%' }]}>
-            $700.00
+            $
+            {total + deliveryFee}
           </Text>
         </View>
       </View>
@@ -74,7 +107,7 @@ export default function OrderSuccessfulScreen({ navigation }) {
           style={styles.button}
           onPress={() => navigation.navigate('Marketplace')}
         >
-          MARKET
+          Return To Marketplace
         </Button>
       </View>
     </View>
