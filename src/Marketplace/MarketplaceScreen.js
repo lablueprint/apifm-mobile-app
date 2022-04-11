@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
 
 export default function MarketplaceScreen({ navigation }) {
   const [allProduce, setAllProduce] = useState([]);
+  const [unsortedProduce, setUnsortedProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);
 
   const [subscriptions, setSubscriptions] = useState(false);
@@ -95,10 +96,11 @@ export default function MarketplaceScreen({ navigation }) {
         produce.fields.Favorited = false;
         list.push(produce.fields);
       });
-      setAllProduce(list);
-      setProduceList(list);
       fetchNextPage();
     });
+    setAllProduce(list);
+    setUnsortedProduce(list);
+    setProduceList(list);
   };
 
   useEffect(() => {
@@ -110,15 +112,45 @@ export default function MarketplaceScreen({ navigation }) {
   const [lowHighSort, setLowHighSort] = useState(false);
   const [highLowSort, setHighLowSort] = useState(false);
 
-  // const sortProduce = () => {
-
-  // };
+  const sortProduce = async () => {
+    const sortedList = JSON.parse(JSON.stringify(unsortedProduce));
+    if (aZSort) {
+      sortedList.sort((x, y) => {
+        if (x.Name > y.Name) {
+          return 1;
+        }
+        return -1;
+      });
+    } else if (zASort) {
+      sortedList.sort((x, y) => {
+        if (x.Name < y.Name) {
+          return 1;
+        }
+        return -1;
+      });
+    } else if (lowHighSort) {
+      sortedList.sort((x, y) => {
+        if (Number(x.Price) > Number(y.Price)) {
+          return 1;
+        }
+        return -1;
+      });
+    } else if (highLowSort) {
+      sortedList.sort((x, y) => {
+        if (Number(x.Price) < Number(y.Price)) {
+          return 1;
+        }
+        return -1;
+      });
+    }
+    setProduceList(sortedList);
+  };
 
   const [seasonalFilter, setSeasonalFilter] = useState(false);
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
-  const filterProduce = () => {
+  const filterProduce = async () => {
     let filteredList = [];
     if (seasonalFilter) {
       filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Seasonal'));
@@ -130,11 +162,17 @@ export default function MarketplaceScreen({ navigation }) {
       filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Fruits'));
     }
     if (filteredList.length) {
+      setUnsortedProduce(filteredList);
       setProduceList(filteredList);
     } else {
+      setUnsortedProduce(allProduce);
       setProduceList(allProduce);
     }
   };
+
+  useEffect(() => {
+    sortProduce();
+  }, [aZSort, zASort, lowHighSort, highLowSort]);
 
   useEffect(() => {
     filterProduce();
