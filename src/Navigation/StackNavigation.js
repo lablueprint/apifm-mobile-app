@@ -5,13 +5,10 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CustomDrawer from './CustomDrawer';
-
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignInScreen from '../SignIn/SignInScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
-import OrdersScreen from '../Orders/OrdersScreen';
-import ContactScreen from '../Contact/ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
@@ -113,7 +110,6 @@ function DrawerRoutes() {
   );
 }
 
-/* Stack navigators push/pop screens from a navigation stack (similar to web browser) */
 export default function StackNavigation() {
   return (
     <stackNavig.Navigator initialRouteName="Marketplace">
