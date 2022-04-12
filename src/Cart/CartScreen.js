@@ -9,6 +9,7 @@ import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
 
 import CartProduct from './CartProduct';
+import SubscribeForm from './Subscribe';
 
 // airtable
 const Airtable = require('airtable');
@@ -62,7 +63,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginLeft: 35,
     marginRight: 150,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'flex-start',
 
   },
@@ -72,10 +73,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   subscribeTextContainer: {
-    width: 250,
+    width: 300,
     flexDirection: 'column',
     marginLeft: 20,
     marginTop: -5,
+
   },
   subtotalContainer: {
     flexDirection: 'row',
@@ -165,6 +167,11 @@ export default function CartScreen({ navigation }) {
             </Title>
             <Text style={styles.subscribeContainerText}>
               Make this order a repeated order.
+              <View>
+                <SubscribeForm
+                  hide={!isSubscribed}
+                />
+              </View>
             </Text>
           </View>
         </View>
