@@ -9,6 +9,8 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
+import CartProduct from '../Cart/CartProduct';
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
@@ -16,6 +18,11 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginBottom: 10,
+  },
+  scrollView: {
+    flex: 1,
+    width: '95%',
+    marginBottom: '2%',
   },
   bodyText: {
     marginLeft: 5,
@@ -60,6 +67,8 @@ export default function CheckoutScreen({ navigation }) {
   const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
+  const [itemList, setItemList] = useState([]);
+  const [refresh, setRefresh] = useState(0);
 
   const calcTotal = (useremail) => {
     base('Cart TBD').select({ filterByFormula: `({user}='${useremail}')` }).all()
@@ -97,11 +106,35 @@ export default function CheckoutScreen({ navigation }) {
         }
       });
   };
-
+  const getItems = () => {
+    const list = [];
+    base('Cart').select({ filterByFormula: "({users}='helen@gmail.com')" }).eachPage((records, fetchNextPage) => {
+      records.forEach((record) => {
+        const item = record;
+        console.log(record.fields);
+        list.push(item.fields);
+      });
+      setItemList(list);
+      fetchNextPage();
+    });
+  };
+  const products = itemList.map((item) => (
+    <CartProduct
+      itemID={item.item_id}
+      key={item.item_id}
+      setRefresh={setRefresh}
+      refresh={refresh}
+      name={item.name}
+      price={item.price}
+      type={item.type}
+      initialQuantity={String(item.quantity)}
+    />
+  ));
   useEffect(() => {
     // hardcoded to helen!
     setOrderDetails('helen@gmail.com');
     calcTotal('helen@gmail.com');
+    getItems();
     setDeliveryFee(10);
     setFreeFee(20);
     setDeliveryDate('January 2023!');
@@ -179,7 +212,9 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
 
         </View>
-        <Text style={[styles.bodyText, { marginBottom: '4%' }]}> Cart (multiple produce cards) reused here  </Text>
+        <ScrollView style={styles.scrollView}>
+          {products}
+        </ScrollView>
       </View>
       <View style={[styles.subcontainer]}>
         <View style={styles.title}>
