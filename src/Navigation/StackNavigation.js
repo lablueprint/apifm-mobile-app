@@ -1,7 +1,10 @@
 import React from 'react';
+import { StyleSheet } from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import CustomDrawer from './CustomDrawer';
 
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignInScreen from '../SignIn/SignInScreen';
@@ -15,52 +18,64 @@ const stackNavig = createNativeStackNavigator();
 
 const Drawer = createDrawerNavigator();
 
-const marketplaceIcon = () => (
-  <Icon
-    size={23}
-    name="food-apple-outline"
-  />
-);
+const styles = StyleSheet.create({
+  icon: {
+    left: 25,
+  },
+});
 
-const profileIcon = () => (
+const profileIcon = ({ color }) => (
   <Icon
-    size={23}
+    size={26}
     name="account-outline"
+    color={color}
+    style={styles.icon}
   />
 );
 
-const cartIcon = () => (
+const marketplaceIcon = ({ color }) => (
   <Icon
-    size={23}
+    size={26}
+    name="store-outline"
+    color={color}
+    style={styles.icon}
+  />
+);
+
+const cartIcon = ({ color }) => (
+  <Icon
+    size={26}
     name="cart-outline"
+    color={color}
+    style={styles.icon}
   />
 );
 
-const contactIcon = () => (
+const contactIcon = ({ color }) => (
   <Icon
-    size={23}
+    size={26}
     name="phone-outline"
-  />
-);
-
-const logoutIcon = () => (
-  <Icon
-    size={23}
-    name="logout-variant"
+    color={color}
+    style={styles.icon}
   />
 );
 
 function DrawerRoutes() {
   return (
-    <Drawer.Navigator initialRouteName="Back">
-      <Drawer.Screen
-        name="Back"
-        component={MarketplaceScreen}
-        options={{
-          title: 'Marketplace',
-          drawerIcon: marketplaceIcon,
-        }}
-      />
+    <Drawer.Navigator
+      initialRouteName="Back"
+      drawerContent={(props) => <CustomDrawer {...props} />}
+      screenOptions={{
+        drawerActiveBackgroundColor: '#FCF7F0',
+        drawerInactiveBackgroundColor: '#FCF7F0',
+        drawerActiveTintColor: '#34221D',
+        drawerInactiveTintColor: '#34221D',
+        drawerItemStyle: {
+          right: 25, borderTopRightRadius: 25, borderBottomRightRadius: 25, width: '80%',
+        },
+        drawerLabelStyle: { left: 10 },
+      }}
+    >
       <Drawer.Screen
         name="ProfileDrawer"
         component={ProfileScreen}
@@ -70,10 +85,18 @@ function DrawerRoutes() {
         }}
       />
       <Drawer.Screen
+        name="Back"
+        component={MarketplaceScreen}
+        options={{
+          title: 'Marketplace',
+          drawerIcon: marketplaceIcon,
+        }}
+      />
+      <Drawer.Screen
         name="Orders"
         component={OrdersScreen}
         options={{
-          title: 'View Orders',
+          title: 'Past orders',
           drawerIcon: cartIcon,
         }}
       />
@@ -81,19 +104,12 @@ function DrawerRoutes() {
         name="Contact"
         component={ContactScreen}
         options={{
-          title: 'Contact Us',
+          title: 'Contact us',
           drawerIcon: contactIcon,
         }}
       />
-      <Drawer.Screen
-        name="SignInDrawer"
-        component={SignInScreen}
-        options={{
-          title: 'Log Out',
-          drawerIcon: logoutIcon,
-        }}
-      />
     </Drawer.Navigator>
+
   );
 }
 
