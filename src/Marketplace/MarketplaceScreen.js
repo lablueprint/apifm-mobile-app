@@ -112,70 +112,66 @@ export default function MarketplaceScreen({ navigation }) {
   const [lowHighSort, setLowHighSort] = useState(false);
   const [highLowSort, setHighLowSort] = useState(false);
 
-  const sortProduce = async () => {
-    const sortedList = JSON.parse(JSON.stringify(unsortedProduce));
+  const sortProduce = (listToSort) => {
     if (aZSort) {
-      sortedList.sort((x, y) => {
+      listToSort.sort((x, y) => {
         if (x.Name > y.Name) {
           return 1;
         }
         return -1;
       });
     } else if (zASort) {
-      sortedList.sort((x, y) => {
+      listToSort.sort((x, y) => {
         if (x.Name < y.Name) {
           return 1;
         }
         return -1;
       });
     } else if (lowHighSort) {
-      sortedList.sort((x, y) => {
+      listToSort.sort((x, y) => {
         if (Number(x.Price) > Number(y.Price)) {
           return 1;
         }
         return -1;
       });
     } else if (highLowSort) {
-      sortedList.sort((x, y) => {
+      listToSort.sort((x, y) => {
         if (Number(x.Price) < Number(y.Price)) {
           return 1;
         }
         return -1;
       });
     }
-    setProduceList(sortedList);
+    return listToSort;
   };
 
   const [seasonalFilter, setSeasonalFilter] = useState(false);
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
-  const filterProduce = async () => {
+  const filterProduce = (listToFilter) => {
     let filteredList = [];
     if (seasonalFilter) {
-      filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Seasonal'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Seasonal'));
     }
     if (vegetablesFilter) {
-      filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Vegetables'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Vegetables'));
     }
     if (fruitsFilter) {
-      filteredList = filteredList.concat(allProduce.filter((item) => item['Type Tags'] === 'Fruits'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Fruits'));
     }
     if (filteredList.length) {
-      setUnsortedProduce(filteredList);
-      setProduceList(filteredList);
-    } else {
-      setUnsortedProduce(allProduce);
-      setProduceList(allProduce);
+      return filteredList;
     }
+    return listToFilter;
   };
 
   useEffect(() => {
-    sortProduce();
+    setProduceList(sortProduce(filterProduce(unsortedProduce)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
 
   useEffect(() => {
-    filterProduce();
+    setProduceList(sortProduce(filterProduce(allProduce)));
   }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   if (!subscriptions) {
