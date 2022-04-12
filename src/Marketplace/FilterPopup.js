@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
 });
 
 function FilterPopup({
-  aZ, setAZ, zA, setZA, lowHigh, setLowHigh, highLow, setHighLow,
+  setVisibility, aZ, setAZ, zA, setZA, lowHigh, setLowHigh, highLow, setHighLow,
   seasonal, setSeasonal, vegetables, setVegetables, fruits, setFruits,
 }) {
   const chooseSortOption = (sortBool, setSortBool, otherSetSortBools) => {
@@ -33,6 +33,12 @@ function FilterPopup({
 
   return (
     <View style={styles.popupContainer}>
+      <View>
+        <Text>Filter & Sort</Text>
+        <TouchableOpacity>
+          <CheckboxIcon onPress={() => { setVisibility(false); }} name="close" />
+        </TouchableOpacity>
+      </View>
       <View>
         <Text>A to Z (Alphabetical)</Text>
         <TouchableOpacity>
@@ -80,6 +86,7 @@ function FilterPopup({
 }
 
 FilterPopup.propTypes = {
+  setVisibility: PropTypes.func.isRequired,
   aZ: PropTypes.bool.isRequired,
   setAZ: PropTypes.func.isRequired,
   zA: PropTypes.bool.isRequired,

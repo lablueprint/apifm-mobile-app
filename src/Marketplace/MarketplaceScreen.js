@@ -237,6 +237,7 @@ export default function MarketplaceScreen({ navigation }) {
                   contentContainerStyle={styles.filterPopup}
                 >
                   <FilterPopup
+                    setVisibility={setFilterVisibility}
                     aZ={aZSort}
                     setAZ={setAZSort}
                     zA={zASort}
