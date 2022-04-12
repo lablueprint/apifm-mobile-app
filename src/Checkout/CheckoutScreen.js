@@ -104,14 +104,16 @@ export default function CheckoutScreen({ navigation }) {
     setDeliveryDate('January 2023!');
   }, []);
 
-  const pushToOrderTable = (useremail) => {
-    base('Cart TBD').select({ filterByFormula: `({user}="${useremail}")` }).all()
+  const pushToOrderTable = async (useremail) => {
+    const cartIDs = [];
+    await base('Cart TBD').select({ filterByFormula: `({user}="${useremail}")` }).all()
       .then((items) => {
       // eslint-disable-next-line array-callback-return
         items.map((item) => {
+          cartIDs.push(item.get('item id'));
           base('Orders').create({
             user_id: useremail,
-            'produce_id_simple (temp)': 'recpZYWLboES4Uqtr',
+            produce_id: item.get('produce'),
             Quantity: item.get('quantity'),
             'delivery fee (temp)': deliveryFee,
             'fee to be free (temp)': freeFee,
@@ -122,6 +124,13 @@ export default function CheckoutScreen({ navigation }) {
           });
         });
       });
+    await base('Cart TBD').destroy(cartIDs, (err, deletedRecords) => {
+      if (err) {
+        Alert.alert(err.message);
+        return;
+      }
+      console.log('Deleted', deletedRecords.length, 'records');
+    });
   };
   return (
     <View>
