@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import {
+  View, StyleSheet, Alert, ScrollView,
+} from 'react-native';
 import {
   Text, Button,
 } from 'react-native-paper';
@@ -97,6 +99,7 @@ export default function CheckoutScreen({ navigation }) {
   };
 
   useEffect(() => {
+    // hardcoded to helen!
     setOrderDetails('helen@gmail.com');
     calcTotal('helen@gmail.com');
     setDeliveryFee(10);
@@ -124,16 +127,14 @@ export default function CheckoutScreen({ navigation }) {
           });
         });
       });
-    await base('Cart TBD').destroy(cartIDs, (err, deletedRecords) => {
+    base('Cart TBD').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
-        return;
       }
-      console.log('Deleted', deletedRecords.length, 'records');
     });
   };
   return (
-    <View>
+    <ScrollView>
       <View style={[styles.subcontainer, {
         marginTop: '8%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: 'grey', borderBottomWidth: 2,
       }]}
@@ -244,7 +245,7 @@ export default function CheckoutScreen({ navigation }) {
           </Text>
         </View>
       </View>
-      <View style={styles.container}>
+      <View style={[styles.container, { marginBottom: '8%' }]}>
         <Button
           mode="contained"
           style={styles.button}
@@ -256,7 +257,7 @@ export default function CheckoutScreen({ navigation }) {
           Confirm
         </Button>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import {
+  View, StyleSheet, Image, ScrollView,
+} from 'react-native';
 import {
   Text, Button,
 } from 'react-native-paper';
@@ -58,12 +60,13 @@ export default function OrderSuccessfulScreen({ navigation }) {
   };
 
   useEffect(() => {
+    // hardcoded to be helen for order successful and checkout!
     calcTotal('helen@gmail.com');
     setDeliveryFee(10);
   }, []);
 
   return (
-    <View>
+    <ScrollView>
       <View style={[styles.subcontainer, {
         flexDirection: 'column',
         alignItems: 'center',
@@ -101,7 +104,7 @@ export default function OrderSuccessfulScreen({ navigation }) {
           </Text>
         </View>
       </View>
-      <View style={styles.container}>
+      <View style={[styles.container, { marginBottom: '8%' }]}>
         <Button
           mode="contained"
           style={styles.button}
@@ -110,7 +113,7 @@ export default function OrderSuccessfulScreen({ navigation }) {
           Return To Marketplace
         </Button>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
