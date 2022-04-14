@@ -138,6 +138,15 @@ export default function MarketplaceScreen({ navigation }) {
         >
           Cart
         </Button>
+        <Button
+          mode="outlined"
+          style={styles.button}
+          color="white"
+          onPress={() => navigation.navigate('Contact')}
+        >
+          {/* TODO: Remove this button after navig menu is integrated */}
+          Contact
+        </Button>
       </View>
       <View style={styles.centeredContainer}>
         <Title style={styles.titleText}> MarketplaceScreen :) </Title>
@@ -145,10 +154,9 @@ export default function MarketplaceScreen({ navigation }) {
         <Button
           mode="contained"
           style={styles.button}
-          onPress={() => navigation.navigate('Contact')}
+          onPress={() => navigation.navigate('SignIn')}
         >
-          {/* TODO: CHANGE THIS BACK TO SIGN OUT navigates to sign in */}
-          Contact Screen
+          SignIn
         </Button>
       </View>
       <View style={styles.produceCardsContainer}>

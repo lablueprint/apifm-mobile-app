@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     paddingLeft: 20,
     height: 130,
-    textAlignVertical: 'top', // prevent text from going to the centre
+    textAlignVertical: 'top', // prevents text from going to the centre
   },
   sendButton: {
     marginTop: 5,
@@ -123,6 +123,7 @@ export default function ContactScreen({ navigation }) { // unused navigation
         placeholder="Email"
         value={email}
         style={styles.textFields}
+        keyboardType="email-address"
       />
       <TextInput
         onChangeText={setSubject}
