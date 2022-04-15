@@ -137,26 +137,17 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    produceId, favorite, image, name, price, unit, seller, maxQuantity,
+    userId, produceId, favorite, addToFavorites, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
 
   const onPressHeart = () => {
     const newFav = !favorited;
+    if (newFav) {
+      addToFavorites(userId, produceId);
+    }
     setFavorited(newFav);
-    base('Produce').update([
-      {
-        id: produceId,
-        fields: {
-          Favorited: favorited,
-        },
-      },
-    ], (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
   };
 
   const imageurl = { uri: image };
@@ -203,7 +194,7 @@ function ProduceDetailsScreen({ route }) {
       });
       if (quantityToUpdate.length) {
         const newQuantity = quantityToUpdate[0].fields.Quantity + Number(orderQuantity);
-        await base('Cart TBD').update([
+        await base('Cart').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
@@ -216,7 +207,7 @@ function ProduceDetailsScreen({ route }) {
           }
         });
       } else {
-        await base('Cart TBD').create([
+        await base('Cart').create([
           {
             fields: {
               'Produce Record': [produceId],
@@ -323,8 +314,10 @@ function ProduceDetailsScreen({ route }) {
 ProduceDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
+      userId: PropTypes.string.isRequired,
       produceId: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
+      addToFavorites: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,

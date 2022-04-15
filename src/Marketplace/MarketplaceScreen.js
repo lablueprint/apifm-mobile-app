@@ -13,6 +13,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import ProduceGrid from './ProduceGrid';
 import FilterPopup from './FilterPopup';
 
+// constant user id to test for all features
+const userId = 'recR8FzlnnEmQZPAw';
+
 const Airtable = require('airtable');
 
 const airtableConfig = {
@@ -63,6 +66,10 @@ export default function MarketplaceScreen({ navigation }) {
 
   const [filterVisibility, setFilterVisibility] = useState(false);
 
+  // const checkFavorites = () => {
+
+  // };
+
   const getProduce = async () => {
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -92,6 +99,7 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
+        // call airtable from current user to check if the item is favorited or not
         produce.fields.Favorited = false;
         list.push(produce.fields);
       });
@@ -243,7 +251,7 @@ export default function MarketplaceScreen({ navigation }) {
               </Modal>
             </Portal>
           </View>
-          <ProduceGrid navigation={navigation} produceList={produceList} />
+          <ProduceGrid navigation={navigation} userId={userId} produceList={produceList} />
         </View>
       </ScrollView>
     </Provider>

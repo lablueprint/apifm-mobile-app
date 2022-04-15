@@ -5,8 +5,18 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Config from 'react-native-config';
 
+const Airtable = require('airtable');
 const missingImage = require('../assets/missingImage.png');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -60,19 +70,42 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, produceId, favorited, image, name, price, unit, seller, maxQuantity,
+  navigation, userId, produceId, favorited, image, name, price, unit, seller, maxQuantity,
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
-  const onPressCard = () => {
-    navigation.navigate('ProduceDetails', {
-      produceId, favorite, image, name, price, unit, seller, maxQuantity,
+  const addToFavorites = async (user, produce) => {
+    let currentFavorites = [];
+    await base('Users').find(user, (err, record) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      currentFavorites = record.fields.favorites;
     });
+    currentFavorites.push(produce);
+    await base('Users').update([
+      {
+        id: user,
+        fields: {
+          favorites: currentFavorites,
+        },
+      },
+    ]);
   };
 
   const onPressHeart = () => {
     const newFav = !favorite;
+    if (newFav) {
+      addToFavorites(userId, produceId);
+    }
     setFavorite(newFav);
+  };
+
+  const onPressCard = () => {
+    navigation.navigate('ProduceDetails', {
+      produceId, userId, favorite, addToFavorites, image, name, price, unit, seller, maxQuantity,
+    });
   };
 
   const imageurl = { uri: image };
@@ -100,6 +133,7 @@ function ProduceCard({
 
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  userId: PropTypes.string.isRequired,
   produceId: PropTypes.string.isRequired,
   favorited: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,
