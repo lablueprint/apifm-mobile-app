@@ -5,8 +5,6 @@ import {
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-// radiobox-blank
-// radiobox-marked
 
 const styles = StyleSheet.create({
   popupContainer: {

@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+// for Calendar icon import Feather from 'react-native-vector-icons/Feather';
 import ProduceGrid from './ProduceGrid';
 import FilterPopup from './FilterPopup';
 
@@ -59,8 +60,6 @@ export default function MarketplaceScreen({ navigation }) {
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);
-
-  const [subscriptions, setSubscriptions] = useState(false);
 
   const [filterVisibility, setFilterVisibility] = useState(false);
 
@@ -174,95 +173,82 @@ export default function MarketplaceScreen({ navigation }) {
     setProduceList(sortProduce(filterProduce(allProduce)));
   }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
 
-  if (!subscriptions) {
-    return (
-      <Provider>
-        <ScrollView style={styles.container}>
-          <View style={styles.buttonContainer}>
-            <Button
-              mode="outlined"
-              icon="account-circle"
-              style={styles.button}
-              color="white" // Text + icon colour
-              onPress={() => navigation.navigate('Profile')}
-            >
-              Profile
-            </Button>
-            <Button
-              mode="outlined"
-              icon="cart"
-              style={styles.button}
-              color="white"
-              onPress={() => navigation.navigate('Cart')}
-            >
-              Cart
-            </Button>
-          </View>
-          <View style={styles.centeredContainer}>
-            <Title style={styles.titleText}> MarketplaceScreen :) </Title>
-            <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
-            <Button
-              mode="contained"
-              style={styles.button}
-              onPress={() => navigation.navigate('SignIn')}
-            >
-              SIGN OUT
-            </Button>
-            <Button
-              style={styles.button}
-              onPress={() => { setSubscriptions(false); }}
-            >
-              MARKETPLACE
-            </Button>
-            <Button
-              style={styles.button}
-              onPress={() => { setSubscriptions(true); }}
-            >
-              SUBSCRIPTIONS
-            </Button>
+  return (
+    <Provider>
+      <ScrollView style={styles.container}>
+        <View style={styles.buttonContainer}>
+          <Button
+            mode="outlined"
+            icon="account-circle"
+            style={styles.button}
+            color="white" // Text + icon colour
+            onPress={() => navigation.navigate('Profile')}
+          >
+            Profile
+          </Button>
+          <Button
+            mode="outlined"
+            icon="cart"
+            style={styles.button}
+            color="white"
+            onPress={() => navigation.navigate('Cart')}
+          >
+            Cart
+          </Button>
+        </View>
+        <View style={styles.centeredContainer}>
+          <Title style={styles.titleText}> MarketplaceScreen :) </Title>
+          <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
+          <Button
+            mode="contained"
+            style={styles.button}
+            onPress={() => navigation.navigate('SignIn')}
+          >
+            SIGN OUT
+          </Button>
+        </View>
+        <View>
+          <View>
+            <TouchableOpacity>
+              <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
+            </TouchableOpacity>
+
           </View>
           <View>
-            <View>
-              <TouchableOpacity>
-                <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
-              </TouchableOpacity>
-            </View>
-            <View>
-              <Portal>
-                <Modal
-                  visible={filterVisibility}
-                  onDismiss={() => {
-                    setFilterVisibility(false);
-                  }}
-                  contentContainerStyle={styles.filterPopup}
-                >
-                  <FilterPopup
-                    setVisibility={setFilterVisibility}
-                    aZ={aZSort}
-                    setAZ={setAZSort}
-                    zA={zASort}
-                    setZA={setZASort}
-                    lowHigh={lowHighSort}
-                    setLowHigh={setLowHighSort}
-                    highLow={highLowSort}
-                    setHighLow={setHighLowSort}
-                    seasonal={seasonalFilter}
-                    setSeasonal={setSeasonalFilter}
-                    vegetables={vegetablesFilter}
-                    setVegetables={setVegetablesFilter}
-                    fruits={fruitsFilter}
-                    setFruits={setFruitsFilter}
-                  />
-                </Modal>
-              </Portal>
-            </View>
-            <ProduceGrid navigation={navigation} produceList={produceList} />
+            <Portal>
+              <Modal
+                visible={filterVisibility}
+                onDismiss={() => {
+                  setFilterVisibility(false);
+                }}
+                contentContainerStyle={styles.filterPopup}
+              >
+                <FilterPopup
+                  setVisibility={setFilterVisibility}
+                  aZ={aZSort}
+                  setAZ={setAZSort}
+                  zA={zASort}
+                  setZA={setZASort}
+                  lowHigh={lowHighSort}
+                  setLowHigh={setLowHighSort}
+                  highLow={highLowSort}
+                  setHighLow={setHighLowSort}
+                  seasonal={seasonalFilter}
+                  setSeasonal={setSeasonalFilter}
+                  vegetables={vegetablesFilter}
+                  setVegetables={setVegetablesFilter}
+                  fruits={fruitsFilter}
+                  setFruits={setFruitsFilter}
+                />
+              </Modal>
+            </Portal>
           </View>
-        </ScrollView>
-      </Provider>
+          <ProduceGrid navigation={navigation} produceList={produceList} />
+        </View>
+      </ScrollView>
+    </Provider>
 
-    );
-  }
+  );
 }
 
 MarketplaceScreen.propTypes = {
