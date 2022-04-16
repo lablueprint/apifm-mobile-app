@@ -42,12 +42,12 @@ const styles = StyleSheet.create({
     marginTop: '4%',
   },
   bodyText: {
-    marginLeft: 5,
-    marginRight: 5,
+    marginLeft: '0%',
+    marginRight: '0%',
   },
   button: {
     width: '30%',
-    marginTop: 10,
+    marginTop: '4%',
     backgroundColor: '#0492c2',
   },
   scrollView: {
