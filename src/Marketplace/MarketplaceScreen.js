@@ -66,11 +66,13 @@ export default function MarketplaceScreen({ navigation }) {
       records.forEach((record) => {
         const produce = record;
 
+        produce.fields.produceId = produce.id;
+
         if (!('Name' in record.fields)) {
           produce.fields.Name = '';
         }
         if (!('Image' in record.fields)) {
-          produce.fields.Image = [{ url: 'test' }];
+          produce.fields.Image = [{ url: '' }];
         }
         if (!('Quantity' in record.fields)) {
           produce.fields.Quantity = 1;
@@ -81,16 +83,13 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Seller' in record.fields)) {
           produce.fields.Seller = 'Unknown';
         }
-        if (!('Minimum Quantity' in record.fields)) {
-          produce.fields['Minimum Quantity'] = 1;
-        }
         if (!('Price' in record.fields)) {
           produce.fields.Price = 'Unknown';
         }
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-        produce.fields.Favorited = 0;
+        produce.fields.Favorited = false;
         list.push(produce.fields);
       });
       setProduceList(list);
@@ -103,11 +102,14 @@ export default function MarketplaceScreen({ navigation }) {
       style={styles.produceCard}
       key={produce.Name}
       navigation={navigation}
+      produceId={produce.produceId}
       favorited={produce.Favorited}
       image={produce.Image[0].url}
       name={produce.Name}
       price={produce.Price}
       unit={produce.Unit}
+      seller={produce.Seller}
+      maxQuantity={produce.Quantity}
     />
   ));
 
@@ -136,6 +138,15 @@ export default function MarketplaceScreen({ navigation }) {
         >
           Cart
         </Button>
+        <Button
+          mode="outlined"
+          style={styles.button}
+          color="white"
+          onPress={() => navigation.navigate('Contact')}
+        >
+          {/* TODO: Remove this button after navig menu is integrated */}
+          Contact
+        </Button>
       </View>
       <View style={styles.centeredContainer}>
         <Title style={styles.titleText}> MarketplaceScreen :) </Title>
@@ -145,7 +156,7 @@ export default function MarketplaceScreen({ navigation }) {
           style={styles.button}
           onPress={() => navigation.navigate('SignIn')}
         >
-          SIGN OUT
+          SignIn
         </Button>
       </View>
       <View style={styles.produceCardsContainer}>

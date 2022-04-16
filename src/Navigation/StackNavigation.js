@@ -7,6 +7,7 @@ import LandingPage from '../SignUp/LandingPage';
 import LoginScreen from '../SignUp/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
+import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
@@ -22,7 +23,14 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
-      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
+      <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen
+        name="ProduceDetails"
+        component={ProduceDetailsScreen}
+        options={{
+          title: '',
+        }}
+      />
     </stackNavig.Navigator>
   );
 }
