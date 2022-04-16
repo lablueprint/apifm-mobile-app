@@ -157,6 +157,8 @@ export default function SignUpScreen({ navigation }) {
   const handleSignUp = () => {
     if (address === '') {
       Alert.alert('Please enter the Address to proceed');
+    } else if (isNaN(apt)) {
+      Alert.alert('Please enter a numerical Apt # to proceed');
     } else if (zip === '' || isNaN(zip)) {
       Alert.alert('Please enter the Zipcode to proceed');
     } else {
@@ -170,16 +172,17 @@ export default function SignUpScreen({ navigation }) {
             organization,
             'personal phone': number,
             'business phone': busPhone,
-            recipient,
+            'delivery recipient': recipient,
             address,
-            apt,
-            zip,
-            instr,
+            'apartment number': parseInt(apt, 10),
+            zipcode: parseInt(zip, 10),
+            instructions: instr,
           },
         },
-      ], (err) => {
-        if (err) {
-          Alert.alert(err, err.message);
+      ], (error) => {
+        if (error) {
+          // Alert.alert(err, err.message);
+          Alert.alert('Error!', error.message);
         }
       });
       setFirstName('');
@@ -295,6 +298,7 @@ export default function SignUpScreen({ navigation }) {
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            passwordRules="minlength: 8;"
             returnKeyType="next"
             secureTextEntry={!!hidePass}
             onSubmitEditing={() => { confirmPasswordInput.current.focus(); }}
@@ -400,6 +404,7 @@ export default function SignUpScreen({ navigation }) {
           style={styles.textInput}
           value={apt}
           onChangeText={setApt}
+          textContentType="postalCode"
           placeholder="Apt # (optional)"
           returnKeyType="next"
           onSubmitEditing={() => { zipInput.current.focus(); }}
