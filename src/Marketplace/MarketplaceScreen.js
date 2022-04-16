@@ -14,7 +14,7 @@ import ProduceGrid from './ProduceGrid';
 import FilterPopup from './FilterPopup';
 
 // constant user id to test for all features
-const userId = 'recR8FzlnnEmQZPAw';
+const userId = 'rec8yzLkLY6VrCKOX';
 
 const Airtable = require('airtable');
 

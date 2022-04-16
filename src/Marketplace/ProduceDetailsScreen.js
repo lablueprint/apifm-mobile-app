@@ -177,12 +177,11 @@ function ProduceDetailsScreen({ route }) {
     try {
       setVisible(true);
       const quantityToUpdate = [];
-      await base('Cart TBD').select({
+      await base('CART V3').select({
       }).eachPage((records, fetchNextPage) => {
         records.forEach(
           (record) => {
-            if (produceId === record.fields['Produce Record'][0] && record.fields['Users UPDATED'][0] === 'recueNGdOeb1eoCff') {
-            // currently updates only for users with Chandra's ID
+            if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
               quantityToUpdate.push(record);
             }
             fetchNextPage();
@@ -193,12 +192,12 @@ function ProduceDetailsScreen({ route }) {
         );
       });
       if (quantityToUpdate.length) {
-        const newQuantity = quantityToUpdate[0].fields.Quantity + Number(orderQuantity);
-        await base('Cart').update([
+        const newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
+        await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
-              Quantity: newQuantity,
+              quantity: newQuantity,
             },
           },
         ], (err) => {
@@ -207,12 +206,12 @@ function ProduceDetailsScreen({ route }) {
           }
         });
       } else {
-        await base('Cart').create([
+        await base('CART V3').create([
           {
             fields: {
-              'Produce Record': [produceId],
-              Quantity: Number(orderQuantity),
-              'Users UPDATED': ['recueNGdOeb1eoCff'],
+              Produce: [produceId],
+              quantity: Number(orderQuantity),
+              shopper: [userId],
             },
           },
         ], (err) => {
