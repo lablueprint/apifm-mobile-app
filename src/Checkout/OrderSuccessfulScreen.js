@@ -47,12 +47,12 @@ export default function OrderSuccessfulScreen({ navigation }) {
   const [deliveryFee, setDeliveryFee] = useState(0);
 
   const calcTotal = (useremail) => {
-    base('Cart TBD').select({ filterByFormula: `({user}='${useremail}')` }).all()
+    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         let sum = 0;
         // eslint-disable-next-line array-callback-return
         items.map((item) => {
-          const price = item.get('price of produce');
+          const price = item.get('price');
           sum += item.fields.quantity * price;
         });
         setTotal(sum);
@@ -100,7 +100,7 @@ export default function OrderSuccessfulScreen({ navigation }) {
           </Text>
           <Text style={[styles.titleText, { marginRight: '0%' }]}>
             $
-            {total + deliveryFee}
+            {parseFloat(total + deliveryFee).toFixed(2)}
           </Text>
         </View>
       </View>

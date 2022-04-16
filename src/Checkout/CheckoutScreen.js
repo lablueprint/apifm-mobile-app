@@ -71,13 +71,13 @@ export default function CheckoutScreen({ navigation }) {
   const [refresh, setRefresh] = useState(0);
 
   const calcTotal = (useremail) => {
-    base('Cart TBD').select({ filterByFormula: `({user}='${useremail}')` }).all()
+    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         let sum = 0;
         let c = 0;
         // eslint-disable-next-line array-callback-return
         items.map((item) => {
-          const price = item.get('price of produce');
+          const price = item.get('price');
           sum += item.fields.quantity * price;
           c += 1;
         });
@@ -106,9 +106,9 @@ export default function CheckoutScreen({ navigation }) {
         }
       });
   };
-  const getItems = () => {
+  const getItems = (useremail) => {
     const list = [];
-    base('Cart').select({ filterByFormula: "({users}='helen@gmail.com')" }).eachPage((records, fetchNextPage) => {
+    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const item = record;
         console.log(record.fields);
@@ -118,23 +118,25 @@ export default function CheckoutScreen({ navigation }) {
       fetchNextPage();
     });
   };
+
   const products = itemList.map((item) => (
     <CartProduct
       itemID={item.item_id}
       key={item.item_id}
       setRefresh={setRefresh}
       refresh={refresh}
-      name={item.name}
-      price={item.price}
-      type={item.type}
+      name={item.name[0]}
+      price={item.price[0]}
+      type={item.unit[0]}
       initialQuantity={String(item.quantity)}
     />
   ));
+
   useEffect(() => {
     // hardcoded to helen!
     setOrderDetails('helen@gmail.com');
     calcTotal('helen@gmail.com');
-    getItems();
+    getItems('helen@gmail.com');
     setDeliveryFee(10);
     setFreeFee(20);
     setDeliveryDate('January 2023!');
@@ -142,14 +144,14 @@ export default function CheckoutScreen({ navigation }) {
 
   const pushToOrderTable = async (useremail) => {
     const cartIDs = [];
-    await base('Cart TBD').select({ filterByFormula: `({user}="${useremail}")` }).all()
+    await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
       // eslint-disable-next-line array-callback-return
         items.map((item) => {
-          cartIDs.push(item.get('item id'));
+          cartIDs.push(item.get('item_id'));
           base('Orders').create({
             user_id: useremail,
-            produce_id: item.get('produce'),
+            produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
             'delivery fee (temp)': deliveryFee,
             'fee to be free (temp)': freeFee,
@@ -160,10 +162,13 @@ export default function CheckoutScreen({ navigation }) {
           });
         });
       });
-    base('Cart TBD').destroy(cartIDs, (err) => {
+    console.log('cartIDS:');
+    console.log(cartIDs);
+    base('CART V3').destroy(cartIDs, (err, deletedRecord) => {
       if (err) {
         Alert.alert(err.message);
       }
+      console.log(deletedRecord);
     });
   };
   return (

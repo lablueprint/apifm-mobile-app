@@ -186,11 +186,12 @@ function ProduceDetailsScreen({ route }) {
     try {
       setVisible(true);
       const quantityToUpdate = [];
-      await base('Cart TBD').select({
+      await base('CART V3').select({
       }).eachPage((records, fetchNextPage) => {
         records.forEach(
-          (record) => {
-            if (produceId === record.fields['Produce Record'][0] && record.fields['Users UPDATED'][0] === 'recueNGdOeb1eoCff') {
+          (record) => { // not sure if we need the [0] because i changed the airtable
+            // shopper id re-hardcoded to helen
+            if (produceId === record.fields.Produce[0] && record.fields['shopper id'][0] === 'recIpBFqr2EXNbS7d') {
             // currently updates only for users with Chandra's ID
               quantityToUpdate.push(record);
             }
@@ -203,11 +204,11 @@ function ProduceDetailsScreen({ route }) {
       });
       if (quantityToUpdate.length) {
         const newQuantity = quantityToUpdate[0].fields.Quantity + Number(orderQuantity);
-        await base('Cart TBD').update([
+        await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
-              Quantity: newQuantity,
+              quantity: newQuantity,
             },
           },
         ], (err) => {
@@ -216,12 +217,12 @@ function ProduceDetailsScreen({ route }) {
           }
         });
       } else {
-        await base('Cart TBD').create([
+        await base('CART V3').create([
           {
             fields: {
-              'Produce Record': [produceId],
-              Quantity: Number(orderQuantity),
-              'Users UPDATED': ['recueNGdOeb1eoCff'],
+              Produce: [produceId],
+              quantity: Number(orderQuantity),
+              shopper: ['recIpBFqr2EXNbS7d'],
             },
           },
         ], (err) => {

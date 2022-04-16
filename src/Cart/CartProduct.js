@@ -137,7 +137,7 @@ export default function CartProduct(props) {
   const [quantity, setQuantity] = React.useState(String(initialQuantity));
 
   const getItem = () => {
-    base('Cart').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
+    base('CART V3').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
       .then((records) => {
         const newItem = records[0].fields;
         setItem(newItem);
@@ -149,7 +149,7 @@ export default function CartProduct(props) {
   const handleQuantityChange2 = (newQuantity) => {
     setQuantity(newQuantity);
     console.log(`QUANTITY GOT CHANGED${quantity}`);
-    base('Cart').update([
+    base('CART V3').update([
       {
         id: String(itemID),
         fields: {
@@ -173,7 +173,7 @@ export default function CartProduct(props) {
   }, []);
 
   const deleteItem = () => {
-    base('Cart').destroy([itemID], (err, deletedRecords) => {
+    base('CART V3').destroy([itemID], (err, deletedRecords) => {
       if (err) {
         console.error(err);
         return;

@@ -84,7 +84,7 @@ export default function CartScreen({ navigation }) {
 
   const getItems = () => {
     const list = [];
-    base('Cart').select({ filterByFormula: "({users}='helen@gmail.com')" }).eachPage((records, fetchNextPage) => {
+    base('CART V3').select({ filterByFormula: "({shopper}='helen@gmail.com')" }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const item = record;
         console.log(record.fields);
@@ -96,7 +96,7 @@ export default function CartScreen({ navigation }) {
   };
 
   const calcTotal = () => {
-    base('Cart').select({ filterByFormula: "({users}='helen@gmail.com')" }).all()
+    base('CART V3').select({ filterByFormula: "({shopper}='helen@gmail.com')" }).all()
       .then((items) => {
         let sum = 0;
         // eslint-disable-next-line array-callback-return
@@ -114,9 +114,9 @@ export default function CartScreen({ navigation }) {
       key={item.item_id}
       setRefresh={setRefresh}
       refresh={refresh}
-      name={item.name}
-      price={item.price}
-      type={item.type}
+      name={item.name[0]}
+      price={item.price[0]}
+      type={item.unit[0]}
       initialQuantity={String(item.quantity)}
     />
   ));
