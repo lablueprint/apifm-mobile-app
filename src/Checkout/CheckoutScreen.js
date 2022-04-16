@@ -167,7 +167,7 @@ export default function CheckoutScreen({ navigation }) {
     });
   };
   return (
-    <ScrollView>
+    <View>
       <View style={[styles.subcontainer, {
         marginTop: '8%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: 'grey', borderBottomWidth: 2,
       }]}
@@ -210,11 +210,10 @@ export default function CheckoutScreen({ navigation }) {
             {' '}
             {deliveryDate}
           </Text>
-
         </View>
-        <ScrollView style={styles.scrollView}>
+        {/* <ScrollView style={styles.scrollView}>
           {products}
-        </ScrollView>
+        </ScrollView> */}
       </View>
       <View style={[styles.subcontainer]}>
         <View style={styles.title}>
@@ -292,7 +291,7 @@ export default function CheckoutScreen({ navigation }) {
           Confirm
         </Button>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
