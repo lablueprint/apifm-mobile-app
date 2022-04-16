@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TextInput, Alert, Text, Image,
+  View, StyleSheet, TextInput, Alert, Text, Image, TouchableOpacity,
 } from 'react-native';
 import {
   Title, Button,
@@ -9,6 +9,7 @@ import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Assets } from 'react-navigation-stack';
 
 const Airtable = require('airtable');
 
@@ -20,6 +21,8 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const headerImage = require('../assets/imgs/header.jpg');
+
+const backArrow = require('../assets/imgs/back_arrow.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -357,14 +360,10 @@ export default function SignUpScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.text}>
-        <Button
-          style={styles.back}
-          onPress={() => {
-            setPage1(!page1);
-          }}
-        >
-          Back
-        </Button>
+
+        <TouchableOpacity onPress={() => { setPage1(!page1); }}>
+          <Image source={backArrow} />
+        </TouchableOpacity>
         <Image style={styles.image} source={headerImage} />
       </View>
 
