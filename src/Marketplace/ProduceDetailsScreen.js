@@ -144,9 +144,7 @@ function ProduceDetailsScreen({ route }) {
 
   const onPressHeart = () => {
     const newFav = !favorited;
-    if (newFav) {
-      addToFavorites(userId, produceId);
-    }
+    addToFavorites(userId, produceId, newFav);
     setFavorited(newFav);
   };
 

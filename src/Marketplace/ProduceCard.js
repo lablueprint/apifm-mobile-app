@@ -74,31 +74,36 @@ function ProduceCard({
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
-  const addToFavorites = async (user, produce) => {
-    let currentFavorites = [];
+  const addToFavorites = async (user, produce, favcondition) => {
     await base('Users').find(user, (err, record) => {
       if (err) {
         console.error(err);
         return;
       }
-      currentFavorites = record.fields.favorites;
-    });
-    currentFavorites.push(produce);
-    await base('Users').update([
-      {
-        id: user,
-        fields: {
-          favorites: currentFavorites,
+      let currentFavorites = record.fields.favorites;
+      if (typeof currentFavorites === 'undefined') {
+        currentFavorites = [];
+      }
+      if (favcondition) {
+        currentFavorites.push(produce);
+      } else {
+        currentFavorites = currentFavorites.filter((item) => item !== produce);
+      }
+      console.log(currentFavorites);
+      base('Users').update([
+        {
+          id: user,
+          fields: {
+            favorites: currentFavorites,
+          },
         },
-      },
-    ]);
+      ]);
+    });
   };
 
   const onPressHeart = () => {
     const newFav = !favorite;
-    if (newFav) {
-      addToFavorites(userId, produceId);
-    }
+    addToFavorites(userId, produceId, newFav);
     setFavorite(newFav);
   };
 
