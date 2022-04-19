@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView, Text,
+  View, StyleSheet, ScrollView,
 } from 'react-native';
 import {
-  Title, Button, Switch,
+  Title, Button,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
 
 import CartProduct from './CartProduct';
 
-// airtable
 const Airtable = require('airtable');
 
 const airtableConfig = {
@@ -21,7 +20,6 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-// style sheet
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -33,7 +31,6 @@ const styles = StyleSheet.create({
   },
   productsContainer: {
     flex: 1,
-    // justifyContent: 'start',
     alignItems: 'center',
     marginTop: '5%',
   },
@@ -75,19 +72,16 @@ const styles = StyleSheet.create({
   },
 });
 
-// const fakeItems = { name: 'daikon', quantity: '2' };
-
 export default function CartScreen({ navigation }) {
   const [itemList, setItemList] = useState([]);
   const [refresh, setRefresh] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
 
-  const getItems = () => {
+  const getItems = (useremail) => {
     const list = [];
-    base('CART V3').select({ filterByFormula: "({shopper}='helen@gmail.com')" }).eachPage((records, fetchNextPage) => {
+    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const item = record;
-        console.log(record.fields);
         list.push(item.fields);
       });
       setItemList(list);
@@ -95,8 +89,8 @@ export default function CartScreen({ navigation }) {
     });
   };
 
-  const calcTotal = () => {
-    base('CART V3').select({ filterByFormula: "({shopper}='helen@gmail.com')" }).all()
+  const calcTotal = (useremail) => {
+    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         let sum = 0;
         // eslint-disable-next-line array-callback-return
@@ -122,8 +116,9 @@ export default function CartScreen({ navigation }) {
   ));
 
   useEffect(() => {
-    getItems();
-    calcTotal();
+    // TODO: replace hardcoded email with logged-in user data
+    getItems('helen@gmail.com');
+    calcTotal('helen@gmail.com');
   }, [refresh]);
 
   return (
@@ -131,7 +126,6 @@ export default function CartScreen({ navigation }) {
       <Title style={styles.titleText}>
         Current Cart
       </Title>
-      {/* probably need this later <Text style={styles.bodyext}> */}
       <ScrollView style={styles.scrollView}>
         {products}
       </ScrollView>
@@ -140,8 +134,7 @@ export default function CartScreen({ navigation }) {
           Subtotal
         </Title>
         <Title style={styles.subtotal}>
-          $
-          {subtotal}
+          {`$ ${parseFloat(subtotal).toFixed(2)}`}
         </Title>
       </View>
       <Button

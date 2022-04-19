@@ -48,6 +48,32 @@ const styles = StyleSheet.create({
   subcontainer: {
     marginHorizontal: '8%',
   },
+  shippingContainer: {
+    marginTop: '8%',
+    marginHorizontal: '8%',
+    marginBottom: '4%',
+    borderBottomColor: 'grey',
+    borderBottomWidth: 2,
+  },
+  shippingSubcontainer: {
+    marginLeft: '0%',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginVertical: '2%',
+  },
+  deliveryFeeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: '0%',
+    marginRight: '0%',
+  },
+  conditionalShippingFeeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginLeft: '0%',
+    marginRight: '30%',
+    marginBottom: '3%',
+  },
 });
 
 const Airtable = require('airtable');
@@ -111,7 +137,6 @@ export default function CheckoutScreen({ navigation }) {
     base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const item = record;
-        console.log(record.fields);
         list.push(item.fields);
       });
       setItemList(list);
@@ -133,7 +158,7 @@ export default function CheckoutScreen({ navigation }) {
   ));
 
   useEffect(() => {
-    // hardcoded to helen!
+    // TODO: replace hardcoded email with logged in user info
     setOrderDetails('helen@gmail.com');
     calcTotal('helen@gmail.com');
     getItems('helen@gmail.com');
@@ -162,21 +187,15 @@ export default function CheckoutScreen({ navigation }) {
           });
         });
       });
-    console.log('cartIDS:');
-    console.log(cartIDs);
-    base('CART V3').destroy(cartIDs, (err, deletedRecord) => {
+    base('CART V3').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
       }
-      console.log(deletedRecord);
     });
   };
   return (
     <View>
-      <View style={[styles.subcontainer, {
-        marginTop: '8%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: 'grey', borderBottomWidth: 2,
-      }]}
-      >
+      <View style={styles.shippingContainer}>
         <Text style={[styles.title, { fontWeight: '700', marginLeft: '0%', marginBottom: '0%' }]}>
           Shipping Address
         </Text>
@@ -187,14 +206,9 @@ export default function CheckoutScreen({ navigation }) {
           <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
             <Icon size={25} color="grey" name="location-sharp" />
           </View>
-          <View style={{
-            marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
-          }}
-          >
+          <View style={styles.shippingSubcontainer}>
             <Text style={[styles.title, { fontWeight: '600' }]}>
-              {shippingAddress.address}
-              ,
-              {shippingAddress.apartmentLine}
+              {`${shippingAddress.address}, ${shippingAddress.apartmentLine}`}
             </Text>
             <Text style={styles.subdetails}>
               {shippingAddress.zipcode}
@@ -211,14 +225,14 @@ export default function CheckoutScreen({ navigation }) {
             Review Items
           </Text>
           <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-            Delivery Date:
-            {' '}
-            {deliveryDate}
+            {`Delivery Date: ${deliveryDate}`}
           </Text>
         </View>
-        {/* <ScrollView style={styles.scrollView}>
-          {products}
-        </ScrollView> */}
+        <ScrollView style={styles.scrollView}>
+          <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+            TODO: Product list goes here
+          </Text>
+        </ScrollView>
       </View>
       <View style={[styles.subcontainer]}>
         <View style={styles.title}>
@@ -231,43 +245,29 @@ export default function CheckoutScreen({ navigation }) {
         </View>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-            Items(
-            {count}
-            )
+            {`Items(${count})`}
           </Text>
           <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-            $
-            {parseFloat(total).toFixed(2)}
+            {`$ ${parseFloat(total).toFixed(2)}`}
           </Text>
         </View>
-        <View style={{
-          flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '0%',
-        }}
-        >
+        <View style={styles.deliveryFeeContainer}>
           <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
             Delivery Fee:
           </Text>
           <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-            $
-            {parseFloat(deliveryFee).toFixed(2)}
+            {`$ ${parseFloat(deliveryFee).toFixed(2)}`}
           </Text>
         </View>
         {deliveryFee > 0
         && (
-        <View style={{
-          flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '30%', marginBottom: '3%',
-        }}
-        >
+        <View style={styles.conditionalShippingFeeContainer}>
           <Text style={[styles.subdetails, {
             color: '#C4C4C4',
             marginLeft: '0%',
           }]}
           >
-            Add
-            {' $'}
-            {parseFloat(freeFee).toFixed(2)}
-            {' '}
-            to qualify for free shipping!
+            {`Add $ ${parseFloat(freeFee).toFixed(2)} to qualify for free shipping!`}
           </Text>
         </View>
         )}
@@ -279,8 +279,7 @@ export default function CheckoutScreen({ navigation }) {
             Order Total
           </Text>
           <Text style={[styles.title, { marginRight: '0%' }]}>
-            $
-            {parseFloat(total + deliveryFee).toFixed(2)}
+            {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
           </Text>
         </View>
       </View>
@@ -289,6 +288,7 @@ export default function CheckoutScreen({ navigation }) {
           mode="contained"
           style={styles.button}
           onPress={() => {
+            // TODO: replace hardcoded email with logged in user info
             pushToOrderTable('helen@gmail.com');
             navigation.navigate('Order Successful');
           }}

@@ -124,7 +124,7 @@ export default function MarketplaceScreen({ navigation }) {
           mode="outlined"
           icon="account-circle"
           style={styles.button}
-          color="white" // Text + icon colour
+          color="white"
           onPress={() => navigation.navigate('Profile')}
         >
           Profile
@@ -147,7 +147,7 @@ export default function MarketplaceScreen({ navigation }) {
           style={styles.button}
           onPress={() => navigation.navigate('SignIn')}
         >
-          SIGN OUT
+          Sign Out
         </Button>
       </View>
       <View style={styles.produceCardsContainer}>

@@ -222,6 +222,7 @@ function ProduceDetailsScreen({ route }) {
             fields: {
               Produce: [produceId],
               quantity: Number(orderQuantity),
+              // TODO: replace shopperid with logged in user data
               shopper: ['recIpBFqr2EXNbS7d'],
             },
           },

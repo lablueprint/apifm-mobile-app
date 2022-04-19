@@ -14,6 +14,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  headerContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: '8%',
+    marginHorizontal: '16%',
+    marginBottom: '8%',
+  },
   titleText: {
     marginBottom: 10,
     fontSize: 18,
@@ -60,21 +67,14 @@ export default function OrderSuccessfulScreen({ navigation }) {
   };
 
   useEffect(() => {
-    // hardcoded to be helen for order successful and checkout!
+    // TODO: replace hardcoded email with logged in user info
     calcTotal('helen@gmail.com');
     setDeliveryFee(10);
   }, []);
 
   return (
     <ScrollView>
-      <View style={[styles.subcontainer, {
-        flexDirection: 'column',
-        alignItems: 'center',
-        marginTop: '8%',
-        marginHorizontal: '16%',
-        marginBottom: '8%',
-      }]}
-      >
+      <View style={styles.headerContainer}>
         <Image style={{ width: 275, height: 275 }} source={logo} />
         <Text style={[styles.bodyText, { marginLeft: '0%', marginTop: '8%' }]}>
           Your order has been placed! Our staff will contact you alskjfslfjd lsjfhl sjdfljs
@@ -90,17 +90,16 @@ export default function OrderSuccessfulScreen({ navigation }) {
         >
           Order Overview
         </Text>
-        <Text style={[styles.bodyText, { marginBottom: '8%' }]}> Cart (multiple produce cards) reused here  </Text>
+        <Text style={[styles.bodyText, { marginBottom: '8%' }]}> TODO: Cart (multiple produce cards) reused here  </Text>
         <View style={{
           flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
         }}
         >
-          <Text style={[styles.titleText, { marginLeft: '0%' }]}>
+          <Text style={styles.titleText}>
             Total due at delivery:
           </Text>
-          <Text style={[styles.titleText, { marginRight: '0%' }]}>
-            $
-            {parseFloat(total + deliveryFee).toFixed(2)}
+          <Text style={styles.titleText}>
+            {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
           </Text>
         </View>
       </View>

@@ -1,4 +1,3 @@
-/* eslint-disable max-len */
 import React, { useState, useEffect } from 'react';
 import {
   View, StyleSheet, Image,
@@ -47,7 +46,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   quantityContainer: {
-    // flex: 1,
     flexDirection: 'row',
     height: 65,
   },
@@ -133,22 +131,18 @@ export default function CartProduct(props) {
     initialQuantity,
   } = props;
 
-  const [item, setItem] = useState([]);
-  const [quantity, setQuantity] = React.useState(String(initialQuantity));
+  const [quantity, setQuantity] = useState(String(initialQuantity));
 
   const getItem = () => {
     base('CART V3').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
       .then((records) => {
         const newItem = records[0].fields;
-        setItem(newItem);
         setQuantity(String(newItem.quantity));
-        console.log(`new item${newItem.quantity}`);
       });
   };
 
-  const handleQuantityChange2 = (newQuantity) => {
+  const handleQuantityChange = (newQuantity) => {
     setQuantity(newQuantity);
-    console.log(`QUANTITY GOT CHANGED${quantity}`);
     base('CART V3').update([
       {
         id: String(itemID),
@@ -156,14 +150,10 @@ export default function CartProduct(props) {
           quantity: Number(newQuantity),
         },
       },
-    ], (err, records) => {
+    ], (err) => {
       if (err) {
         console.error(err);
-        return;
       }
-      records.forEach((record) => {
-        console.log(record.get('users'));
-      });
     });
     setRefresh(refresh + 1);
   };
@@ -173,16 +163,14 @@ export default function CartProduct(props) {
   }, []);
 
   const deleteItem = () => {
-    base('CART V3').destroy([itemID], (err, deletedRecords) => {
+    base('CART V3').destroy([itemID], (err) => {
       if (err) {
         console.error(err);
-        return;
       }
-      console.log('Deleted', deletedRecords.length, 'records');
     });
     setRefresh(refresh + 1);
   };
-  // yay product
+
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={image} />
@@ -195,7 +183,7 @@ export default function CartProduct(props) {
             keyboardType="numeric"
             value={quantity}
             style={styles.quantityBox}
-            onChangeText={handleQuantityChange2}
+            onChangeText={handleQuantityChange}
           />
           <Text style={styles.itemQuantityType}>
             {type}
@@ -204,14 +192,10 @@ export default function CartProduct(props) {
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          $
-          {(price) * quantity}
+          {`$ ${price * quantity}`}
         </Text>
         <Text style={styles.itemPricePer}>
-          $
-          {price}
-          {' '}
-          ea
+          {`$ ${price} ${type}`}
         </Text>
         <Button
           style={styles.removeItemButton}
