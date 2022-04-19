@@ -15,7 +15,7 @@ export default function StackNavigation() {
     <stackNavig.Navigator initialRouteName="SignIn">
       <stackNavig.Screen name="SignIn" component={SignInScreen} />
       <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
-      <stackNavig.Screen name="Profile" component={ProfileScreen} />
+      <stackNavig.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen
