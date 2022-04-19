@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView,
+  View, StyleSheet, ScrollView, Alert,
 } from 'react-native';
 import {
   Title, Text, Button,
@@ -65,7 +65,6 @@ export default function MarketplaceScreen({ navigation }) {
     base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const produce = record;
-
         produce.fields.produceId = produce.id;
 
         if (!('Name' in record.fields)) {
@@ -94,6 +93,10 @@ export default function MarketplaceScreen({ navigation }) {
       });
       setProduceList(list);
       fetchNextPage();
+    }, (err) => {
+       if (err) {
+         Alert.alert(err.message);
+       }
     });
   };
 
@@ -112,6 +115,7 @@ export default function MarketplaceScreen({ navigation }) {
       maxQuantity={produce.Quantity}
     />
   ));
+  console.log("prod" + produceCards);
 
   useEffect(() => {
     getProduce();
@@ -137,6 +141,15 @@ export default function MarketplaceScreen({ navigation }) {
           onPress={() => navigation.navigate('Cart')}
         >
           Cart
+        </Button>
+        <Button
+          mode="outlined"
+          icon="transcribe"
+          style={styles.button}
+          color="white"
+          onPress={() => navigation.navigate('Orders')}
+        >
+            Orders
         </Button>
       </View>
       <View style={styles.centeredContainer}>
