@@ -138,19 +138,76 @@ export default function SignUpScreen({ navigation }) {
 
   const [page1, setPage1] = useState(true);
 
+  const [validEmail, setValidEmail] = useState(false);
+
+  const validateEmail = (text) => {
+    // console.log(text);
+    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      // console.log('Email is Not Correct');
+      setEmail(text);
+      setValidEmail(false);
+      return false;
+    }
+
+    setEmail(text);
+    setValidEmail(true);
+
+    // console.log('Email is Correct');
+  };
+
+  const onTextChange = (val, text) => {
+    const cleaned = (`${text}`).replace(/\D/g, '');
+    const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      const intlCode = (match[1] ? '+1 ' : '');
+      const num = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+      // console.log(num.toString());
+      if (cleaned.length > 10) {
+        Alert.alert('Please enter a valid phone number');
+      } else if (val === 'number') {
+        setNumber(num.toString());
+      } else {
+        setBusPhone(num.toString());
+      }
+      return (true);
+    }
+
+    if (cleaned.length > 10) {
+      Alert.alert('Please enter a valid phone number');
+    } else if (val === 'number') {
+      setNumber(text.toString());
+    } else {
+      setBusPhone(text.toString());
+    }
+
+    if ((val === 'busPhone') && (text.length === 0)) {
+      return (true);
+    }
+
+    return (false);
+  };
+
   const checkInputs = () => {
+    // console.log(validEmail);
     if (firstName === '') {
       Alert.alert('Please enter the First Name to proceed');
     } else if (lastName === '') {
       Alert.alert('Please enter the Last Name to proceed');
     } else if (email === '') {
-      Alert.alert('Please enter the Email to proceed');
+      Alert.alert('Please enter an Email to proceed');
+    } else if (!validEmail) {
+      Alert.alert('Please enter a valid Email to proceed');
     } else if (password === '') {
       Alert.alert('Please enter the Password to proceed');
     } else if (number === '') {
       Alert.alert('Please enter the Personal phone number to proceed');
+    } else if (password.length < 9) {
+      Alert.alert('Password must be longer than 8 characters');
     } else if (password !== confirmPassword) {
       Alert.alert('Password Confirmation does not match Password');
+    } else if ((!onTextChange('number', number)) || (!onTextChange('busPhone', busPhone))) {
+      Alert.alert('Please enter a valid phone number');
     } else {
       return true;
     }
@@ -162,8 +219,8 @@ export default function SignUpScreen({ navigation }) {
       Alert.alert('Please enter the Address to proceed');
     } else if (isNaN(apt)) {
       Alert.alert('Please enter a numerical Apt # to proceed');
-    } else if (zip === '' || isNaN(zip)) {
-      Alert.alert('Please enter the Zipcode to proceed');
+    } else if (zip === '' || isNaN(zip) || (zip.length !== 5)) {
+      Alert.alert('Please enter a valid Zipcode to proceed');
     } else {
       base('Users').create([
         {
@@ -254,7 +311,7 @@ export default function SignUpScreen({ navigation }) {
           <TextInput
             style={styles.textInput}
             value={email}
-            onChangeText={setEmail}
+            onChangeText={(text) => validateEmail(text)}
             placeholder="Email address"
             keyboardType="email-address"
             returnKeyType="next"
@@ -269,7 +326,7 @@ export default function SignUpScreen({ navigation }) {
           <TextInput
             style={styles.textInput}
             value={number}
-            onChangeText={setNumber}
+            onChangeText={(text) => onTextChange('number', text)}
             placeholder="Personal phone number"
             keyboardType="numeric"
             returnKeyType="next"
@@ -284,7 +341,7 @@ export default function SignUpScreen({ navigation }) {
           <TextInput
             style={styles.textInput}
             value={busPhone}
-            onChangeText={setBusPhone}
+            onChangeText={(text) => onTextChange('busPhone', text)}
             placeholder="Business phone number (optional)"
             keyboardType="numeric"
             returnKeyType="next"
