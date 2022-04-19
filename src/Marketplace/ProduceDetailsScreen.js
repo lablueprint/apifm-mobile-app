@@ -137,15 +137,42 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    userId, produceId, favorite, addToFavorites, image, name, price, unit, seller, maxQuantity,
+    userId, produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
+
+  const addToFavorites = async (user, produce, favcondition) => {
+    await base('Users').find(user, (err, record) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      let currentFavorites = record.fields.favorites;
+      if (typeof currentFavorites === 'undefined') {
+        currentFavorites = [];
+      }
+      if (favcondition) {
+        currentFavorites.push(produce);
+      } else {
+        currentFavorites = currentFavorites.filter((item) => item !== produce);
+      }
+      base('Users').update([
+        {
+          id: user,
+          fields: {
+            favorites: currentFavorites,
+          },
+        },
+      ]);
+    });
+  };
 
   const onPressHeart = () => {
     const newFav = !favorited;
     addToFavorites(userId, produceId, newFav);
     setFavorited(newFav);
+    setFavorite(newFav);
   };
 
   const imageurl = { uri: image };
@@ -314,7 +341,7 @@ ProduceDetailsScreen.propTypes = {
       userId: PropTypes.string.isRequired,
       produceId: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
-      addToFavorites: PropTypes.func.isRequired,
+      setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,

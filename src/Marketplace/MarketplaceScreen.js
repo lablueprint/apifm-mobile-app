@@ -66,11 +66,15 @@ export default function MarketplaceScreen({ navigation }) {
 
   const [filterVisibility, setFilterVisibility] = useState(false);
 
-  // const checkFavorites = () => {
-
-  // };
-
   const getProduce = async () => {
+    let favoritesList = [];
+    await base('Users').find(userId, (err, record) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      favoritesList = record.fields.favorites;
+    });
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
@@ -99,8 +103,11 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-        // call airtable from current user to check if the item is favorited or not
-        produce.fields.Favorited = false;
+        if (favoritesList.includes(produce.id)) {
+          produce.fields.Favorited = true;
+        } else {
+          produce.fields.Favorited = false;
+        }
         list.push(produce.fields);
       });
       fetchNextPage();

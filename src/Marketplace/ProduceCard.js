@@ -89,7 +89,6 @@ function ProduceCard({
       } else {
         currentFavorites = currentFavorites.filter((item) => item !== produce);
       }
-      console.log(currentFavorites);
       base('Users').update([
         {
           id: user,
@@ -109,7 +108,16 @@ function ProduceCard({
 
   const onPressCard = () => {
     navigation.navigate('ProduceDetails', {
-      produceId, userId, favorite, addToFavorites, image, name, price, unit, seller, maxQuantity,
+      produceId,
+      userId,
+      favorite,
+      setFavorite,
+      image,
+      name,
+      price,
+      unit,
+      seller,
+      maxQuantity,
     });
   };
 
