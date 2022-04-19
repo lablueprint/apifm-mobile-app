@@ -118,6 +118,7 @@ export default function CartScreen({ navigation }) {
       price={item.price[0]}
       type={item.unit[0]}
       initialQuantity={String(item.quantity)}
+      // image={item.image[0]}
     />
   ));
 

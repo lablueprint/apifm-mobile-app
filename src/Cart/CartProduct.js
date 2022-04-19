@@ -131,6 +131,7 @@ export default function CartProduct(props) {
     price,
     type,
     initialQuantity,
+    // image,
   } = props;
 
   const [item, setItem] = useState([]);
