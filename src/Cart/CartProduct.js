@@ -206,7 +206,7 @@ export default function CartProduct(props) {
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
           $
-          {(price) * quantity}
+          {parseFloat((price) * quantity).toFixed(2)}
         </Text>
         <Text style={styles.itemPricePer}>
           $

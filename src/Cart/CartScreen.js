@@ -75,8 +75,6 @@ const styles = StyleSheet.create({
   },
 });
 
-// const fakeItems = { name: 'daikon', quantity: '2' };
-
 export default function CartScreen({ navigation }) {
   const [itemList, setItemList] = useState([]);
   const [refresh, setRefresh] = useState(0);
@@ -151,13 +149,13 @@ export default function CartScreen({ navigation }) {
       >
         CHECKOUT
       </Button>
-      <Button
+      {/* <Button
         mode="contained"
         style={[styles.button, { marginBottom: '4%' }]}
         onPress={() => navigation.navigate('Marketplace')}
       >
         MARKETPLACE
-      </Button>
+      </Button> */}
     </View>
   );
 }
