@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TextInput, Alert, Text, Image, TouchableOpacity,
+  View, StyleSheet, TextInput, Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
   Title, Button,
@@ -12,6 +12,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Assets } from 'react-navigation-stack';
 
 const Airtable = require('airtable');
+const backgroundImage = require('../assets/imgs/signin.png');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -20,7 +21,7 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-const headerImage = require('../assets/imgs/header.jpg');
+const headerImage = require('../assets/imgs/header.png');
 
 const backArrow = require('../assets/imgs/back_arrow.png');
 
@@ -29,18 +30,20 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    // backgroundColor: '#FFFFFF',
     height: 844,
     width: 390,
 
   },
-  titleText: {
-    marginBottom: 10,
-  },
   button: {
+    marginTop: 15,
     width: 300,
-    backgroundColor: '#C4C4C4',
+    height: 50,
+    alignItems: 'center',
+    backgroundColor: '#1D763C',
     borderRadius: 30,
+    marginBottom: 20,
+    fontFamily: 'JosefinSans-SemiBold',
 
   },
   back: {
@@ -50,26 +53,36 @@ const styles = StyleSheet.create({
 
   },
   image: {
+    // flex: 1,
+    // justifyContent: 'center',
     width: 201,
     height: 55,
+  },
+  backgroundimage: {
+    flex: 1,
+    justifyContent: 'center',
   },
   icon: {
     marginRight: 5,
   },
   inputs: {
-    borderWidth: 1,
+    borderWidth: 0.25,
     height: 38,
     margin: 8.5,
     marginLeft: 30,
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'gray',
+    borderRadius: 15,
+    borderColor: (134, 134, 134, 0.31),
     textAlignVertical: 'top',
+    backgroundColor: 'white',
   },
   textInput: {
     marginLeft: 7,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 14,
+    color: '#1D763C',
   },
   multiline: {
     marginLeft: 17,
@@ -79,7 +92,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
-    borderRadius: 10,
+    borderRadius: 15,
     borderColor: 'gray',
     textAlignVertical: 'top',
   },
@@ -89,7 +102,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginLeft: 60,
   },
-  text: {
+  titleText: {
     marginLeft: 17,
     marginTop: 5,
     width: 330,
@@ -98,6 +111,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     textAlignVertical: 'center',
     textAlign: 'center',
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 30,
+    color: '#1D763C',
+  },
+  buttonText: {
+    // marginTop: 6,
+    fontSize: 24,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    color: 'white',
+    marginTop: 5,
   },
 });
 
@@ -263,153 +287,156 @@ export default function SignUpScreen({ navigation }) {
 
   if (page1) {
     return (
-      <View style={styles.container}>
-        <Image style={styles.image} source={headerImage} />
-        <Title style={styles.titleText}>Sign Up</Title>
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={firstName}
-            onChangeText={setFirstName}
-            placeholder="First name"
-            returnKeyType="next"
-            onSubmitEditing={() => { lastNameInput.current.focus(); }}
-            blurOnSubmit={false}
-            width={330}
-          />
-        </View>
+      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+        <View style={styles.container}>
+          <Image style={styles.image} source={headerImage} />
+          <Text style={styles.titleText}>Sign Up</Text>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={firstName}
+              onChangeText={setFirstName}
+              placeholder="First name"
+              returnKeyType="next"
+              onSubmitEditing={() => { lastNameInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={lastName}
-            onChangeText={setLastName}
-            placeholder="Last name"
-            returnKeyType="next"
-            onSubmitEditing={() => { organizationInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={lastNameInput}
-            width={330}
-          />
-        </View>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={lastName}
+              onChangeText={setLastName}
+              placeholder="Last name"
+              returnKeyType="next"
+              onSubmitEditing={() => { organizationInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={lastNameInput}
+              width={330}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={organization}
-            onChangeText={setOrganization}
-            placeholder="Organization (optional)"
-            returnKeyType="next"
-            onSubmitEditing={() => { emailInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={organizationInput}
-            width={330}
-          />
-        </View>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={organization}
+              onChangeText={setOrganization}
+              placeholder="Organization (optional)"
+              returnKeyType="next"
+              onSubmitEditing={() => { emailInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={organizationInput}
+              width={330}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={email}
-            onChangeText={(text) => validateEmail(text)}
-            placeholder="Email address"
-            keyboardType="email-address"
-            returnKeyType="next"
-            onSubmitEditing={() => { numberInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={emailInput}
-            width={330}
-          />
-        </View>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={email}
+              onChangeText={(text) => validateEmail(text)}
+              placeholder="Email address"
+              keyboardType="email-address"
+              returnKeyType="next"
+              onSubmitEditing={() => { numberInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={emailInput}
+              width={330}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={number}
-            onChangeText={(text) => onTextChange('number', text)}
-            placeholder="Personal phone number"
-            keyboardType="numeric"
-            returnKeyType="next"
-            onSubmitEditing={() => { busPhoneInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={numberInput}
-            width={330}
-          />
-        </View>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={number}
+              onChangeText={(text) => onTextChange('number', text)}
+              placeholder="Personal phone number"
+              keyboardType="numeric"
+              returnKeyType="next"
+              onSubmitEditing={() => { busPhoneInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={numberInput}
+              width={330}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={busPhone}
-            onChangeText={(text) => onTextChange('busPhone', text)}
-            placeholder="Business phone number (optional)"
-            keyboardType="numeric"
-            returnKeyType="next"
-            onSubmitEditing={() => { passwordInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={busPhoneInput}
-            width={330}
-          />
-        </View>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={busPhone}
+              onChangeText={(text) => onTextChange('busPhone', text)}
+              placeholder="Business phone number (optional)"
+              keyboardType="numeric"
+              returnKeyType="next"
+              onSubmitEditing={() => { passwordInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={busPhoneInput}
+              width={330}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            passwordRules="minlength: 8;"
-            returnKeyType="next"
-            secureTextEntry={!!hidePass}
-            onSubmitEditing={() => { confirmPasswordInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={passwordInput}
-            width={306}
-          />
-          <Icon
-            style={styles.icon}
-            name={hidePass ? 'eye-slash' : 'eye'}
-            size={15}
-            color="grey"
-            onPress={() => setHidePass(!hidePass)}
-          />
-        </View>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              passwordRules="minlength: 8;"
+              returnKeyType="next"
+              secureTextEntry={!!hidePass}
+              onSubmitEditing={() => { confirmPasswordInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={passwordInput}
+              width={306}
+            />
+            <Icon
+              style={styles.icon}
+              name={hidePass ? 'eye-slash' : 'eye'}
+              size={15}
+              color="grey"
+              onPress={() => setHidePass(!hidePass)}
+            />
+          </View>
 
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            placeholder="Confirm Password"
-            returnKeyType="next"
-            secureTextEntry={!!hidePassConf}
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={confirmPassword}
+              onChangeText={setConfirmPassword}
+              placeholder="Confirm Password"
+              returnKeyType="next"
+              secureTextEntry={!!hidePassConf}
             // onSubmitEditing={() => { numberInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={confirmPasswordInput}
-            width={306}
-          />
-          <Icon
-            style={styles.icon}
-            name={hidePassConf ? 'eye-slash' : 'eye'}
-            size={15}
-            color="grey"
-            onPress={() => setHidePassConf(!hidePassConf)}
-          />
+              blurOnSubmit={false}
+              ref={confirmPasswordInput}
+              width={306}
+            />
+            <Icon
+              style={styles.icon}
+              name={hidePassConf ? 'eye-slash' : 'eye'}
+              size={15}
+              color="grey"
+              onPress={() => setHidePassConf(!hidePassConf)}
+            />
+          </View>
+
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              if (checkInputs()) {
+                setPage1(!page1);
+              }
+            }}
+          >
+            <Text style={styles.buttonText}> Continue </Text>
+          </TouchableOpacity>
+
         </View>
 
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={() => {
-            if (checkInputs()) {
-              setPage1(!page1);
-            }
-          }}
-        >
-          Continue
-        </Button>
-
-      </View>
+      </ImageBackground>
     );
   }
 

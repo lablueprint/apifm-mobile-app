@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   bodyText: {
-    marginTop: 350,
+    marginTop: 370,
     fontSize: 24,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#1D763C',
     borderRadius: 30,
-    marginBottom: 58,
+    marginBottom: 40,
     fontFamily: 'JosefinSans-SemiBold',
 
   },
