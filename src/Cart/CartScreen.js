@@ -112,6 +112,7 @@ export default function CartScreen({ navigation }) {
       price={item.price[0]}
       type={item.unit[0]}
       initialQuantity={String(item.quantity)}
+      image={item.image[0].url}
     />
   ));
 
@@ -143,13 +144,13 @@ export default function CartScreen({ navigation }) {
       >
         CHECKOUT
       </Button>
-      <Button
+      {/* <Button
         mode="contained"
         style={[styles.button, { marginBottom: '4%' }]}
         onPress={() => navigation.navigate('Marketplace')}
       >
         MARKETPLACE
-      </Button>
+      </Button> */}
     </View>
   );
 }

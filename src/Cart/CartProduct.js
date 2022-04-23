@@ -11,8 +11,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Airtable = require('airtable');
 
-const image = require('../assets/imgs/square_logo.png');
-
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -105,7 +103,7 @@ const styles = StyleSheet.create({
     marginLeft: 100,
   },
   removeItemButton: {
-    width: '5%',
+    width: '3%',
     padding: 0,
     marginTop: 15,
     marginLeft: 135,
@@ -129,6 +127,7 @@ export default function CartProduct(props) {
     price,
     type,
     initialQuantity,
+    image,
   } = props;
 
   const [quantity, setQuantity] = useState(String(initialQuantity));
@@ -140,6 +139,8 @@ export default function CartProduct(props) {
         setQuantity(String(newItem.quantity));
       });
   };
+
+  const imageurl = { uri: image };
 
   const handleQuantityChange = (newQuantity) => {
     setQuantity(newQuantity);
@@ -173,7 +174,7 @@ export default function CartProduct(props) {
 
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={image} />
+      <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
         <Text style={styles.itemName}>
           {name}
@@ -192,7 +193,7 @@ export default function CartProduct(props) {
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          {`$ ${price * quantity}`}
+          {`$ ${parseFloat((price) * quantity).toFixed(2)}`}
         </Text>
         <Text style={styles.itemPricePer}>
           {`$ ${price} ${type}`}
@@ -217,5 +218,5 @@ CartProduct.propTypes = {
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   initialQuantity: PropTypes.string.isRequired,
-
+  image: PropTypes.string.isRequired,
 };
