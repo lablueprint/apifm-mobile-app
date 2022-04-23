@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
+import FontIcon from 'react-native-vector-icons/FontAwesome';
 // for Calendar icon import Feather from 'react-native-vector-icons/Feather';
 import ProduceGrid from './ProduceGrid';
 import FilterPopup from './FilterPopup';
@@ -67,13 +68,13 @@ export default function MarketplaceScreen({ navigation }) {
   const [filterVisibility, setFilterVisibility] = useState(false);
 
   const getProduce = async () => {
-    let favoritesList = [];
+    let favorites = [];
     await base('Users').find(userId, (err, record) => {
       if (err) {
         console.error(err);
         return;
       }
-      favoritesList = record.fields.favorites;
+      favorites = record.fields.favorites;
     });
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -103,7 +104,7 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = 'Unknown';
         }
-        if (favoritesList.includes(produce.id)) {
+        if (favorites.includes(produce.id)) {
           produce.fields.Favorited = true;
         } else {
           produce.fields.Favorited = false;
@@ -162,6 +163,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [seasonalFilter, setSeasonalFilter] = useState(false);
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
+  const [favoritesFilter, setFavoritesFilter] = useState(false);
 
   const filterProduce = (listToFilter) => {
     let filteredList = [];
@@ -175,9 +177,25 @@ export default function MarketplaceScreen({ navigation }) {
       filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Fruits'));
     }
     if (filteredList.length) {
+      if (favoritesFilter) {
+        filteredList = filteredList.filter((item) => item.Favorited);
+      }
       return filteredList;
     }
     return listToFilter;
+  };
+
+  const filterFavorites = () => {
+    const showFavorites = !favoritesFilter;
+    setFavoritesFilter(showFavorites);
+    if (showFavorites) {
+      const filteredList = allProduce.filter((item) => item.Favorited);
+      setUnsortedProduce(filteredList);
+      setProduceList(filteredList);
+    } else {
+      setProduceList(sortProduce(filterProduce(allProduce)));
+      setUnsortedProduce(filterProduce(allProduce));
+    }
   };
 
   useEffect(() => {
@@ -224,6 +242,9 @@ export default function MarketplaceScreen({ navigation }) {
         </View>
         <View>
           <View>
+            <TouchableOpacity>
+              <FontIcon name={favoritesFilter ? 'heart' : 'heart-o'} onPress={filterFavorites} />
+            </TouchableOpacity>
             <TouchableOpacity>
               <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
             </TouchableOpacity>
