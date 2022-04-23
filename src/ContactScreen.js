@@ -22,58 +22,72 @@ const styles = StyleSheet.create({
     marginLeft: '6%',
     marginRight: '6%',
     width: '88%',
+    backgroundColor: '#FCF7F0',
   },
   title: {
-    marginTop: 36,
+    marginTop: 35,
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'JosefinSans-Bold',
+    color: '#1D763C',
   },
   subTitle: {
-    marginTop: 10,
-    marginBottom: 30,
-    fontSize: 16,
+    marginTop: 8,
+    marginBottom: 25,
+    marginLeft: 7,
+    fontSize: 17,
+    fontFamily: 'JosefinSans-Regular',
+    color: '#1D763C',
   },
   textFields: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: 'grey',
+    borderColor: '#1D763C',
     fontSize: 14,
-    marginBottom: 13,
+    marginBottom: 12,
     paddingLeft: 20,
     height: 40,
+    backgroundColor: '#FFFFFF',
+    color: '#7A7A7A',
+    fontFamily: 'JosefinSans-Regular',
   },
   messageTextField: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: 'grey',
     fontSize: 14,
     marginBottom: 15,
     paddingLeft: 20,
     height: 130,
+    borderColor: '#1D763C',
+    backgroundColor: '#FFFFFF',
+    fontFamily: 'JosefinSans-Regular',
     textAlignVertical: 'top', // prevents text from going to the centre
   },
   sendButton: {
-    marginTop: 5,
-    backgroundColor: 'grey',
+    marginTop: 3,
+    backgroundColor: '#1D763C',
     borderRadius: 20,
     height: 50,
   },
   sendButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
   },
   bottomText: {
-    marginTop: 15,
-    fontSize: 13,
+    marginTop: 13,
+    fontSize: 14,
+    color: '#A4A4A4',
+    fontFamily: 'JosefinSans-Regular',
   },
   iconContainer: {
-    marginTop: 30,
+    marginTop: 25,
     flexDirection: 'row',
     justifyContent: 'center',
   },
   socialIcon: {
     margin: 16,
     fontSize: 35,
+    color: '#000000',
   },
 });
 
@@ -111,7 +125,10 @@ export default function ContactScreen({ navigation }) { // unused navigation
   return (
     <View style={styles.container}>
       <Text style={styles.title}> Get In Touch! </Text>
-      <Text style={styles.subTitle}> Have a question? Just fill out this contact form. </Text>
+      <Text style={styles.subTitle}>
+        Have a question? Just fill out this contact form.
+        You can also reach us by phone or text at (123)456-7890.
+      </Text>
       <TextInput
         onChangeText={setName}
         placeholder="Name"
