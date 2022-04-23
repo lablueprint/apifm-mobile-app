@@ -118,7 +118,7 @@ export default function CartScreen({ navigation }) {
       price={item.price[0]}
       type={item.unit[0]}
       initialQuantity={String(item.quantity)}
-      // image={item.image[0]}
+      image={item.image[0].url}
     />
   ));
 
@@ -142,7 +142,7 @@ export default function CartScreen({ navigation }) {
         </Title>
         <Title style={styles.subtotal}>
           $
-          {subtotal}
+          {parseFloat(subtotal).toFixed(2)}
         </Title>
       </View>
       <Button

@@ -12,8 +12,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const Airtable = require('airtable');
 
-const image = require('../assets/imgs/square_logo.png');
-
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -107,7 +105,7 @@ const styles = StyleSheet.create({
     marginLeft: 100,
   },
   removeItemButton: {
-    width: '5%',
+    width: '3%',
     padding: 0,
     marginTop: 15,
     marginLeft: 135,
@@ -131,7 +129,7 @@ export default function CartProduct(props) {
     price,
     type,
     initialQuantity,
-    // image,
+    image,
   } = props;
 
   const [item, setItem] = useState([]);
@@ -146,6 +144,8 @@ export default function CartProduct(props) {
         console.log(`new item${newItem.quantity}`);
       });
   };
+
+  const imageurl = { uri: image };
 
   const handleQuantityChange2 = (newQuantity) => {
     setQuantity(newQuantity);
@@ -186,7 +186,7 @@ export default function CartProduct(props) {
   // yay product
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={image} />
+      <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
         <Text style={styles.itemName}>
           {name}
@@ -234,5 +234,5 @@ CartProduct.propTypes = {
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   initialQuantity: PropTypes.string.isRequired,
-
+  image: PropTypes.string.isRequired,
 };
