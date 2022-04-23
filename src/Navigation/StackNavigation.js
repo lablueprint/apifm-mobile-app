@@ -15,7 +15,7 @@ const stackNavig = createNativeStackNavigator();
 /* Stack navigators push/pop screens from a navigation stack (similar to web browser) */
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Landing Page">
+    <stackNavig.Navigator initialRouteName="Sign Up Confirmation">
       <stackNavig.Screen name="Landing Page" component={LandingPage} options={{ headerShown: false }} />
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
