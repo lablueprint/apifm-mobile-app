@@ -2,15 +2,9 @@ import React from 'react';
 import {
   View, StyleSheet, Text, ImageBackground, TouchableOpacity,
 } from 'react-native';
-import Svg from 'react-native-svg';
 import PropTypes from 'prop-types';
 
-// import {
-//   useFonts,
-//   JosefinSans_600SemiBold,
-// } from '@expo-google-fonts/josefin-sans';
-
-const backgroundImage = require('../assets/imgs/confirmation.svg');
+const backgroundImage = require('../assets/imgs/confirmation.png');
 
 const styles = StyleSheet.create({
   container: {
