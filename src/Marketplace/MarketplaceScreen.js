@@ -66,6 +66,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [produceList, setProduceList] = useState([]);
 
   const [filterVisibility, setFilterVisibility] = useState(false);
+  const [favoritesFilter, setFavoritesFilter] = useState(false);
 
   const getProduce = async () => {
     let favorites = [];
@@ -80,9 +81,7 @@ export default function MarketplaceScreen({ navigation }) {
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const produce = record;
-
         produce.fields.produceId = produce.id;
-
         if (!('Name' in record.fields)) {
           produce.fields.Name = '';
         }
@@ -102,7 +101,7 @@ export default function MarketplaceScreen({ navigation }) {
           produce.fields.Price = 'Unknown';
         }
         if (!('Type Tags' in record.fields)) {
-          produce.fields['Type Tags'] = 'Unknown';
+          produce.fields['Type Tags'] = '';
         }
         if (favorites.includes(produce.id)) {
           produce.fields.Favorited = true;
@@ -163,7 +162,6 @@ export default function MarketplaceScreen({ navigation }) {
   const [seasonalFilter, setSeasonalFilter] = useState(false);
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
-  const [favoritesFilter, setFavoritesFilter] = useState(false);
 
   const filterProduce = (listToFilter) => {
     let filteredList = [];
@@ -188,14 +186,28 @@ export default function MarketplaceScreen({ navigation }) {
   const filterFavorites = () => {
     const showFavorites = !favoritesFilter;
     setFavoritesFilter(showFavorites);
-    if (showFavorites) {
-      const filteredList = allProduce.filter((item) => item.Favorited);
-      setUnsortedProduce(filteredList);
-      setProduceList(filteredList);
-    } else {
-      setProduceList(sortProduce(filterProduce(allProduce)));
-      setUnsortedProduce(filterProduce(allProduce));
-    }
+    base('Users').find(userId, (err, record) => {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      const { favorites } = record.fields;
+      const newAllProduce = allProduce.map((produce) => {
+        if (favorites.includes(produce.produceId)) {
+          return { ...produce, Favorited: true };
+        }
+        return { ...produce, Favorited: false };
+      });
+      setAllProduce(newAllProduce);
+      if (showFavorites) {
+        const filteredList = newAllProduce.filter((item) => item.Favorited);
+        setUnsortedProduce(filterProduce(filteredList));
+        setProduceList(sortProduce(filterProduce(filteredList)));
+      } else {
+        setUnsortedProduce(filterProduce(newAllProduce));
+        setProduceList(sortProduce(filterProduce(newAllProduce)));
+      }
+    });
   };
 
   useEffect(() => {
@@ -203,6 +215,7 @@ export default function MarketplaceScreen({ navigation }) {
   }, [aZSort, zASort, lowHighSort, highLowSort]);
 
   useEffect(() => {
+    setUnsortedProduce(filterProduce(allProduce));
     setProduceList(sortProduce(filterProduce(allProduce)));
   }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
 

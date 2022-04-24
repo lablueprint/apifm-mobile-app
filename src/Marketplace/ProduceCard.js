@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, userId, produceId, favorited, image, name, price, unit, seller, maxQuantity,
+  navigation, userId, produceId, favorited,
+  image, name, price, unit, seller, maxQuantity,
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
