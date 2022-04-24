@@ -163,7 +163,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
-  const filterProduce = (listToFilter) => {
+  const filterProduce = (listToFilter, favorites) => {
     let filteredList = [];
     if (seasonalFilter) {
       filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Seasonal'));
@@ -175,9 +175,13 @@ export default function MarketplaceScreen({ navigation }) {
       filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Fruits'));
     }
     if (filteredList.length) {
-      if (favoritesFilter) {
+      if (favorites) {
         filteredList = filteredList.filter((item) => item.Favorited);
       }
+      return filteredList;
+    }
+    if (filteredList.length === 0 && favorites) {
+      filteredList = listToFilter.filter((item) => item.Favorited);
       return filteredList;
     }
     return listToFilter;
@@ -191,32 +195,36 @@ export default function MarketplaceScreen({ navigation }) {
         console.error(err);
         return;
       }
-      const { favorites } = record.fields;
+      let { favorites } = record.fields;
+      if (typeof favorites === 'undefined') {
+        favorites = [];
+      }
       const newAllProduce = allProduce.map((produce) => {
         if (favorites.includes(produce.produceId)) {
           return { ...produce, Favorited: true };
         }
         return { ...produce, Favorited: false };
       });
+
       setAllProduce(newAllProduce);
       if (showFavorites) {
         const filteredList = newAllProduce.filter((item) => item.Favorited);
-        setUnsortedProduce(filterProduce(filteredList));
-        setProduceList(sortProduce(filterProduce(filteredList)));
+        setUnsortedProduce(filterProduce(filteredList, true));
+        setProduceList(sortProduce(filterProduce(filteredList, true)));
       } else {
-        setUnsortedProduce(filterProduce(newAllProduce));
-        setProduceList(sortProduce(filterProduce(newAllProduce)));
+        setUnsortedProduce(filterProduce(newAllProduce, false));
+        setProduceList(sortProduce(filterProduce(newAllProduce, false)));
       }
     });
   };
 
   useEffect(() => {
-    setProduceList(sortProduce(filterProduce(unsortedProduce)));
+    setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
 
   useEffect(() => {
-    setUnsortedProduce(filterProduce(allProduce));
-    setProduceList(sortProduce(filterProduce(allProduce)));
+    setUnsortedProduce(filterProduce(allProduce, favoritesFilter));
+    setProduceList(sortProduce(filterProduce(allProduce, favoritesFilter)));
   }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   return (
