@@ -6,6 +6,8 @@ import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 import OrderScreen from '../Orders/OrderScreen';
+import OrderDetailsScreen from '../Orders/OrderDetailsScreen';
+
 
 const stackNavig = createNativeStackNavigator();
 
@@ -26,6 +28,13 @@ export default function StackNavigation() {
           title: '',
         }}
       />
+        <stackNavig.Screen
+          name="OrderDetails"
+          component={OrderDetailsScreen}
+          options={{
+            title: '',
+          }}
+        />
     </stackNavig.Navigator>
   );
 }

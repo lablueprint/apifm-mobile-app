@@ -65,57 +65,61 @@ const styles = StyleSheet.create({
 export default function OrderScreen({ navigation }) {
   const [orderMap, setOrderMap] = useState(new Map());
   const [orderList, setOrderList] = useState([]);
+  const [itemsList, setItemsList] = useState(new Map());
+
 
   const getOrders = () => {
     var list = [];
-    var condenseOrders = new Map();
+    const condenseOrders = new Map();
+    var itemsListVar = new Map();
     // loop through all records with a certain user
     // aggregate the records into a list
     base('Orders').select({ filterByFormula: "({user_id}='helen@gmail.com')" }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const order = record;
-        console.log("Order");
-
         order.fields.orderId = order.id;
-        console.log(order.id);
         if (!('delivery date (temp)' in record.fields)) {
           order.fields['delivery date (temp)'] = 'September 5, 2022';
         }
-//        if (!('Image' in record.fields)) {
-//          order.fields.Image = [{ url: '' }];
-//        }
-//        if (!('Quantity' in record.fields)) {
-//          order.fields.Quantity = 1;
-//        }
-//        if (!('Unit' in record.fields)) {
-//          order.fields.Unit = 'Uknown';
-//        }
-//        if (!('Seller' in record.fields)) {
-//          order.fields.Seller = 'Unknown';
-//        }
-//        if (!('Price' in record.fields)) {
-//          order.fields.Price = 'Unknown';
-//        }
-//        if (!('Type Tags' in record.fields)) {
-//          order.fields['Type Tags'] = 'Unknown';
-//        }
-//        order.fields.Favorited = false;
-        list.push(order.fields);
-        const currDate = new Date(order.fields['delivery date (temp)']);
-        console.log("currDate: " + currDate);
-        console.log(order.fields['delivery date (temp)']);
-        if(!condenseOrders.has(currDate)){
-          console.log("true");
-          condenseOrders.set(currDate, [order.fields]);
+        if (('produce_id' in record.fields)) {
+            base('Produce').find(record.fields.produce_id, ((err, prodRecord) => {
+                if (err) { console.error(err); return; }
+                order.fields.produceItem = prodRecord;
+                console.log('Retrieved!', prodRecord.fields.Name);
+                const currDate = (new Date(order.fields['delivery date (temp)'])).toString();
+                if(!itemsListVar.has(currDate)) {
+                    itemsListVar.set(currDate, prodRecord.fields.Name);
+                }
+                else if(itemsListVar.get(currDate).length < 25) {
+                    itemsListVar.set(currDate,itemsListVar.get(currDate) + ", " +  prodRecord.fields.Name);
+                } else {
+                    itemsListVar = itemsListVar.set(currDate, itemsListVar.get(currDate).substring(0, 22) + "...");
+                }
+                console.log("itemListVar: " + itemsListVar.get(currDate));
+                setItemsList(itemsListVar);
+            }));
         } else {
-          console.log("false");
-          condenseOrders[currDate].push(order.fields);
+            console.log("ERR: misssing produce id in orders record");
         }
-        console.log("order one:" + order.fields);
-      });
-      setOrderList(list);
-      setOrderMap(condenseOrders);
+        if (!('Quantity' in record.fields)) {
+            order.fields.Quantity = 1;
+        }
+        list.push(order.fields);
+        const currDate = new Date(order.fields['delivery date (temp)']).toString();
+        if(!condenseOrders.has(currDate)){
+          condenseOrders.set(currDate, [order.fields]);
 
+        } else {
+//          console.log("Setting " + currDate + " to " + condenseOrders.get(currDate).push(order.fields));
+          condenseOrders.get(currDate).push(order.fields);
+        }
+      });
+      console.log("Setting orderList");
+      setOrderList(list);
+
+      setOrderMap(new Map([...condenseOrders].sort((a, b) => new Date(a[0]) - new Date(b[0]))));
+      console.log("condenseOrders: " + condenseOrders);
+      console.log("list: " + list);
 //      var tempMap = orderMap;
 //      if(!orderMap.has(currDate)){
 //          tempMap.set(currDate, [rec]);
@@ -130,20 +134,22 @@ export default function OrderScreen({ navigation }) {
           Alert.alert(err.message);
         }
     });
+
+
 //    list.push(30);
 //    console.log("list: " + list);
 //    console.log("condense: " + condenseOrders);
 
 //    setOrderMap(condenseOrders);
-    console.log("oorderList:");
-    console.log(orderList);
-    console.log("orderMap:");
-    console.log(orderMap);
   };
-    console.log("orderList:");
-    console.log(orderList);
-    console.log("orderMap:");
-    console.log(orderMap);
+    const getItemList = (items) => {
+            var itemsList = "";
+            for(var i = 0; i < items[1].length; i++){
+                console.log("prod item in car:" + i + " " + items[1][i].produceItem);
+//                itemsList += items[1][i].produceItem.fields.Name;
+            }
+            return itemsList;
+    };
 //    var condenseOrders = new Map();
 
 //    orderList.forEach((rec, ind) => {
@@ -167,16 +173,19 @@ export default function OrderScreen({ navigation }) {
 ////    setOrderMap(condenseOrders);
 //    console.log("condenseOrders:");
 //    console.log(condenseOrders);
-    orderMap.forEach((e, items) => console.log("elem" + e[0] + "date" + items));
+//    console.log("ORDERMAP: " + orderMap[0]);
+//    orderMap.forEach((e, items) => console.log("elem" + e[0] + "date" + items));
+  var i = 0;
+
   const OrderCards = (Array.from(orderMap)).map((items, orderDate, index) => (
     <OrderCard
       style={styles.orderCard}
 //      key={1}
       navigation={navigation}
-      orderId={"1"}
+      orderId={(i++).toString()}
       date={orderDate}
       items={items}
-      address={items[0].user_id}
+      itemsList={itemsList}
     />
 
   ));
@@ -191,17 +200,10 @@ export default function OrderScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.centeredContainer}>
         <Title style={styles.titleText}> Past Orders </Title>
-        <Text style={styles.bodyText}> February Orders </Text>
+        <Text style={styles.bodyText}> September Orders </Text>
         <View style={styles.orderCardsContainer}>
           { OrderCards }
         </View>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={() => navigation.navigate('Marketplace')}
-        >
-          Marketplace
-        </Button>
       </View>
     </ScrollView>
   );

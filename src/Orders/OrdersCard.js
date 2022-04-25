@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
   View, Image, StyleSheet, TouchableOpacity,
@@ -69,21 +69,30 @@ const styles = StyleSheet.create({
   quantity: {
 //    fontSize: 10,
 //    fontWeight: '500',
-    marginLeft: 5,
+    alignSelf: 'flex-start',
+    marginStart: 90,
 //    marginTop: 20,
   },
 });
 
 function OrderCard({
-    navigation, orderId, date, items,
+    navigation, orderId, date, items, itemsList,
 }) {
-//  const [favorite, setFavorite] = useState(favorited);
-
-//  const onPressCard = () => {
-//    navigation.navigate('ProduceDetails', {
-//      produceId, favorite, image, name, price, unit, seller, maxQuantity,
-//    });
-//  };
+  const [names, setNames] = useState("");
+  const [itemList, setItemList] = useState(itemsList.get(new Date(items[0]).toString()));
+  const onPressCard = () => {
+    const dateObj = new Date(items[0]);
+    const time = dateObj.toLocaleTimeString('en-US');
+    date =  dateObj.toDateString();
+    console.log("Items list in card: " + itemsList.get(dateObj.toString()));
+    navigation.navigate('OrderDetails', {
+        orderId, date, time, items, itemsList,
+    });
+  };
+//
+  useEffect(() => {
+    setItemList(itemsList.get(new Date(items[0]).toString()));
+  }, [items]);
 
 //  const onPressHeart = () => {
 //    const newFav = !favorite;
@@ -93,31 +102,34 @@ function OrderCard({
 //  const imageurl = { uri: image };
 //        <Image style={styles.image} source={missingImage} />
     const produceNames = [];
-    var itemsList = "";
-    for(var i = 0; i < items[1].length; i++){
-        console.log("items[i].prod" + items[1][i].produce_id);
-        base('Produce').find(items[1][i].produce_id, ((err, record) => {
-            if (err) { console.error(err); return; }
-            itemsList += record.fields.Name;
-            produceNames.push(record.fields.Name);
-            console.log('Retrieved', record.fields.Name);
-        }));
-    }
-    console.log("items: "+ items[0]);
-    console.log(items);
-    console.log(itemsList);
-    console.log(produceNames);
+    const constItemsList = "Apple, Bokchoy, Strawberry, ...";
+//        setItemList("");
+//    const checkInItems = (items, check) => {
+//        for(var i = 0; i < items[1].length; i++){
+//
+//        }
+//    };
+//    const getProduceNames = () => {
+//        base('Produce').select({}).eachPage((records, fetchNextPage) => {
+//          records.forEach((record) => {
+//            const produce = record;
+
+
+//      console.log("itemsslit" + itemsList);
+//    };
+
+
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
         <View style={styles.image} />
         <Text style={styles.name}>Order ID #{orderId}</Text>
         <View style={styles.bottom}>
           <Text style={styles.date}>
-            Delivered on {items[0].toDateString()}
+            Delivered on {new Date(items[0]).toDateString()}
           </Text>
           <Text style={styles.quantity}>
-            {itemsList}
+            {itemList}
           </Text>
         </View>
       </View>
@@ -130,13 +142,7 @@ OrderCard.propTypes = {
   orderId: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date).isRequired,
   items: PropTypes.arrayOf(PropTypes.Object).isRequired,
-//  favorited: PropTypes.bool.isRequired,
-//  image: PropTypes.string.isRequired,
-//  name: PropTypes.string.isRequired,
-//  price: PropTypes.number.isRequired,
-//  unit: PropTypes.string.isRequired,
-//  seller: PropTypes.string.isRequired,
-//  maxQuantity: PropTypes.number.isRequired,
+  itemsList: PropTypes.object.isRequired,
 };
 
 export default OrderCard;
