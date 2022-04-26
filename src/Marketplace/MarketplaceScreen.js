@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView, Alert,
+  View, StyleSheet, ScrollView, Alert, TouchableOpacity,
 } from 'react-native';
 import {
   Title, Text, Button, Provider, Portal, Modal,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 // replace this icon with the one on figma
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import FontIcon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
@@ -320,15 +318,36 @@ export default function MarketplaceScreen({ navigation }) {
             <TouchableOpacity>
               <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <FontIcon onPress={filterFavorites} name={favoritesFilter ? 'heart' : 'heart-o'} size={20} />
-            </TouchableOpacity>
           </View>
           <View>
-            <TouchableOpacity>
-              <Text>MARKETPLACE</Text>
+            <TouchableOpacity
+              style={favoritesFilter ? styles.marketplaceTabClosed : styles.marketplaceTabOpen}
+              activeOpacity={1}
+              onPress={() => {
+                if (favoritesFilter) {
+                  filterFavorites();
+                }
+              }}
+            >
+              <Text>
+                MARKETPLACE
+              </Text>
             </TouchableOpacity>
-            <TouchableOpacity><Text>FAVORITES</Text></TouchableOpacity>
+
+            <TouchableOpacity
+              style={favoritesFilter ? styles.marketplaceTabOpen : styles.marketplaceTabClosed}
+              activeOpacity={1}
+              onPress={() => {
+                if (!favoritesFilter) {
+                  filterFavorites();
+                }
+              }}
+            >
+              <Text>
+                FAVORITES
+              </Text>
+            </TouchableOpacity>
+
           </View>
           <View>
             <Portal>

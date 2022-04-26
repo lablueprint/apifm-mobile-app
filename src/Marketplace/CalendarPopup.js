@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Button } from 'react-native-paper';
 
 const styles = StyleSheet.create({
@@ -16,15 +15,15 @@ const styles = StyleSheet.create({
   buttonUnpressed: {
     width: '30%',
     marginTop: 5,
-    backgroundColor: '#F1E8DB',
     color: '#34221D',
+    backgroundColor: '#F1E8DB',
     borderRadius: 15,
   },
   buttonPressed: {
     width: '30%',
     marginTop: 5,
-    backgroundColor: '#1D763C',
     color: '#FFFFFA',
+    backgroundColor: '#1D763C',
     borderRadius: 15,
   },
 });
@@ -40,12 +39,13 @@ function CalendarPopup({
     <View style={styles.popupContainer}>
       <View>
         <Text>Choose your delivery date</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setVisibility(false); }} name="close" />
+        <TouchableOpacity onPress={() => { setVisibility(false); }}>
+          <CheckboxIcon name="close" />
         </TouchableOpacity>
       </View>
-      <Button
+      <TouchableOpacity
         style={monday ? styles.buttonPressed : styles.buttonUnpressed}
+        activeOpacity={1}
         onPress={() => {
           const newState = !monday;
           if (newState) {
@@ -54,10 +54,13 @@ function CalendarPopup({
           setMonday(newState);
         }}
       >
-        Monday
-      </Button>
-      <Button
+        <Text>
+          Monday
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={friday ? styles.buttonPressed : styles.buttonUnpressed}
+        activeOpacity={1}
         onPress={() => {
           const newState = !friday;
           if (newState) {
@@ -66,8 +69,10 @@ function CalendarPopup({
           setFriday(newState);
         }}
       >
-        Friday
-      </Button>
+        <Text>
+          Friday
+        </Text>
+      </TouchableOpacity>
       <View>
         <TouchableOpacity>
           <CheckboxIcon onPress={() => { setSave(!save); }} name={save ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />

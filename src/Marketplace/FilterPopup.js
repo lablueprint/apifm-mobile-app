@@ -1,10 +1,9 @@
 import React from 'react';
 import {
-  View, Text, StyleSheet,
+  View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   popupContainer: {
@@ -33,8 +32,8 @@ function FilterPopup({
     <View style={styles.popupContainer}>
       <View>
         <Text>Filter & Sort</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setVisibility(false); }} name="close" />
+        <TouchableOpacity onPress={() => { setVisibility(false); }}>
+          <CheckboxIcon name="close" />
         </TouchableOpacity>
       </View>
       <View>
