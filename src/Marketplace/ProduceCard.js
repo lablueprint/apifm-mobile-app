@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity,
+  View, Image, StyleSheet, TouchableOpacity, Alert,
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -78,7 +78,7 @@ function ProduceCard({
   const addToFavorites = async (user, produce, favcondition) => {
     await base('Users').find(user, (err, record) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       let currentFavorites = record.fields.favorites;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity, TextInput,
+  View, Image, StyleSheet, TouchableOpacity, TextInput, Alert,
 } from 'react-native';
 import {
   Button, Text, Provider, Portal, Modal,
@@ -145,7 +145,7 @@ function ProduceDetailsScreen({ route }) {
   const addToFavorites = async (user, produce, favcondition) => {
     await base('Users').find(user, (err, record) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       let currentFavorites = record.fields.favorites;
@@ -212,7 +212,7 @@ function ProduceDetailsScreen({ route }) {
             fetchNextPage();
           },
           (err) => {
-            if (err) { console.error(err); }
+            if (err) { Alert.alert(err.error, err.message); }
           },
         );
       });
@@ -227,7 +227,7 @@ function ProduceDetailsScreen({ route }) {
           },
         ], (err) => {
           if (err) {
-            console.error(err);
+            Alert.alert(err.error, err.message);
           }
         });
       } else {
@@ -241,12 +241,12 @@ function ProduceDetailsScreen({ route }) {
           },
         ], (err) => {
           if (err) {
-            console.error(err);
+            Alert.alert(err.error, err.message);
           }
         });
       }
     } catch (err) {
-      console.error(err);
+      Alert.alert(err.error, err.message);
     }
   };
 
