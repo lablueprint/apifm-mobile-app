@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView,
+  View, StyleSheet, ScrollView, Alert,
 } from 'react-native';
 import {
   Title, Text, Button, Provider, Portal, Modal,
