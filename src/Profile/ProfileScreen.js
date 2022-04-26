@@ -1,10 +1,11 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import {
-  Title, Text, Button,
+  Title, Text, Button, TextInput
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Config from 'react-native-config';
 
 const styles = StyleSheet.create({
   container: {
@@ -27,13 +28,56 @@ const styles = StyleSheet.create({
 });
 
 export default function ProfileScreen({ navigation }) {
+
+
+  const Airtable = require('airtable');
+
+  const airtableConfig = {
+    apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+    baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+  };
+
+  const base = new Airtable({apiKey: airtableConfig.apiKey}).base(airtableConfig.baseKey);
+
+
+  base('Users').find('recIpBFqr2EXNbS7d', function(err, record) {
+       if (err) { console.error(err); return; }
+      console.log('Retrieved', record.id);
+  });
+
   return (
     <View style={styles.container}>
       <Title style={styles.titleText}>
         <Icon style={{ fontSize: 20 }} name="account-circle" />
-        ProfileScreen
+          Joe Bruin
       </Title>
+
+     <Subheading></Subheading>
+      
       <Text style={styles.bodyText}> This is my account page. I am a happy farmer. </Text>
+    
+      <TextInput
+        mode="transparent"
+        label="Email"
+        placeholder="Email"
+        right={<TextInput.Affix text=" " />}
+      />
+
+      <TextInput
+        mode="transparent"
+        label="Phone Number"
+        placeholder="Phone Number"
+        right={<TextInput.Affix text=" " />}
+      />
+
+      <TextInput
+        mode="transparent"
+        label="Address"
+        placeholder="Address"
+        right={<TextInput.Affix text=" " />}
+      />
+    
+      
       <Button
         mode="contained"
         style={styles.button}
