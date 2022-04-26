@@ -137,7 +137,8 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    userId, produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
+    userId, produceId, favorite, setFavorite,
+    image, name, price, unit, seller, maxQuantity, minQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
@@ -177,7 +178,7 @@ function ProduceDetailsScreen({ route }) {
 
   const imageurl = { uri: image };
 
-  const [orderQuantity, setOrderQuantity] = useState('1');
+  const [orderQuantity, setOrderQuantity] = useState(minQuantity.toString());
 
   const onChangeQuantity = (e) => {
     if (e === '') {
@@ -192,7 +193,7 @@ function ProduceDetailsScreen({ route }) {
 
   const onSubmitQuantity = () => {
     if (orderQuantity === '') {
-      setOrderQuantity('1');
+      setOrderQuantity(minQuantity.toString());
     }
   };
 
@@ -288,7 +289,7 @@ function ProduceDetailsScreen({ route }) {
               <View style={styles.numberChange}>
                 <TouchableOpacity
                   onPress={() => {
-                    if (Number(orderQuantity) - 1 > 0) {
+                    if (Number(orderQuantity) - 1 >= minQuantity) {
                       const updatedValue = Number(orderQuantity) - 1;
                       setOrderQuantity(updatedValue.toString());
                     }
@@ -349,6 +350,7 @@ ProduceDetailsScreen.propTypes = {
       unit: PropTypes.string.isRequired,
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
+      minQuantity: PropTypes.number.isRequired,
     }),
   }).isRequired,
 };

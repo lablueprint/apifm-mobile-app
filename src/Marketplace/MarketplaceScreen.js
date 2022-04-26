@@ -99,8 +99,11 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Image' in record.fields)) {
           produce.fields.Image = [{ url: '' }];
         }
-        if (!('Quantity' in record.fields)) {
-          produce.fields.Quantity = 1;
+        if (!('Maximum Quantity' in record.fields)) {
+          produce.fields['Maximum Quantity'] = 1;
+        }
+        if (!('Minimum Quantity' in record.fields)) {
+          produce.fields['Minimum Quantity'] = 1;
         }
         if (!('Unit' in record.fields)) {
           produce.fields.Unit = 'Uknown';

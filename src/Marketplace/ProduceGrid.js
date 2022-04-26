@@ -36,7 +36,8 @@ function ProduceGrid({ navigation, userId, produceList }) {
       price={produce.Price}
       unit={produce.Unit}
       seller={produce.Seller}
-      maxQuantity={produce.Quantity}
+      maxQuantity={produce['Maximum Quantity']}
+      minQuantity={produce['Minimum Quantity']}
     />
   ));
 
