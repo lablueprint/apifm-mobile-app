@@ -82,7 +82,7 @@ export default function MarketplaceScreen({ navigation }) {
     let favorites = [];
     await base('Users').find(userId, (err, record) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       favorites = record.fields.favorites;
@@ -133,9 +133,6 @@ export default function MarketplaceScreen({ navigation }) {
   useEffect(() => {
     getProduce();
   }, []);
-
-  const [mondayDelivery, setMondayDelivery] = useState(false);
-  const [fridayDelivery, setFridayDelivery] = useState(false);
 
   const [aZSort, setAZSort] = useState(false);
   const [zASort, setZASort] = useState(false);
@@ -208,7 +205,7 @@ export default function MarketplaceScreen({ navigation }) {
     setFavoritesFilter(showFavorites);
     base('Users').find(userId, (err, record) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       let { favorites } = record.fields;
@@ -233,6 +230,31 @@ export default function MarketplaceScreen({ navigation }) {
       }
     });
   };
+
+  const [mondayDelivery, setMondayDelivery] = useState(false);
+  const [fridayDelivery, setFridayDelivery] = useState(false);
+
+  const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
+    let deliveryList = listToDeliver;
+    if (mondayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Monday' || produce['Delivery Date'] === 'All'));
+    }
+    if (fridayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
+    }
+    return deliveryList;
+  };
+
+  useEffect(() => {
+    setUnsortedProduce(filterProduce(
+      deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
+      favoritesFilter,
+    ));
+    setProduceList(sortProduce(filterProduce(
+      deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
+      favoritesFilter,
+    )));
+  }, [mondayDelivery, fridayDelivery]);
 
   useEffect(() => {
     setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));

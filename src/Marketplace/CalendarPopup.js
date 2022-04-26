@@ -48,6 +48,9 @@ function CalendarPopup({
         style={monday ? styles.buttonPressed : styles.buttonUnpressed}
         onPress={() => {
           const newState = !monday;
+          if (newState) {
+            setFriday(false);
+          }
           setMonday(newState);
         }}
       >
@@ -57,6 +60,9 @@ function CalendarPopup({
         style={friday ? styles.buttonPressed : styles.buttonUnpressed}
         onPress={() => {
           const newState = !friday;
+          if (newState) {
+            setMonday(false);
+          }
           setFriday(newState);
         }}
       >
