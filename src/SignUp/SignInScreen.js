@@ -141,10 +141,8 @@ export default function SignUpScreen({ navigation }) {
   const [validEmail, setValidEmail] = useState(false);
 
   const validateEmail = (text) => {
-    // console.log(text);
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
-      // console.log('Email is Not Correct');
       setEmail(text);
       setValidEmail(false);
       return false;
@@ -164,7 +162,7 @@ export default function SignUpScreen({ navigation }) {
       const num = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
       // console.log(num.toString());
       if (cleaned.length > 10) {
-        Alert.alert('Please enter a valid phone number');
+        Alert.alert('Please enter a 10-digit phone number');
       } else if (val === 'number') {
         setNumber(num.toString());
       } else {
@@ -241,7 +239,6 @@ export default function SignUpScreen({ navigation }) {
         },
       ], (error) => {
         if (error) {
-          // Alert.alert(err, err.message);
           Alert.alert('Error!', error.message);
         }
       });
