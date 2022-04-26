@@ -9,7 +9,6 @@ import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { Assets } from 'react-navigation-stack';
 
 const Airtable = require('airtable');
 
@@ -150,8 +149,6 @@ export default function SignUpScreen({ navigation }) {
 
     setEmail(text);
     setValidEmail(true);
-
-    // console.log('Email is Correct');
   };
 
   const onTextChange = (val, text) => {
@@ -160,7 +157,6 @@ export default function SignUpScreen({ navigation }) {
     if (match) {
       const intlCode = (match[1] ? '+1 ' : '');
       const num = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
-      // console.log(num.toString());
       if (cleaned.length > 10) {
         Alert.alert('Please enter a 10-digit phone number');
       } else if (val === 'number') {
@@ -187,7 +183,6 @@ export default function SignUpScreen({ navigation }) {
   };
 
   const checkInputs = () => {
-    // console.log(validEmail);
     if (firstName === '') {
       Alert.alert('Please enter the First Name to proceed');
     } else if (lastName === '') {
@@ -215,8 +210,10 @@ export default function SignUpScreen({ navigation }) {
   const handleSignUp = () => {
     if (address === '') {
       Alert.alert('Please enter the Address to proceed');
+    // eslint-disable-next-line no-restricted-globals
     } else if (isNaN(apt)) {
       Alert.alert('Please enter a numerical Apt # to proceed');
+    // eslint-disable-next-line no-restricted-globals
     } else if (zip === '' || isNaN(zip) || (zip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
     } else {
@@ -380,7 +377,6 @@ export default function SignUpScreen({ navigation }) {
             placeholder="Confirm Password"
             returnKeyType="next"
             secureTextEntry={!!hidePassConf}
-            // onSubmitEditing={() => { numberInput.current.focus(); }}
             blurOnSubmit={false}
             ref={confirmPasswordInput}
             width={306}
