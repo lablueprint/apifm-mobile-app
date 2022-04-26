@@ -199,6 +199,8 @@ function ProduceDetailsScreen({ route }) {
 
   const [visible, setVisible] = useState(false);
 
+  // there needs to be a constraint check that the user has selected dates to order
+  // likely needs to pass a boolean variable that ensures this is doable
   const onAddToCart = async () => {
     try {
       setVisible(true);

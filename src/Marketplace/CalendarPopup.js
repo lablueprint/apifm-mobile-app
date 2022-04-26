@@ -1,10 +1,20 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity,
+  View, Text, StyleSheet, TouchableOpacity, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-paper';
+import Config from 'react-native-config';
+
+const Airtable = require('airtable');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   popupContainer: {
@@ -29,11 +39,39 @@ const styles = StyleSheet.create({
 });
 
 function CalendarPopup({
-  setVisibility, mondayDelivery, setMondayDelivery, fridayDelivery, setFridayDelivery,
+  userId, setVisibility, mondayDelivery, setMondayDelivery, fridayDelivery, setFridayDelivery,
 }) {
   const [monday, setMonday] = useState(mondayDelivery);
   const [friday, setFriday] = useState(fridayDelivery);
   const [save, setSave] = useState(false);
+
+  const updateDelivery = () => {
+    setMondayDelivery(monday);
+    setFridayDelivery(friday);
+    let date = '';
+    if (monday) {
+      date = 'Monday';
+    }
+    if (friday) {
+      date = 'Friday';
+    }
+    if (save) {
+      base('Users').update([
+        {
+          id: userId,
+          fields: {
+            'Delivery Date': date,
+          },
+        },
+      ], (err) => {
+        if (err) {
+          Alert.alert(err.error, err.message);
+        }
+      });
+    }
+    // if the current state is saved then call airtable to update the user
+    setVisibility(false);
+  };
 
   return (
     <View style={styles.popupContainer}>
@@ -80,12 +118,7 @@ function CalendarPopup({
         <Text>Save this day of the week for future deliveries.</Text>
       </View>
       <Button
-        onPress={() => {
-          setMondayDelivery(monday);
-          setFridayDelivery(friday);
-          // if the current state is saved then call airtable to update the user
-          setVisibility(false);
-        }}
+        onPress={updateDelivery}
       >
         Done
       </Button>
@@ -94,6 +127,7 @@ function CalendarPopup({
 }
 
 CalendarPopup.propTypes = {
+  userId: PropTypes.string.isRequired,
   setVisibility: PropTypes.func.isRequired,
   mondayDelivery: PropTypes.bool.isRequired,
   setMondayDelivery: PropTypes.func.isRequired,

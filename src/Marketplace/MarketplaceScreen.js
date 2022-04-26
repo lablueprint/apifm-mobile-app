@@ -77,14 +77,38 @@ export default function MarketplaceScreen({ navigation }) {
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [favoritesFilter, setFavoritesFilter] = useState(false);
 
+  const [mondayDelivery, setMondayDelivery] = useState(false);
+  const [fridayDelivery, setFridayDelivery] = useState(false);
+
+  const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
+    let deliveryList = listToDeliver;
+    if (mondayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Monday' || produce['Delivery Date'] === 'All'));
+    }
+    if (fridayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
+    }
+    return deliveryList;
+  };
+
   const getProduce = async () => {
     let favorites = [];
+    let mondayState = false;
+    let fridayState = false;
     await base('Users').find(userId, (err, record) => {
       if (err) {
         Alert.alert(err.error, err.message);
         return;
       }
       favorites = record.fields.favorites;
+      if (record.fields['Delivery Date'] === 'Monday') {
+        mondayState = true;
+        setMondayDelivery(true);
+      }
+      if (record.fields['Delivery Date'] === 'Friday') {
+        fridayState = true;
+        setFridayDelivery(true);
+      }
     });
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -129,27 +153,13 @@ export default function MarketplaceScreen({ navigation }) {
       fetchNextPage();
     });
     setAllProduce(list);
-    setUnsortedProduce(list);
-    setProduceList(list);
+    setUnsortedProduce(deliveryProduce(list, mondayState, fridayState));
+    setProduceList(deliveryProduce(list, mondayState, fridayState));
   };
 
   useEffect(() => {
     getProduce();
   }, []);
-
-  const [mondayDelivery, setMondayDelivery] = useState(false);
-  const [fridayDelivery, setFridayDelivery] = useState(false);
-
-  const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
-    let deliveryList = listToDeliver;
-    if (mondayState) {
-      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Monday' || produce['Delivery Date'] === 'All'));
-    }
-    if (fridayState) {
-      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
-    }
-    return deliveryList;
-  };
 
   const [aZSort, setAZSort] = useState(false);
   const [zASort, setZASort] = useState(false);
@@ -359,6 +369,7 @@ export default function MarketplaceScreen({ navigation }) {
                 contentContainerStyle={styles.filterPopup}
               >
                 <CalendarPopup
+                  userId={userId}
                   setVisibility={setCalendarVisibility}
                   mondayDelivery={mondayDelivery}
                   setMondayDelivery={setMondayDelivery}
