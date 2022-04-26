@@ -45,17 +45,17 @@ const styles = StyleSheet.create({
 
   },
   backArrow: {
-    marginTop: 20,
+    flex: 1,
+    marginTop: 10,
+    marginLeft: 10,
   },
   text: {
-    width: 200,
+    width: 350,
   },
   image: {
-    // flex: 1,
-    // justifyContent: 'center',
     width: 201,
     height: 55,
-    marginLeft: 60,
+    marginLeft: 70,
   },
   backgroundimage: {
     flex: 1,
@@ -88,8 +88,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 14,
     borderWidth: 0.25,
-    // height: 38,
-    height: 20,
+    height: 38,
     margin: 8.5,
     flexDirection: 'row',
     alignSelf: 'flex-start',
@@ -108,13 +107,14 @@ const styles = StyleSheet.create({
     color: '#1D763C',
   },
   descriptext: {
-    textAlign: 'left',
+    textAlign: 'center',
     fontSize: 14,
     width: 323,
-    height: 26,
-    marginLeft: 60,
-    fontFamily: 'JosefinSans-Regular',
+    height: 40,
+    marginLeft: 10,
+    fontFamily: 'JosefinSans-Light',
     color: '#1D763C',
+    marginBottom: 20,
 
   },
   titleText: {
@@ -462,8 +462,7 @@ export default function SignUpScreen({ navigation }) {
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
       <View style={styles.container}>
         <View style={styles.text}>
-
-          <TouchableOpacity onPress={() => { setPage1(!page1); }}>
+          <TouchableOpacity style={styles.backArrow} onPress={() => { setPage1(!page1); }}>
             <Image source={backArrow} />
           </TouchableOpacity>
           <Image style={styles.image} source={headerImage} />
@@ -549,7 +548,8 @@ export default function SignUpScreen({ navigation }) {
 
         <View>
           <Text style={styles.descriptext}>
-            The address will be used for delivery and to calculate the order minimum for delivery.
+            The address will be used for delivery and to
+            calculate the order minimum for delivery.
           </Text>
         </View>
 
