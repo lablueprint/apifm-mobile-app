@@ -10,8 +10,9 @@ import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
-// for Calendar icon import Feather from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import ProduceGrid from './ProduceGrid';
+import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
 
 // constant user id to test for all features
@@ -58,6 +59,14 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     alignSelf: 'flex-end',
   },
+  marketplaceTabOpen: {
+    color: '#144611',
+    backgroundColor: '#FFFFFA',
+  },
+  marketplaceTabClosed: {
+    color: '#ABBD85',
+    backgroundColor: '#144611',
+  },
 });
 
 export default function MarketplaceScreen({ navigation }) {
@@ -65,6 +74,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [unsortedProduce, setUnsortedProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);
 
+  const [calendarVisibility, setCalendarVisibility] = useState(false);
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [favoritesFilter, setFavoritesFilter] = useState(false);
 
@@ -264,12 +274,35 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <View>
             <TouchableOpacity>
-              <FontIcon name={favoritesFilter ? 'heart' : 'heart-o'} onPress={filterFavorites} />
+              <FeatherIcon onPress={() => { setCalendarVisibility(true); }} name="calendar" size={20} />
             </TouchableOpacity>
             <TouchableOpacity>
               <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
             </TouchableOpacity>
-
+            <TouchableOpacity>
+              <FontIcon onPress={filterFavorites} name={favoritesFilter ? 'heart' : 'heart-o'} size={20} />
+            </TouchableOpacity>
+          </View>
+          <View>
+            <TouchableOpacity>
+              <Text>MARKETPLACE</Text>
+            </TouchableOpacity>
+            <TouchableOpacity><Text>FAVORITES</Text></TouchableOpacity>
+          </View>
+          <View>
+            <Portal>
+              <Modal
+                visible={calendarVisibility}
+                onDismiss={() => {
+                  setCalendarVisibility(false);
+                }}
+                contentContainerStyle={styles.filterPopup}
+              >
+                <CalendarPopup
+                  setVisibility={setCalendarVisibility}
+                />
+              </Modal>
+            </Portal>
           </View>
           <View>
             <Portal>
