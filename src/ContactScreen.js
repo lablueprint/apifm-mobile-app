@@ -22,7 +22,6 @@ const styles = StyleSheet.create({
     marginLeft: '6%',
     marginRight: '6%',
     width: '88%',
-    backgroundColor: '#FCF7F0',
   },
   title: {
     marginTop: 35,
@@ -79,6 +78,12 @@ const styles = StyleSheet.create({
     color: '#A4A4A4',
     fontFamily: 'JosefinSans-Regular',
   },
+  bottomTextItalic: {
+    marginTop: -2,
+    fontSize: 14,
+    color: '#A4A4A4',
+    fontFamily: 'JosefinSans-MediumItalic',
+  },
   iconContainer: {
     marginTop: 25,
     flexDirection: 'row',
@@ -123,67 +128,72 @@ export default function ContactScreen({ navigation }) { // unused navigation
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}> Get In Touch! </Text>
-      <Text style={styles.subTitle}>
-        Have a question? Just fill out this contact form.
-        You can also reach us by phone or text at (123)456-7890.
-      </Text>
-      <TextInput
-        onChangeText={setName}
-        placeholder="Name"
-        value={name}
-        style={styles.textFields}
-      />
-      <TextInput
-        onChangeText={setEmail}
-        placeholder="Email"
-        value={email}
-        style={styles.textFields}
-        keyboardType="email-address"
-      />
-      <TextInput
-        onChangeText={setSubject}
-        placeholder="Subject"
-        value={subject}
-        style={styles.textFields}
-      />
-      <TextInput
-        onChangeText={setMessage}
-        placeholder="Message"
-        value={message}
-        style={styles.messageTextField}
-        multiline
-      />
-      <Button
-        onPress={sendEmailOnPress}
-        style={styles.sendButton}
-      >
-        <Text style={styles.sendButtonText}>
-          Send
+    <View style={{ backgroundColor: '#FCF7F0' }}>
+      <View style={styles.container}>
+        <Text style={styles.title}> Get In Touch! </Text>
+        <Text style={styles.subTitle}>
+          Have a question? Just fill out this contact form.
+          You can also reach us by phone or text at (123)456-7890.
         </Text>
-      </Button>
-      <Text style={styles.bottomText}>
-        We&rsquo;re located at the Special Service for Asian Pacific Islander Forward Movement
-        Office at:
-        905 East 8th Street, Los Angeles, CA 90021
-      </Text>
-      <View style={styles.iconContainer}>
-        <Icon
-          style={styles.socialIcon}
-          name="link"
-          onPress={() => Linking.openURL('https://www.foodroots.co/about')}
+        <TextInput
+          onChangeText={setName}
+          placeholder="Name"
+          value={name}
+          style={styles.textFields}
         />
-        <Icon
-          style={styles.socialIcon}
-          name="facebook"
-          onPress={() => Linking.openURL('https://www.facebook.com/forwardapi/')}
+        <TextInput
+          onChangeText={setEmail}
+          placeholder="Email"
+          value={email}
+          style={styles.textFields}
+          keyboardType="email-address"
         />
-        <Icon
-          style={styles.socialIcon}
-          name="instagram"
-          onPress={() => Linking.openURL('https://www.instagram.com/forwardapi/?hl=en')}
+        <TextInput
+          onChangeText={setSubject}
+          placeholder="Subject"
+          value={subject}
+          style={styles.textFields}
         />
+        <TextInput
+          onChangeText={setMessage}
+          placeholder="Message"
+          value={message}
+          style={styles.messageTextField}
+          multiline
+        />
+        <Button
+          onPress={sendEmailOnPress}
+          style={styles.sendButton}
+        >
+          <Text style={styles.sendButtonText}>
+            Send
+          </Text>
+        </Button>
+        <Text style={styles.bottomText}>
+          We&rsquo;re located at the Special Service for Asian Pacific Islander Forward Movement
+          Office at:
+        </Text>
+        <Text style={styles.bottomTextItalic}>
+          905 East 8th Street, Los Angeles, CA 90021
+        </Text>
+        {/* Bottom row of icons */}
+        <View style={styles.iconContainer}>
+          <Icon
+            style={styles.socialIcon}
+            name="link"
+            onPress={() => Linking.openURL('https://www.foodroots.co/about')}
+          />
+          <Icon
+            style={styles.socialIcon}
+            name="facebook"
+            onPress={() => Linking.openURL('https://www.facebook.com/forwardapi/')}
+          />
+          <Icon
+            style={styles.socialIcon}
+            name="instagram"
+            onPress={() => Linking.openURL('https://www.instagram.com/forwardapi/?hl=en')}
+          />
+        </View>
       </View>
     </View>
   );
