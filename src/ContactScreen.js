@@ -24,56 +24,75 @@ const styles = StyleSheet.create({
     width: '88%',
   },
   title: {
-    marginTop: 36,
+    marginTop: 35,
     fontSize: 26,
-    fontWeight: 'bold',
+    fontFamily: 'JosefinSans-Bold',
+    color: '#1D763C',
   },
   subTitle: {
-    marginTop: 10,
-    marginBottom: 30,
-    fontSize: 16,
+    marginTop: 8,
+    marginBottom: 25,
+    marginLeft: 7,
+    fontSize: 17,
+    fontFamily: 'JosefinSans-Regular',
+    color: '#1D763C',
   },
   textFields: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: 'grey',
+    borderColor: '#1D763C',
     fontSize: 14,
-    marginBottom: 13,
+    marginBottom: 12,
     paddingLeft: 20,
     height: 40,
+    backgroundColor: '#FFFFFF',
+    color: '#7A7A7A',
+    fontFamily: 'JosefinSans-Regular',
   },
   messageTextField: {
     borderWidth: 1,
     borderRadius: 10,
-    borderColor: 'grey',
     fontSize: 14,
     marginBottom: 15,
     paddingLeft: 20,
     height: 130,
+    borderColor: '#1D763C',
+    backgroundColor: '#FFFFFF',
+    fontFamily: 'JosefinSans-Regular',
     textAlignVertical: 'top', // prevents text from going to the centre
   },
   sendButton: {
-    marginTop: 5,
-    backgroundColor: 'grey',
+    marginTop: 3,
+    backgroundColor: '#1D763C',
     borderRadius: 20,
     height: 50,
   },
   sendButtonText: {
-    color: 'white',
+    color: '#FFFFFF',
     fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
   },
   bottomText: {
-    marginTop: 15,
-    fontSize: 13,
+    marginTop: 13,
+    fontSize: 14,
+    color: '#A4A4A4',
+    fontFamily: 'JosefinSans-Regular',
+  },
+  bottomTextItalic: {
+    marginTop: -2,
+    fontSize: 14,
+    color: '#A4A4A4',
+    fontFamily: 'JosefinSans-MediumItalic',
   },
   iconContainer: {
-    marginTop: 30,
+    marginTop: 25,
     flexDirection: 'row',
     justifyContent: 'center',
   },
   socialIcon: {
     margin: 16,
     fontSize: 35,
+    color: '#000000',
   },
 });
 
@@ -109,64 +128,72 @@ export default function ContactScreen({ navigation }) { // unused navigation
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}> Get In Touch! </Text>
-      <Text style={styles.subTitle}> Have a question? Just fill out this contact form. </Text>
-      <TextInput
-        onChangeText={setName}
-        placeholder="Name"
-        value={name}
-        style={styles.textFields}
-      />
-      <TextInput
-        onChangeText={setEmail}
-        placeholder="Email"
-        value={email}
-        style={styles.textFields}
-        keyboardType="email-address"
-      />
-      <TextInput
-        onChangeText={setSubject}
-        placeholder="Subject"
-        value={subject}
-        style={styles.textFields}
-      />
-      <TextInput
-        onChangeText={setMessage}
-        placeholder="Message"
-        value={message}
-        style={styles.messageTextField}
-        multiline
-      />
-      <Button
-        onPress={sendEmailOnPress}
-        style={styles.sendButton}
-      >
-        <Text style={styles.sendButtonText}>
-          Send
+    <View style={{ backgroundColor: '#FCF7F0' }}>
+      <View style={styles.container}>
+        <Text style={styles.title}> Get In Touch! </Text>
+        <Text style={styles.subTitle}>
+          Have a question? Just fill out this contact form.
+          You can also reach us by phone or text at (213) 553-1800.
         </Text>
-      </Button>
-      <Text style={styles.bottomText}>
-        We&rsquo;re located at the Special Service for Asian Pacific Islander Forward Movement
-        Office at:
-        905 East 8th Street, Los Angeles, CA 90021
-      </Text>
-      <View style={styles.iconContainer}>
-        <Icon
-          style={styles.socialIcon}
-          name="link"
-          onPress={() => Linking.openURL('https://www.foodroots.co/about')}
+        <TextInput
+          onChangeText={setName}
+          placeholder="Name"
+          value={name}
+          style={styles.textFields}
         />
-        <Icon
-          style={styles.socialIcon}
-          name="facebook"
-          onPress={() => Linking.openURL('https://www.facebook.com/forwardapi/')}
+        <TextInput
+          onChangeText={setEmail}
+          placeholder="Email"
+          value={email}
+          style={styles.textFields}
+          keyboardType="email-address"
         />
-        <Icon
-          style={styles.socialIcon}
-          name="instagram"
-          onPress={() => Linking.openURL('https://www.instagram.com/forwardapi/?hl=en')}
+        <TextInput
+          onChangeText={setSubject}
+          placeholder="Subject"
+          value={subject}
+          style={styles.textFields}
         />
+        <TextInput
+          onChangeText={setMessage}
+          placeholder="Message"
+          value={message}
+          style={styles.messageTextField}
+          multiline
+        />
+        <Button
+          onPress={sendEmailOnPress}
+          style={styles.sendButton}
+        >
+          <Text style={styles.sendButtonText}>
+            Send
+          </Text>
+        </Button>
+        <Text style={styles.bottomText}>
+          We&rsquo;re located at the Special Service for Asian Pacific Islander Forward Movement
+          Office at:
+        </Text>
+        <Text style={styles.bottomTextItalic}>
+          905 East 8th Street, Los Angeles, CA 90021
+        </Text>
+        {/* Bottom row of icons */}
+        <View style={styles.iconContainer}>
+          <Icon
+            style={styles.socialIcon}
+            name="link"
+            onPress={() => Linking.openURL('https://www.foodroots.co/about')}
+          />
+          <Icon
+            style={styles.socialIcon}
+            name="facebook"
+            onPress={() => Linking.openURL('https://www.facebook.com/forwardapi/')}
+          />
+          <Icon
+            style={styles.socialIcon}
+            name="instagram"
+            onPress={() => Linking.openURL('https://www.instagram.com/forwardapi/?hl=en')}
+          />
+        </View>
       </View>
     </View>
   );
