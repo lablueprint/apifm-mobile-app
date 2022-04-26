@@ -7,7 +7,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CustomDrawer from './CustomDrawer';
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
-import SignInScreen from '../SignIn/SignInScreen';
+import SignUpScreen from '../SignUp/SignInScreen';
+import SignUpConfirmation from '../SignUp/SignInScreen2';
+import LandingPage from '../SignUp/LandingPage';
+import LoginScreen from '../SignUp/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
 import ContactScreen from '../ContactScreen';
@@ -116,11 +119,15 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Marketplace">
-      <stackNavig.Screen name="SignIn" component={SignInScreen} options={{ headerShown: true }} />
-      <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
-      <stackNavig.Screen name="Profile" component={ProfileScreen} options={{ headerShown: true }} />
-      <stackNavig.Screen name="Cart" component={CartScreen} options={{ headerShown: true }} />
+    <stackNavig.Navigator initialRouteName="Landing Page">
+      <stackNavig.Screen name="Landing Page" component={LandingPage} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
+      <stackNavig.Screen name="Profile" component={ProfileScreen} />
+      <stackNavig.Screen name="Cart" component={CartScreen} />
+      <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
     </stackNavig.Navigator>
   );
