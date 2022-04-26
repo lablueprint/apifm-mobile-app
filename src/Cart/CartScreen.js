@@ -93,8 +93,7 @@ export default function CartScreen({ navigation }) {
     base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         let sum = 0;
-        // eslint-disable-next-line array-callback-return
-        items.map((item) => {
+        items.forEach((item) => {
           const price = item.get('price');
           sum += item.fields.quantity * price;
         });
@@ -140,17 +139,12 @@ export default function CartScreen({ navigation }) {
       </View>
       <Button
         mode="contained"
-        onPress={() => navigation.navigate('Checkout')}
+        onPress={() => {
+          navigation.navigate('Checkout', { itemList });
+        }}
       >
         CHECKOUT
       </Button>
-      {/* <Button
-        mode="contained"
-        style={[styles.button, { marginBottom: '4%' }]}
-        onPress={() => navigation.navigate('Marketplace')}
-      >
-        MARKETPLACE
-      </Button> */}
     </View>
   );
 }

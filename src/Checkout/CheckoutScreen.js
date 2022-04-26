@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import {
   View, StyleSheet, Alert, ScrollView,
@@ -9,7 +10,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import CartProduct from '../Cart/CartProduct';
+import CartProduct from '../Cart/CartProductUntoggle';
 
 const styles = StyleSheet.create({
   container: {
@@ -86,30 +87,26 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-export default function CheckoutScreen({ navigation }) {
+export default function CheckoutScreen({ route, navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
   const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
-  const [itemList, setItemList] = useState([]);
-  const [refresh, setRefresh] = useState(0);
+  const [itemList] = useState(route.params.itemList);
 
-  const calcTotal = (useremail) => {
-    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
-      .then((items) => {
-        let sum = 0;
-        let c = 0;
-        // eslint-disable-next-line array-callback-return
-        items.map((item) => {
-          const price = item.get('price');
-          sum += item.fields.quantity * price;
-          c += 1;
-        });
-        setTotal(sum);
-        setCount(c);
-      });
+  const calcTotal = () => {
+    let sum = 0;
+    let c = 0;
+    itemList.forEach((item) => {
+      const { price, quantity } = item;
+      sum += quantity * price;
+      c += 1; // not confirmed if its +1 or +quantity by designers
+      // if for instance some one buys 5 lbs of peanuts, I imagine it'd be one item
+    });
+    setTotal(sum);
+    setCount(c);
   };
 
   const setOrderDetails = (useremail) => {
@@ -132,28 +129,14 @@ export default function CheckoutScreen({ navigation }) {
         }
       });
   };
-  const getItems = (useremail) => {
-    const list = [];
-    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
-      records.forEach((record) => {
-        const item = record;
-        list.push(item.fields);
-      });
-      setItemList(list);
-      fetchNextPage();
-    });
-  };
 
-  const products = itemList.map((item) => (
+  const checkoutproducts = itemList.map((item) => (
     <CartProduct
-      itemID={item.item_id}
-      key={item.item_id}
-      setRefresh={setRefresh}
-      refresh={refresh}
       name={item.name[0]}
       price={item.price[0]}
+      key={item.item_id}
       type={item.unit[0]}
-      initialQuantity={String(item.quantity)}
+      quantity={item.quantity}
       image={item.image[0].url}
     />
   ));
@@ -161,8 +144,8 @@ export default function CheckoutScreen({ navigation }) {
   useEffect(() => {
     // TODO: replace hardcoded email with logged in user info
     setOrderDetails('helen@gmail.com');
-    calcTotal('helen@gmail.com');
-    getItems('helen@gmail.com');
+    calcTotal();
+
     setDeliveryFee(10);
     setFreeFee(20);
     setDeliveryDate('January 2023!');
@@ -172,8 +155,7 @@ export default function CheckoutScreen({ navigation }) {
     const cartIDs = [];
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
-      // eslint-disable-next-line array-callback-return
-        items.map((item) => {
+        items.forEach((item) => {
           cartIDs.push(item.get('item_id'));
           base('Orders').create({
             user_id: useremail,
@@ -188,10 +170,11 @@ export default function CheckoutScreen({ navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err) => {
+    base('CART V3').destroy(cartIDs, (err, deletedRecords) => {
       if (err) {
         Alert.alert(err.message);
       }
+      console.log(deletedRecords);
     });
   };
   return (
@@ -209,7 +192,7 @@ export default function CheckoutScreen({ navigation }) {
           }}
           >
             <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
-              <Icon sirrze={25} color="grey" name="location-sharp" />
+              <Icon size={25} color="grey" name="location-sharp" />
             </View>
             <View style={{
               marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
@@ -241,13 +224,10 @@ export default function CheckoutScreen({ navigation }) {
             </Text>
             <View style={{ flex: 1 }}>
               <View>
-                {products}
+                {checkoutproducts}
               </View>
             </View>
           </View>
-          {/* <ScrollView style={styles.scrollView}>
-          {products}
-        </ScrollView> */}
         </View>
         <View style={[styles.subcontainer]}>
           <View style={styles.title}>
@@ -312,7 +292,9 @@ export default function CheckoutScreen({ navigation }) {
             style={styles.button}
             onPress={() => {
               pushToOrderTable('helen@gmail.com');
-              navigation.navigate('Order Successful');
+              navigation.navigate('Order Successful', {
+                itemList,
+              });
             }}
           >
             Confirm
@@ -324,5 +306,12 @@ export default function CheckoutScreen({ navigation }) {
 }
 
 CheckoutScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      itemList: PropTypes.arrayOf(PropTypes.object),
+    }).isRequired,
+  }).isRequired,
 };

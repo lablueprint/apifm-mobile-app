@@ -6,8 +6,9 @@ import {
   Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import logo from '../assets/imgs/square_logo.png';
+
+import CartProduct from '../Cart/CartProductUntoggle';
 
 const styles = StyleSheet.create({
   container: {
@@ -39,36 +40,37 @@ const styles = StyleSheet.create({
   },
 });
 
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
-
-export default function OrderSuccessfulScreen({ navigation }) {
+export default function OrderSuccessfulScreen({ route, navigation }) {
+  const { itemList } = route.params;
   const [total, setTotal] = useState(0);
+  const [count, setCount] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
 
-  const calcTotal = (useremail) => {
-    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
-      .then((items) => {
-        let sum = 0;
-        // eslint-disable-next-line array-callback-return
-        items.map((item) => {
-          const price = item.get('price');
-          sum += item.fields.quantity * price;
-        });
-        setTotal(sum);
-      });
+  const products = itemList.map((item) => (
+    <CartProduct
+      name={item.name[0]}
+      price={item.price[0]}
+      key={item.item_id}
+      type={item.unit[0]}
+      quantity={item.quantity}
+      image={item.image[0].url}
+    />
+  ));
+
+  const calcTotal = () => {
+    let sum = 0;
+    let c = 0;
+    itemList.forEach((item) => {
+      const { price, quantity } = item;
+      sum += quantity * price;
+      c += 1;
+    });
+    setTotal(sum);
+    setCount(c);
   };
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged in user info
-    calcTotal('helen@gmail.com');
+    calcTotal();
     setDeliveryFee(10);
   }, []);
 
@@ -88,9 +90,11 @@ export default function OrderSuccessfulScreen({ navigation }) {
           marginLeft: '0%',
         }]}
         >
-          Order Overview
+          {`Order Overview (${count}):`}
         </Text>
-        <Text style={[styles.bodyText, { marginBottom: '8%' }]}> TODO: Cart (multiple produce cards) reused here  </Text>
+        <View>
+          {products}
+        </View>
         <View style={{
           flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
         }}
@@ -117,5 +121,12 @@ export default function OrderSuccessfulScreen({ navigation }) {
 }
 
 OrderSuccessfulScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+  }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      itemList: PropTypes.arrayOf(PropTypes.object),
+    }).isRequired,
+  }).isRequired,
 };

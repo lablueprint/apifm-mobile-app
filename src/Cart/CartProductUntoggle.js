@@ -1,23 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View, StyleSheet, Image,
 } from 'react-native';
 import {
-  Text, Button, TextInput,
+  Text,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
-import Config from 'react-native-config';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -36,8 +24,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   container3: {
-    //    flex: 1,
-    //    flexDirection: 'column',
+  //    flex: 1,
+  //    flexDirection: 'column',
     marginLeft: 0,
     marginTop: 20,
     width: 125,
@@ -97,58 +85,14 @@ const styles = StyleSheet.create({
 
 export default function CartProduct(props) {
   const {
-    itemID,
-    refresh,
-    setRefresh,
     name,
     price,
     type,
-    initialQuantity,
+    quantity,
     image,
   } = props;
 
-  const [quantity, setQuantity] = useState(String(initialQuantity));
-
-  const getItem = () => {
-    base('CART V3').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
-      .then((records) => {
-        const newItem = records[0].fields;
-        setQuantity(String(newItem.quantity));
-      });
-  };
-
   const imageurl = { uri: image };
-
-  const handleQuantityChange = (newQuantity) => {
-    setQuantity(newQuantity);
-    base('CART V3').update([
-      {
-        id: String(itemID),
-        fields: {
-          quantity: Number(newQuantity),
-        },
-      },
-    ], (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-    setRefresh(refresh + 1);
-  };
-
-  useEffect(() => {
-    getItem();
-  }, []);
-
-  const deleteItem = () => {
-    base('CART V3').destroy([itemID], (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
-    setRefresh(refresh + 1);
-  };
-
   return (
     <View style={styles.container}>
       <Image style={styles.image} source={imageurl} />
@@ -156,17 +100,10 @@ export default function CartProduct(props) {
         <Text style={styles.itemName}>
           {name}
         </Text>
-        <View style={styles.quantityContainer}>
+        <View>
           <Text style={styles.itemQuantityType}>
-            Quantity:
-            {' '}
+            {`Quantity: ${quantity}`}
           </Text>
-          <TextInput
-            keyboardType="numeric"
-            value={quantity}
-            style={styles.quantityBox}
-            onChangeText={handleQuantityChange}
-          />
         </View>
       </View>
       <View style={styles.container2}>
@@ -176,25 +113,15 @@ export default function CartProduct(props) {
         <Text style={styles.itemPricePer}>
           {`$ ${price} ${type}`}
         </Text>
-        <Button
-          style={styles.removeItemButton}
-          onPress={deleteItem}
-          color="#000000"
-        >
-          <Icon style={{ fontSize: 20 }} name="delete" />
-        </Button>
       </View>
     </View>
   );
 }
 
 CartProduct.propTypes = {
-  itemID: PropTypes.string.isRequired,
-  refresh: PropTypes.number.isRequired,
-  setRefresh: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
-  initialQuantity: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  quantity: PropTypes.number.isRequired,
 };
