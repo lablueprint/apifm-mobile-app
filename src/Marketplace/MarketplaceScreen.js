@@ -113,6 +113,9 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = '';
         }
+        if (!('Delivery Date' in record.fields)) {
+          produce.fields['Delivery Date'] = '';
+        }
         if (favorites.includes(produce.id)) {
           produce.fields.Favorited = true;
         } else {
@@ -130,6 +133,9 @@ export default function MarketplaceScreen({ navigation }) {
   useEffect(() => {
     getProduce();
   }, []);
+
+  const [mondayDelivery, setMondayDelivery] = useState(false);
+  const [fridayDelivery, setFridayDelivery] = useState(false);
 
   const [aZSort, setAZSort] = useState(false);
   const [zASort, setZASort] = useState(false);
@@ -300,6 +306,10 @@ export default function MarketplaceScreen({ navigation }) {
               >
                 <CalendarPopup
                   setVisibility={setCalendarVisibility}
+                  mondayDelivery={mondayDelivery}
+                  setMondayDelivery={setMondayDelivery}
+                  fridayDelivery={fridayDelivery}
+                  setFridayDelivery={setFridayDelivery}
                 />
               </Modal>
             </Portal>
