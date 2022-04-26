@@ -124,7 +124,7 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
-      <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
+      <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
