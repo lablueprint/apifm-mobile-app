@@ -275,6 +275,7 @@ function ProduceDetailsScreen({ route }) {
                 <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
               </TouchableOpacity>
             </View>
+            {/* if multiple tags are a thing, then there likely needs to be multiple renders */}
             <Text style={styles.textSeller}>{seller}</Text>
             <View style={styles.sameLineContainer}>
               <View style={styles.priceUnitLine}>

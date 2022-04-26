@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+// replace this icon with the one on figma
 import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FontIcon from 'react-native-vector-icons/FontAwesome';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -112,6 +113,7 @@ export default function MarketplaceScreen({ navigation }) {
         }
         if (!('Type Tags' in record.fields)) {
           produce.fields['Type Tags'] = '';
+          // this needs to be accounted for since multiple tags should be an array
         }
         if (!('Delivery Date' in record.fields)) {
           produce.fields['Delivery Date'] = '';
@@ -133,6 +135,20 @@ export default function MarketplaceScreen({ navigation }) {
   useEffect(() => {
     getProduce();
   }, []);
+
+  const [mondayDelivery, setMondayDelivery] = useState(false);
+  const [fridayDelivery, setFridayDelivery] = useState(false);
+
+  const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
+    let deliveryList = listToDeliver;
+    if (mondayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Monday' || produce['Delivery Date'] === 'All'));
+    }
+    if (fridayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
+    }
+    return deliveryList;
+  };
 
   const [aZSort, setAZSort] = useState(false);
   const [zASort, setZASort] = useState(false);
@@ -176,6 +192,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
+  // this function likely needs to account for multiple tags
   const filterProduce = (listToFilter, favorites) => {
     let filteredList = [];
     if (seasonalFilter) {
@@ -222,27 +239,25 @@ export default function MarketplaceScreen({ navigation }) {
       setAllProduce(newAllProduce);
       if (showFavorites) {
         const filteredList = newAllProduce.filter((item) => item.Favorited);
-        setUnsortedProduce(filterProduce(filteredList, true));
-        setProduceList(sortProduce(filterProduce(filteredList, true)));
+        setUnsortedProduce(filterProduce(
+          deliveryProduce(filteredList, mondayDelivery, fridayDelivery),
+          true,
+        ));
+        setProduceList(sortProduce(filterProduce(
+          deliveryProduce(filteredList, mondayDelivery, fridayDelivery),
+          true,
+        )));
       } else {
-        setUnsortedProduce(filterProduce(newAllProduce, false));
-        setProduceList(sortProduce(filterProduce(newAllProduce, false)));
+        setUnsortedProduce(filterProduce(
+          deliveryProduce(newAllProduce, mondayDelivery, fridayDelivery),
+          false,
+        ));
+        setProduceList(sortProduce(filterProduce(
+          deliveryProduce(newAllProduce, mondayDelivery, fridayDelivery),
+          false,
+        )));
       }
     });
-  };
-
-  const [mondayDelivery, setMondayDelivery] = useState(false);
-  const [fridayDelivery, setFridayDelivery] = useState(false);
-
-  const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
-    let deliveryList = listToDeliver;
-    if (mondayState) {
-      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Monday' || produce['Delivery Date'] === 'All'));
-    }
-    if (fridayState) {
-      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
-    }
-    return deliveryList;
   };
 
   useEffect(() => {
@@ -254,16 +269,11 @@ export default function MarketplaceScreen({ navigation }) {
       deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
       favoritesFilter,
     )));
-  }, [mondayDelivery, fridayDelivery]);
+  }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   useEffect(() => {
     setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
-
-  useEffect(() => {
-    setUnsortedProduce(filterProduce(allProduce, favoritesFilter));
-    setProduceList(sortProduce(filterProduce(allProduce, favoritesFilter)));
-  }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   return (
     <Provider>
