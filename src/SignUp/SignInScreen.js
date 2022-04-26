@@ -36,27 +36,27 @@ const styles = StyleSheet.create({
 
   },
   button: {
-    marginTop: 15,
+    marginTop: 10,
     width: 300,
-    height: 50,
+    height: 40,
     alignItems: 'center',
     backgroundColor: '#1D763C',
     borderRadius: 30,
-    marginBottom: 20,
     fontFamily: 'JosefinSans-SemiBold',
 
   },
-  back: {
-    width: 20,
-    marginRight: 18,
-    backgroundColor: '#C4C4C4',
-
+  backArrow: {
+    marginTop: 20,
+  },
+  text: {
+    width: 200,
   },
   image: {
     // flex: 1,
     // justifyContent: 'center',
     width: 201,
     height: 55,
+    marginLeft: 60,
   },
   backgroundimage: {
     flex: 1,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   inputs: {
     borderWidth: 0.25,
     height: 38,
-    margin: 8.5,
+    margin: 7.5,
     marginLeft: 30,
     flexDirection: 'row',
     alignSelf: 'flex-start',
@@ -82,18 +82,22 @@ const styles = StyleSheet.create({
     marginLeft: 7,
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 14,
-    color: '#1D763C',
+    // color: '#1D763C',
   },
   multiline: {
     marginLeft: 17,
-    borderWidth: 1,
-    height: 38,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 14,
+    borderWidth: 0.25,
+    // height: 38,
+    height: 20,
     margin: 8.5,
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
     borderRadius: 15,
-    borderColor: 'gray',
+    borderColor: (134, 134, 134, 0.31),
+    backgroundColor: 'white',
     textAlignVertical: 'top',
   },
   header: {
@@ -101,6 +105,18 @@ const styles = StyleSheet.create({
     width: '100%',
     fontSize: 18,
     marginLeft: 60,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#1D763C',
+  },
+  descriptext: {
+    textAlign: 'left',
+    fontSize: 14,
+    width: 323,
+    height: 26,
+    marginLeft: 60,
+    fontFamily: 'JosefinSans-Regular',
+    color: '#1D763C',
+
   },
   titleText: {
     marginLeft: 17,
@@ -112,16 +128,16 @@ const styles = StyleSheet.create({
     textAlignVertical: 'center',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
-    fontSize: 30,
+    fontSize: 28,
     color: '#1D763C',
   },
   buttonText: {
     // marginTop: 6,
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
     color: 'white',
-    marginTop: 5,
+    marginTop: 3,
   },
 });
 
@@ -289,7 +305,14 @@ export default function SignUpScreen({ navigation }) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
         <View style={styles.container}>
-          <Image style={styles.image} source={headerImage} />
+          <View style={styles.text}>
+            <TouchableOpacity style={styles.backArrow} onPress={() => { navigation.navigate('Landing Page'); }}>
+              <Image source={backArrow} />
+            </TouchableOpacity>
+            <Image style={styles.image} source={headerImage} />
+          </View>
+
+          {/* <Image style={styles.image} source={headerImage} /> */}
           <Text style={styles.titleText}>Sign Up</Text>
           <View style={styles.inputs}>
             <TextInput
@@ -442,108 +465,110 @@ export default function SignUpScreen({ navigation }) {
 
   // second page:
   return (
-    <View style={styles.container}>
-      <View style={styles.text}>
+    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+      <View style={styles.container}>
+        <View style={styles.text}>
 
-        <TouchableOpacity onPress={() => { setPage1(!page1); }}>
-          <Image source={backArrow} />
+          <TouchableOpacity onPress={() => { setPage1(!page1); }}>
+            <Image source={backArrow} />
+          </TouchableOpacity>
+          <Image style={styles.image} source={headerImage} />
+        </View>
+
+        <Title style={styles.titleText}>Sign Up</Title>
+
+        <Title style={styles.header}>Delivery Address</Title>
+
+        <View style={styles.inputs}>
+          <TextInput
+            style={styles.textInput}
+            value={recipient}
+            onChangeText={setRecipient}
+            placeholder="Organization name (optional)"
+            returnKeyType="next"
+            onSubmitEditing={() => { addrInput.current.focus(); }}
+            blurOnSubmit={false}
+            width={330}
+          />
+        </View>
+
+        <View style={styles.inputs}>
+          <TextInput
+            style={styles.textInput}
+            value={address}
+            onChangeText={setAddress}
+            placeholder="Street address"
+            returnKeyType="next"
+            onSubmitEditing={() => { aptInput.current.focus(); }}
+            blurOnSubmit={false}
+            ref={addrInput}
+            width={330}
+          />
+        </View>
+
+        <View style={styles.inputs}>
+          <TextInput
+            style={styles.textInput}
+            value={apt}
+            onChangeText={setApt}
+            textContentType="postalCode"
+            placeholder="Apt # (optional)"
+            returnKeyType="next"
+            onSubmitEditing={() => { zipInput.current.focus(); }}
+            blurOnSubmit={false}
+            ref={aptInput}
+            width={330}
+          />
+        </View>
+
+        <View style={styles.inputs}>
+          <TextInput
+            style={styles.textInput}
+            value={zip}
+            onChangeText={setZip}
+            placeholder="Zip code"
+            returnKeyType="next"
+            textAlign="left"
+            onSubmitEditing={() => { instrInput.current.focus(); }}
+            blurOnSubmit={false}
+            ref={zipInput}
+            width={121}
+          />
+        </View>
+
+        <View>
+          <TextInput
+            style={styles.multiline}
+            value={instr}
+            onChangeText={setInstr}
+            placeholder="  Instructions for delivery (optional)"
+            returnKeyType="next"
+            blurOnSubmit={false}
+            ref={instrInput}
+            height={112}
+            multiline
+            numberOfLines={5}
+            width={340}
+          />
+
+        </View>
+
+        <View>
+          <Text style={styles.descriptext}>
+            The address will be used for delivery and to calculate the order minimum for delivery.
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          mode="contained"
+          style={styles.button}
+          onPress={() => { handleSignUp(); }}
+        >
+          <Text style={styles.buttonText}> Sign Up </Text>
         </TouchableOpacity>
-        <Image style={styles.image} source={headerImage} />
-      </View>
-
-      <Title style={styles.titleText}>Sign Up</Title>
-
-      <Title style={styles.header}>Delivery Address</Title>
-
-      <View style={styles.inputs}>
-        <TextInput
-          style={styles.textInput}
-          value={recipient}
-          onChangeText={setRecipient}
-          placeholder="Organization name (optional)"
-          returnKeyType="next"
-          onSubmitEditing={() => { addrInput.current.focus(); }}
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-
-      <View style={styles.inputs}>
-        <TextInput
-          style={styles.textInput}
-          value={address}
-          onChangeText={setAddress}
-          placeholder="Street address"
-          returnKeyType="next"
-          onSubmitEditing={() => { aptInput.current.focus(); }}
-          blurOnSubmit={false}
-          ref={addrInput}
-          width={330}
-        />
-      </View>
-
-      <View style={styles.inputs}>
-        <TextInput
-          style={styles.textInput}
-          value={apt}
-          onChangeText={setApt}
-          textContentType="postalCode"
-          placeholder="Apt # (optional)"
-          returnKeyType="next"
-          onSubmitEditing={() => { zipInput.current.focus(); }}
-          blurOnSubmit={false}
-          ref={aptInput}
-          width={330}
-        />
-      </View>
-
-      <View style={styles.inputs}>
-        <TextInput
-          style={styles.textInput}
-          value={zip}
-          onChangeText={setZip}
-          placeholder="Zip code"
-          returnKeyType="next"
-          textAlign="left"
-          onSubmitEditing={() => { instrInput.current.focus(); }}
-          blurOnSubmit={false}
-          ref={zipInput}
-          width={121}
-        />
-      </View>
-
-      <View>
-        <TextInput
-          style={styles.multiline}
-          value={instr}
-          onChangeText={setInstr}
-          placeholder="  Instructions for delivery (optional)"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          ref={instrInput}
-          height={112}
-          multiline
-          numberOfLines={5}
-          width={340}
-        />
 
       </View>
-
-      <View>
-        <Text style={styles.text}>
-          The address will be used for delivery and to calculate the order minimum for delivery.
-        </Text>
-      </View>
-
-      <Button
-        mode="contained"
-        style={styles.button}
-        onPress={handleSignUp}
-      >
-        Sign Up
-      </Button>
-
-    </View>
+    </ImageBackground>
   );
 }
 
