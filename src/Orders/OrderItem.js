@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     marginBottom: 0,
   },
   container2: {
-//    flex: 1,
     alignItems: 'center',
     justifyConent: 'center',
     flexDirection: 'column',
@@ -38,6 +37,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginRight: 5,
   },
+
   container3: {
 //    flex: 1,
 //    flexDirection: 'column',

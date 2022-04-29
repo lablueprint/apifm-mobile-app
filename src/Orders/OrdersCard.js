@@ -47,7 +47,6 @@ const styles = StyleSheet.create({
   },
   name: {
     height: 25,
-//    alignSelf: 'flex-top',
     fontSize: 19,
     marginStart: -10,
     marginTop: -80,
@@ -61,17 +60,12 @@ const styles = StyleSheet.create({
     fontWeight: '100',
   },
   date: {
-//    fontSize: 16,
-//    fontWeight: 'bold',
     alignSelf: 'flex-start',
     marginStart: 90,
   },
   quantity: {
-//    fontSize: 10,
-//    fontWeight: '500',
     alignSelf: 'flex-start',
     marginStart: 90,
-//    marginTop: 20,
   },
 });
 
@@ -85,39 +79,17 @@ function OrderCard({
     const time = dateObj.toLocaleTimeString('en-US');
     date =  dateObj.toDateString();
     console.log("Items list in card: " + itemsList.get(dateObj.toString()));
+    console.log("nav in card" + navigation);
     navigation.navigate('OrderDetails', {
-        orderId, date, time, items, itemsList,
+        navigation, orderId, date, time, items, itemsList,
     });
   };
-//
+
   useEffect(() => {
     setItemList(itemsList.get(new Date(items[0]).toString()));
   }, [items]);
 
-//  const onPressHeart = () => {
-//    const newFav = !favorite;
-//    setFavorite(newFav);
-//  };
-
-//  const imageurl = { uri: image };
-//        <Image style={styles.image} source={missingImage} />
-    const produceNames = [];
-    const constItemsList = "Apple, Bokchoy, Strawberry, ...";
-//        setItemList("");
-//    const checkInItems = (items, check) => {
-//        for(var i = 0; i < items[1].length; i++){
-//
-//        }
-//    };
-//    const getProduceNames = () => {
-//        base('Produce').select({}).eachPage((records, fetchNextPage) => {
-//          records.forEach((record) => {
-//            const produce = record;
-
-
-//      console.log("itemsslit" + itemsList);
-//    };
-
+//    const constItemsList = "Apple, Bokchoy, Strawberry, ...";
 
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>

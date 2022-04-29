@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   button: {
-    width: '30%',
+    width: '40%',
     marginTop: 10,
     backgroundColor: '#0492c2',
   },
@@ -109,10 +109,14 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
+const CONST_USER = "helen@gmail.com";
+const CONST_USER_ID = "recIpBFqr2EXNbS7d";
+
 export default function OrderDetailsScreen({ route }) {
  const {
-    orderId, date, time, items, itemsList,
+    navigation, orderId, date, time, items, itemsList,
  } = route.params;
+ console.log("nav " + navigation);
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
@@ -143,36 +147,35 @@ export default function OrderDetailsScreen({ route }) {
         }
       });
   };
-//
-//  const getItems = (items) => {
-//    const productsList = ["rec2McK3K5xMq45yh", "recO16Ouj6repJWPw"];
-//    const list = [];
-////    setProductList(items[1].map((item) => {
-//      productsList.forEach((item) => {
-//
-//        console.log("in foreach items: " + item);
-//        base('Produce').find(item, ((err, prodRecord) => {
-//          if (err) { console.error(err); return; }
-//          const prodItem = prodRecord;
-//          list.push(prodItem.fields);
-//          console.log("item price: " + prodItem.fields.Price);
-//        }));
-//
-//
-//    });
-//      getItems(items);
 
-//        const productsList = ["rec2McK3K5xMq45yh", "recO16Ouj6repJWPw"];
+  // Add current items to airtable in the Cart table
+  const orderAgain = () => {
+    var cartObj = [];
+    for (var i = 0; i < items[1].length; i++) {
+        var cartRow = {};
+        cartRow.fields =
+        {
+            "Produce":  items[1][i].produce_id,
+            "shopper": [CONST_USER_ID],
+            "quantity": items[1][i].Quantity,
+        }
+        cartObj.push(cartRow);
+    }
+    base('CART V3').create(cartObj, function(err, records) {
+      if (err) {
+        console.error(err);
+        return;
+      }
+      records.forEach(function (record) {
+        console.log(record.getId());
+      });
+    });
+  };
 
-//  console.log("ITem list: " + itemList);
-//    console.log("productss: " + products);
-//
 
 useEffect(() => {
     // TODO: replace hardcoded email with logged in user info
-    setOrderDetails('helen@gmail.com');
-//    calcTotal('helen@gmail.com');
-    //getItems(items);
+    setOrderDetails(CONST_USER);
     setDeliveryFee(10);
     setFreeFee(20);
     setDeliveryDate('January 2023!');
@@ -202,6 +205,7 @@ useEffect(() => {
                 />
             ));
             setProductList(products);
+            setItemList(regItemList);
           }
         }));
     });
@@ -287,7 +291,9 @@ useEffect(() => {
           style={styles.button}
           onPress={() => {
             // TODO: replace hardcoded email with logged in user info
-            navigation.navigate('Order Successful');
+            orderAgain();
+            console.log("nav " + navigation);
+            navigation.navigate('Cart');
           }}
         >
           Order Again
@@ -297,38 +303,11 @@ useEffect(() => {
   );
 }
 
-//const getItems = (items) => {
-////    const productsList = ["rec2McK3K5xMq45yh", "recO16Ouj6repJWPw"];
-//    console.log("items!!" + items[1][0]);
-//
-//    const [itemList, setItemList] = useState([]);
-//    useEffect(() => {
-//        const list = [];
-//            const fetchData = async () => {
-//                items[1].map((item) => {
-//                    //productsList.forEach((item) => {
-//                    console.log("in foreach items: " + item.produce_id);
-//                    const output = base('Produce').find(item.produce_id, ((err, prodRecord) => {
-//                      if (err) { console.error(err); return; }
-//                      const prodItem = prodRecord;
-//                      list.push(prodItem.fields);
-//                      console.log("item price: " + prodItem.fields.Price);
-//                    }));
-//                    console.log("output:" + output);
-//                });
-//                setItemList(list);
-//            };
-//            fetchData();
-//        }, [items]);
-//    return itemList;
-//};
-
 OrderDetailsScreen.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }),
   orderId: PropTypes.string,
   date: PropTypes.String,
   time: PropTypes.String,
-
   items: PropTypes.arrayOf(PropTypes.Object),
   itemsList: PropTypes.string,
 //  favorited: PropTypes.bool.isRequired,
