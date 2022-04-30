@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity, TextInput,
+  View, Image, StyleSheet, TouchableOpacity, TextInput, Alert,
 } from 'react-native';
 import {
   Button, Text, Provider, Portal, Modal,
@@ -137,26 +137,42 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    produceId, favorite, image, name, price, unit, seller, maxQuantity,
+    userId, produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
   } = route.params;
 
   const [favorited, setFavorited] = useState(favorite);
 
+  const addToFavorites = async (user, produce, favcondition) => {
+    await base('Users').find(user, (err, record) => {
+      if (err) {
+        Alert.alert(err.error, err.message);
+        return;
+      }
+      let currentFavorites = record.fields.favorites;
+      if (typeof currentFavorites === 'undefined') {
+        currentFavorites = [];
+      }
+      if (favcondition) {
+        currentFavorites.push(produce);
+      } else {
+        currentFavorites = currentFavorites.filter((item) => item !== produce);
+      }
+      base('Users').update([
+        {
+          id: user,
+          fields: {
+            favorites: currentFavorites,
+          },
+        },
+      ]);
+    });
+  };
+
   const onPressHeart = () => {
     const newFav = !favorited;
+    addToFavorites(userId, produceId, newFav);
     setFavorited(newFav);
-    base('Produce').update([
-      {
-        id: produceId,
-        fields: {
-          Favorited: favorited,
-        },
-      },
-    ], (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
+    setFavorite(newFav);
   };
 
   const imageurl = { uri: image };
@@ -186,52 +202,51 @@ function ProduceDetailsScreen({ route }) {
     try {
       setVisible(true);
       const quantityToUpdate = [];
-      await base('Cart TBD').select({
+      await base('CART V3').select({
       }).eachPage((records, fetchNextPage) => {
         records.forEach(
           (record) => {
-            if (produceId === record.fields['Produce Record'][0] && record.fields['Users UPDATED'][0] === 'recueNGdOeb1eoCff') {
-            // currently updates only for users with Chandra's ID
+            if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
               quantityToUpdate.push(record);
             }
             fetchNextPage();
           },
           (err) => {
-            if (err) { console.error(err); }
+            if (err) { Alert.alert(err.error, err.message); }
           },
         );
       });
       if (quantityToUpdate.length) {
-        const newQuantity = quantityToUpdate[0].fields.Quantity + Number(orderQuantity);
-        await base('Cart TBD').update([
+        const newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
+        await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
-              Quantity: newQuantity,
+              quantity: newQuantity,
             },
           },
         ], (err) => {
           if (err) {
-            console.error(err);
+            Alert.alert(err.error, err.message);
           }
         });
       } else {
-        await base('Cart TBD').create([
+        await base('CART V3').create([
           {
             fields: {
-              'Produce Record': [produceId],
-              Quantity: Number(orderQuantity),
-              'Users UPDATED': ['recueNGdOeb1eoCff'],
+              Produce: [produceId],
+              quantity: Number(orderQuantity),
+              shopper: [userId],
             },
           },
         ], (err) => {
           if (err) {
-            console.error(err);
+            Alert.alert(err.error, err.message);
           }
         });
       }
     } catch (err) {
-      console.error(err);
+      Alert.alert(err.error, err.message);
     }
   };
 
@@ -323,8 +338,10 @@ function ProduceDetailsScreen({ route }) {
 ProduceDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
+      userId: PropTypes.string.isRequired,
       produceId: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
+      setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
       price: PropTypes.number.isRequired,
