@@ -22,13 +22,16 @@ const styles = StyleSheet.create({
   },
 });
 
-function ProduceGrid({ navigation, userId, produceList }) {
+function ProduceGrid({
+  navigation, userId, showAlert, produceList,
+}) {
   const produceCards = produceList.map((produce) => (
     <ProduceCard
       style={styles.produceCard}
       key={produce.Name}
       navigation={navigation}
       userId={userId}
+      showAlert={showAlert}
       produceId={produce.produceId}
       favorited={produce.Favorited}
       image={produce.Image[0].url}
@@ -51,6 +54,7 @@ function ProduceGrid({ navigation, userId, produceList }) {
 ProduceGrid.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   userId: PropTypes.string.isRequired,
+  showAlert: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   produceList: PropTypes.array.isRequired,
 };

@@ -39,7 +39,8 @@ const styles = StyleSheet.create({
 });
 
 function CalendarPopup({
-  userId, setVisibility, mondayDelivery, setMondayDelivery, fridayDelivery, setFridayDelivery,
+  userId, setVisibility, mondayDelivery, setMondayDelivery,
+  fridayDelivery, setFridayDelivery, setShowAlert,
 }) {
   const [monday, setMonday] = useState(mondayDelivery);
   const [friday, setFriday] = useState(fridayDelivery);
@@ -51,9 +52,11 @@ function CalendarPopup({
     let date = '';
     if (monday) {
       date = 'Monday';
+      setShowAlert(true);
     }
     if (friday) {
       date = 'Friday';
+      setShowAlert(true);
     }
     if (save) {
       base('Users').update([
@@ -69,7 +72,6 @@ function CalendarPopup({
         }
       });
     }
-    // if the current state is saved then call airtable to update the user
     setVisibility(false);
   };
 
@@ -133,6 +135,7 @@ CalendarPopup.propTypes = {
   setMondayDelivery: PropTypes.func.isRequired,
   fridayDelivery: PropTypes.bool.isRequired,
   setFridayDelivery: PropTypes.func.isRequired,
+  setShowAlert: PropTypes.func.isRequired,
 };
 
 export default CalendarPopup;

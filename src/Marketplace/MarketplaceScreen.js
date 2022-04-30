@@ -3,7 +3,7 @@ import {
   View, StyleSheet, ScrollView, Alert, TouchableOpacity,
 } from 'react-native';
 import {
-  Title, Text, Button, Provider, Portal, Modal,
+  Text, Provider, Portal, Modal,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
@@ -79,6 +79,7 @@ export default function MarketplaceScreen({ navigation }) {
 
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
 
   const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
     let deliveryList = listToDeliver;
@@ -89,6 +90,13 @@ export default function MarketplaceScreen({ navigation }) {
       deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
     }
     return deliveryList;
+  };
+
+  const selectDayAlert = () => {
+    if (!mondayDelivery && !fridayDelivery) {
+      return true;
+    }
+    return false;
   };
 
   const getProduce = async () => {
@@ -280,6 +288,11 @@ export default function MarketplaceScreen({ navigation }) {
       deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
       favoritesFilter,
     )));
+    if (!mondayDelivery && !fridayDelivery) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
   }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   useEffect(() => {
@@ -289,37 +302,6 @@ export default function MarketplaceScreen({ navigation }) {
   return (
     <Provider>
       <ScrollView style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <Button
-            mode="outlined"
-            icon="account-circle"
-            style={styles.button}
-            color="white" // Text + icon colour
-            onPress={() => navigation.navigate('Profile')}
-          >
-            Profile
-          </Button>
-          <Button
-            mode="outlined"
-            icon="cart"
-            style={styles.button}
-            color="white"
-            onPress={() => navigation.navigate('Cart')}
-          >
-            Cart
-          </Button>
-        </View>
-        <View style={styles.centeredContainer}>
-          <Title style={styles.titleText}> MarketplaceScreen :) </Title>
-          <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={() => navigation.navigate('SignIn')}
-          >
-            SIGN OUT
-          </Button>
-        </View>
         <View>
           <View>
             <TouchableOpacity>
@@ -375,6 +357,7 @@ export default function MarketplaceScreen({ navigation }) {
                   setMondayDelivery={setMondayDelivery}
                   fridayDelivery={fridayDelivery}
                   setFridayDelivery={setFridayDelivery}
+                  setShowAlert={setShowAlert}
                 />
               </Modal>
             </Portal>
@@ -408,7 +391,25 @@ export default function MarketplaceScreen({ navigation }) {
               </Modal>
             </Portal>
           </View>
-          <ProduceGrid navigation={navigation} userId={userId} produceList={produceList} />
+          <View>
+            <Modal
+              visible={showAlert}
+              contentContainerStyle={styles.filterPopup}
+            >
+              <View>
+                <Text>
+                  Looks like you don&apost have a delivery date
+                  yet. Click here to select a delivery date!
+                </Text>
+              </View>
+            </Modal>
+          </View>
+          <ProduceGrid
+            navigation={navigation}
+            userId={userId}
+            showAlert={selectDayAlert}
+            produceList={produceList}
+          />
         </View>
       </ScrollView>
     </Provider>
