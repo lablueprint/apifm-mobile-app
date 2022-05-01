@@ -72,13 +72,20 @@ function CalendarPopup({
   const [friday, setFriday] = useState(fridayDelivery);
   const [save, setSave] = useState(false);
 
-  const today = new Date();
-  const thisFriday = new Date(today.setDate((today.getDate() - today.getDay() + 5)));
+  // currently unsure as to how the date ordering restrictions should work
+  // if it is a weekend (when no one can order) should the user not be able to view any
+  // of the produce? or can they? if so, should their order date default to blank so that they
+  // can view all possible orders?
+  // if it is a weekday and it has passed the deadline for say a Friday order and the user has
+  // previously selected Friday, should the user's default order date be automatically switched
+  // to Monday in case so that the user can still view produce available to them?
+  // const today = new Date();
+  const tempToday = new Date();
+  const thisFriday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 5)));
   const displayFriday = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}`;
-  const nextMonday = new Date(today.setDate((today.getDate() - today.getDay() + 8)));
+  const nextMonday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 8)));
   const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
 
-  // const nextMonday =
   const updateDelivery = () => {
     setMondayDelivery(monday);
     setFridayDelivery(friday);
@@ -116,6 +123,10 @@ function CalendarPopup({
       </TouchableOpacity>
       <Text style={styles.titleText}>Choose your delivery date</Text>
       <View style={styles.midContainer}>
+        {/* {(today.getDay() !== 0 && today.getDay() !== 6
+          && (today.getDay() !== 2
+          && (today.getHours() <= 16 && today.getMinutes() <= 59 && today.getSeconds() <= 59)))
+          && ( */}
         <View style={styles.dateContainer}>
           <Text>{displayFriday}</Text>
           <TouchableOpacity
@@ -134,6 +145,11 @@ function CalendarPopup({
             </Text>
           </TouchableOpacity>
         </View>
+        {/* )} */}
+        {/* {(today.getDay() !== 0 && today.getDay() !== 6
+        && (today.getDay() !== 5
+        && (today.getHours() <= 14 && today.getMinutes() <= 59 && today.getSeconds() <= 59)))
+        && ( */}
         <View style={styles.dateContainer}>
           <Text>{displayMonday}</Text>
           <TouchableOpacity
@@ -152,6 +168,7 @@ function CalendarPopup({
             </Text>
           </TouchableOpacity>
         </View>
+        {/* )} */}
       </View>
 
       <View>
