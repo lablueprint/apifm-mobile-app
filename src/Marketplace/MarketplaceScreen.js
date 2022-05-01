@@ -78,6 +78,19 @@ const styles = StyleSheet.create({
     height: 335,
     alignSelf: 'center',
   },
+  calendarError: {
+    width: 290,
+    height: 45,
+    alignSelf: 'auto',
+  },
+  calendarErrorMessage: {
+    position: 'absolute',
+    backgroundColor: '#FF5353',
+    width: 290,
+    height: 45,
+    top: 50,
+    left: 60,
+  },
   filterPopup: {
     width: 330,
     height: 470,
@@ -455,19 +468,23 @@ export default function MarketplaceScreen({ navigation }) {
             </Modal>
           </Portal>
         </View>
-        <View>
+        {/* this needs to be adjusted so that it does not interfere with other buttons */}
+        {/* <View>
           <Modal
             visible={showAlert}
             contentContainerStyle={styles.filterPopup}
+            onDismiss={() => {
+              setCalendarVisibility(true);
+            }}
           >
-            <View>
+            <View style={styles.calendarErrorMessage}>
               <Text>
-                Looks like you don&apost have a delivery date
+                Looks like you don&apos;t have a delivery date
                 yet. Click here to select a delivery date!
               </Text>
             </View>
           </Modal>
-        </View>
+        </View> */}
         <ScrollView>
           <ProduceGrid
             navigation={navigation}
