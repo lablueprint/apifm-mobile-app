@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView, Alert, TouchableOpacity,
+  Image, View, StyleSheet, ScrollView, Alert, TouchableOpacity,
 } from 'react-native';
 import {
   Text, Provider, Portal, Modal,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-// replace this icon with the one on figma
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
 
+const Airtable = require('airtable');
+const filterIcon = require('../assets/filtericon.png');
+
 // constant user id to test for all features
 const userId = 'rec8yzLkLY6VrCKOX';
-
-const Airtable = require('airtable');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -27,44 +26,73 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  topContainer: {
+    backgroundColor: '#144611',
   },
-  centeredContainer: {
-    marginTop: '40%',
-    alignItems: 'center',
+  topBarContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+  },
+  welcomeContainer: {
+    width: 305,
+    height: 60,
+    left: 30,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  welcomeText: {
+    fontSize: 24,
+    color: '#FFFFFA',
+  },
+  filterIcon: {
+    width: 25,
+    height: 25,
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 10,
+    marginLeft: 4,
+  },
+  calendarIcon: {
+    color: '#FFFFFF',
+    marginTop: 10,
+    marginRight: 4,
+
+  },
+  calendarPopup: {
+    width: 360,
+    height: 335,
+    alignSelf: 'center',
   },
   filterPopup: {
     width: 330,
     height: 470,
     alignSelf: 'center',
   },
-  titleText: {
-    marginBottom: 10,
+  sameLineContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
-  bodyText: {
-    marginLeft: 5,
-    marginRight: 5,
-    marginBottom: 10,
-  },
-  button: {
-    width: '30%',
-    marginTop: 5,
-    backgroundColor: '#0492c2',
-  },
-  buttonContainer: {
-    marginTop: 5,
-    marginRight: 5,
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
-  },
+  // adjusting text is not working
   marketplaceTabOpen: {
-    color: '#144611',
     backgroundColor: '#FFFFFA',
+    width: '50%',
+    height: 50,
+    textAlign: 'center',
   },
   marketplaceTabClosed: {
-    color: '#ABBD85',
     backgroundColor: '#144611',
+    width: '50%',
+    height: 50,
+    textAlign: 'center',
+  },
+  marketPlaceTextOpen: {
+    color: '#144611',
+    fontSize: 20,
+  },
+  marketPlaceTextClosed: {
+    color: '#ABBD85',
+    fontSize: 20,
   },
 });
 
@@ -301,17 +329,25 @@ export default function MarketplaceScreen({ navigation }) {
 
   return (
     <Provider>
-      <ScrollView style={styles.container}>
-        <View>
-          <View>
-            <TouchableOpacity>
-              <FeatherIcon onPress={() => { setCalendarVisibility(true); }} name="calendar" size={20} />
+      <View>
+        <View style={styles.topContainer}>
+          <View style={styles.topBarContainer}>
+            <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
+              <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
+            <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
+              <Image
+                style={styles.filterIcon}
+                source={filterIcon}
+              />
             </TouchableOpacity>
           </View>
-          <View>
+          <View style={styles.welcomeContainer}>
+            <Text style={styles.welcomeText}>Hello YOUR NAME,</Text>
+            <Text style={styles.welcomeText}>Order your produce here!</Text>
+          </View>
+
+          <View style={styles.sameLineContainer}>
             <TouchableOpacity
               style={favoritesFilter ? styles.marketplaceTabClosed : styles.marketplaceTabOpen}
               activeOpacity={1}
@@ -321,9 +357,13 @@ export default function MarketplaceScreen({ navigation }) {
                 }
               }}
             >
-              <Text>
-                MARKETPLACE
-              </Text>
+              <View
+                style={favoritesFilter ? styles.marketplaceTextClosed : styles.marketplaceTextOpen}
+              >
+                <Text>
+                  MARKETPLACE
+                </Text>
+              </View>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -335,83 +375,90 @@ export default function MarketplaceScreen({ navigation }) {
                 }
               }}
             >
-              <Text>
-                FAVORITES
-              </Text>
-            </TouchableOpacity>
-
-          </View>
-          <View>
-            <Portal>
-              <Modal
-                visible={calendarVisibility}
-                onDismiss={() => {
-                  setCalendarVisibility(false);
-                }}
-                contentContainerStyle={styles.filterPopup}
+              <View
+                style={favoritesFilter ? styles.marketplaceTextOpen : styles.marketplaceTextClosed}
               >
-                <CalendarPopup
-                  userId={userId}
-                  setVisibility={setCalendarVisibility}
-                  mondayDelivery={mondayDelivery}
-                  setMondayDelivery={setMondayDelivery}
-                  fridayDelivery={fridayDelivery}
-                  setFridayDelivery={setFridayDelivery}
-                  setShowAlert={setShowAlert}
-                />
-              </Modal>
-            </Portal>
-          </View>
-          <View>
-            <Portal>
-              <Modal
-                visible={filterVisibility}
-                onDismiss={() => {
-                  setFilterVisibility(false);
-                }}
-                contentContainerStyle={styles.filterPopup}
-              >
-                <FilterPopup
-                  setVisibility={setFilterVisibility}
-                  aZ={aZSort}
-                  setAZ={setAZSort}
-                  zA={zASort}
-                  setZA={setZASort}
-                  lowHigh={lowHighSort}
-                  setLowHigh={setLowHighSort}
-                  highLow={highLowSort}
-                  setHighLow={setHighLowSort}
-                  seasonal={seasonalFilter}
-                  setSeasonal={setSeasonalFilter}
-                  vegetables={vegetablesFilter}
-                  setVegetables={setVegetablesFilter}
-                  fruits={fruitsFilter}
-                  setFruits={setFruitsFilter}
-                />
-              </Modal>
-            </Portal>
-          </View>
-          <View>
-            <Modal
-              visible={showAlert}
-              contentContainerStyle={styles.filterPopup}
-            >
-              <View>
                 <Text>
-                  Looks like you don&apost have a delivery date
-                  yet. Click here to select a delivery date!
+                  FAVORITES
                 </Text>
               </View>
-            </Modal>
+
+            </TouchableOpacity>
           </View>
+
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={calendarVisibility}
+              onDismiss={() => {
+                setCalendarVisibility(false);
+              }}
+              contentContainerStyle={styles.calendarPopup}
+            >
+              <CalendarPopup
+                userId={userId}
+                setVisibility={setCalendarVisibility}
+                mondayDelivery={mondayDelivery}
+                setMondayDelivery={setMondayDelivery}
+                fridayDelivery={fridayDelivery}
+                setFridayDelivery={setFridayDelivery}
+                setShowAlert={setShowAlert}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={filterVisibility}
+              onDismiss={() => {
+                setFilterVisibility(false);
+              }}
+              contentContainerStyle={styles.filterPopup}
+            >
+              <FilterPopup
+                setVisibility={setFilterVisibility}
+                aZ={aZSort}
+                setAZ={setAZSort}
+                zA={zASort}
+                setZA={setZASort}
+                lowHigh={lowHighSort}
+                setLowHigh={setLowHighSort}
+                highLow={highLowSort}
+                setHighLow={setHighLowSort}
+                seasonal={seasonalFilter}
+                setSeasonal={setSeasonalFilter}
+                vegetables={vegetablesFilter}
+                setVegetables={setVegetablesFilter}
+                fruits={fruitsFilter}
+                setFruits={setFruitsFilter}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        <View>
+          <Modal
+            visible={showAlert}
+            contentContainerStyle={styles.filterPopup}
+          >
+            <View>
+              <Text>
+                Looks like you don&apost have a delivery date
+                yet. Click here to select a delivery date!
+              </Text>
+            </View>
+          </Modal>
+        </View>
+        <ScrollView>
           <ProduceGrid
             navigation={navigation}
             userId={userId}
             showAlert={selectDayAlert}
             produceList={produceList}
           />
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </View>
     </Provider>
 
   );

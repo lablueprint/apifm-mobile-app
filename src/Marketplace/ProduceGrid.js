@@ -14,6 +14,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFFFFA',
   },
   produceCard: {
     padding: 15,

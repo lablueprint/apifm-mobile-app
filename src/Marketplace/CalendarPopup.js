@@ -18,23 +18,49 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 
 const styles = StyleSheet.create({
   popupContainer: {
-    width: 330,
-    height: 470,
+    width: 360,
+    height: 335,
     backgroundColor: '#FFFFFF',
   },
+  topLineContainer: {
+    alignSelf: 'flex-end',
+    color: '#000000',
+    marginTop: 12,
+    marginRight: 15,
+  },
+  titleText: {
+    alignSelf: 'center',
+    color: '#34221D',
+    fontSize: 20,
+  },
+  midContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    width: 240,
+    height: 65,
+    alignSelf: 'center',
+  },
+  dateContainer: {
+    width: 92,
+    height: 62,
+  },
   buttonUnpressed: {
-    width: '30%',
     marginTop: 5,
     color: '#34221D',
     backgroundColor: '#F1E8DB',
+    width: 90,
+    height: 30,
     borderRadius: 15,
+    textAlign: 'center',
   },
   buttonPressed: {
-    width: '30%',
     marginTop: 5,
     color: '#FFFFFA',
     backgroundColor: '#1D763C',
     borderRadius: 15,
+    width: 90,
+    height: 30,
+    textAlign: 'center',
   },
 });
 
@@ -46,6 +72,13 @@ function CalendarPopup({
   const [friday, setFriday] = useState(fridayDelivery);
   const [save, setSave] = useState(false);
 
+  const today = new Date();
+  const thisFriday = new Date(today.setDate((today.getDate() - today.getDay() + 5)));
+  const displayFriday = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}`;
+  const nextMonday = new Date(today.setDate((today.getDate() - today.getDay() + 8)));
+  const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
+
+  // const nextMonday =
   const updateDelivery = () => {
     setMondayDelivery(monday);
     setFridayDelivery(friday);
@@ -75,44 +108,52 @@ function CalendarPopup({
     setVisibility(false);
   };
 
+  // conditional render of components depending on day
   return (
     <View style={styles.popupContainer}>
-      <View>
-        <Text>Choose your delivery date</Text>
-        <TouchableOpacity onPress={() => { setVisibility(false); }}>
-          <CheckboxIcon name="close" />
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.topLineContainer} onPress={() => { setVisibility(false); }}>
+        <CheckboxIcon name="close" size={22} />
+      </TouchableOpacity>
+      <Text style={styles.titleText}>Choose your delivery date</Text>
+      <View style={styles.midContainer}>
+        <View style={styles.dateContainer}>
+          <Text>{displayFriday}</Text>
+          <TouchableOpacity
+            style={friday ? styles.buttonPressed : styles.buttonUnpressed}
+            activeOpacity={1}
+            onPress={() => {
+              const newState = !friday;
+              if (newState) {
+                setMonday(false);
+              }
+              setFriday(newState);
+            }}
+          >
+            <Text>
+              Friday
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.dateContainer}>
+          <Text>{displayMonday}</Text>
+          <TouchableOpacity
+            style={monday ? styles.buttonPressed : styles.buttonUnpressed}
+            activeOpacity={1}
+            onPress={() => {
+              const newState = !monday;
+              if (newState) {
+                setFriday(false);
+              }
+              setMonday(newState);
+            }}
+          >
+            <Text>
+              Monday
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
-      <TouchableOpacity
-        style={monday ? styles.buttonPressed : styles.buttonUnpressed}
-        activeOpacity={1}
-        onPress={() => {
-          const newState = !monday;
-          if (newState) {
-            setFriday(false);
-          }
-          setMonday(newState);
-        }}
-      >
-        <Text>
-          Monday
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={friday ? styles.buttonPressed : styles.buttonUnpressed}
-        activeOpacity={1}
-        onPress={() => {
-          const newState = !friday;
-          if (newState) {
-            setMonday(false);
-          }
-          setFriday(newState);
-        }}
-      >
-        <Text>
-          Friday
-        </Text>
-      </TouchableOpacity>
+
       <View>
         <TouchableOpacity>
           <CheckboxIcon onPress={() => { setSave(!save); }} name={save ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
