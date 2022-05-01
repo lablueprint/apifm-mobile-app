@@ -26,6 +26,20 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
+  circle: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 100 / 2,
+    marginTop: 10,
+    marginLeft: 18,
+    backgroundColor: '#FF5353',
+  },
+  container: {
+    backgroundColor: '#FFFFFA',
+    height: '100%',
+    width: '100%',
+  },
   topContainer: {
     backgroundColor: '#144611',
   },
@@ -329,12 +343,16 @@ export default function MarketplaceScreen({ navigation }) {
 
   return (
     <Provider>
-      <View>
+      <View style={styles.container}>
         <View style={styles.topContainer}>
           <View style={styles.topBarContainer}>
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
+            {/* error with conditional rendering, unsure why this is behaving this way */}
+            {/* {!mondayDelivery && !fridayDelivery
+              && <View style={styles.circle} />} */}
+
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
               <Image
                 style={styles.filterIcon}
