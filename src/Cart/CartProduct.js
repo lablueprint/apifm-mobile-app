@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Image,
+  View, StyleSheet, Image, Alert,
 } from 'react-native';
 import {
   Text, Button, TextInput,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Airtable = require('airtable');
 
@@ -23,10 +23,11 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flexDirection: 'row',
+    height: 130,
     borderBottomWidth: 1,
-    height: 125,
-    marginTop: 5,
-    marginBottom: 0,
+    borderBottomColor: '#C4C4C4',
+    marginTop:1,
+    marginBottom:1,
   },
   container2: {
     flex: 1,
@@ -45,76 +46,72 @@ const styles = StyleSheet.create({
   },
   quantityContainer: {
     flexDirection: 'row',
-    height: 65,
+    height: 60,
   },
   itemName: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 22,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 14,
     marginRight: 10,
-    marginLeft: 8,
+    marginLeft: 15,
     marginTop: 0,
     marginBottom: 0,
   },
   quantityBox: {
-    width: 50,
-    padding: '2%',
-    margin: '1%',
+    borderWidth: 1,
     borderRadius: 5,
+    borderColor: '#C4C4C4',
+    fontSize: 14,
+    margin: '1%',
     marginTop: 10,
-    marginLeft: 10,
+    marginLeft: 20,
     marginBottom: 20,
+    padding: '-3%',
     justifyContent: 'center',
-    alignContent: 'center',
+    alignItems: 'stretch',
     textAlign: 'center',
+    backgroundColor: '#FFFFFA',
+    // fontFamily: 'Arial',
   },
   itemQuantityType: {
-    fontFamily: 'Verdana',
+    fontFamily: 'JosefinSans-Regular',
     fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: 14,
+    fontSize: 12,
     marginBottom: 5,
     marginLeft: 5,
-    marginTop: 25,
+    marginTop: 20,
   },
   itemQuantity: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 14,
     alignContent: 'center',
   },
   itemTotalPrice: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 14,
     marginBottom: '0%',
-    marginLeft: 100,
-    marginTop: 10,
+    marginLeft: 110,
+    marginTop: 15,
   },
   itemPricePer: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 12,
     marginBottom: 0,
-    marginLeft: 100,
+    marginLeft: 20,
+    marginTop: 1,
   },
   removeItemButton: {
-    width: '3%',
     padding: 0,
-    marginTop: 15,
+    marginTop: 30,
     marginLeft: 135,
     marginRight: 10,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 62,
+    height: 62,
     marginLeft: 5,
-    marginTop: 20,
+    marginTop: 25,
     marginBottom: 20,
+    borderRadius: 5,
   },
 });
 
@@ -153,7 +150,7 @@ export default function CartProduct(props) {
       },
     ], (err) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
       }
     });
     setRefresh(refresh + 1);
@@ -179,6 +176,9 @@ export default function CartProduct(props) {
         <Text style={styles.itemName}>
           {name}
         </Text>
+        <Text style={styles.itemPricePer}>
+          {`$${price} ${type}`}
+        </Text>
         <View style={styles.quantityContainer}>
           <TextInput
             keyboardType="numeric"
@@ -193,17 +193,14 @@ export default function CartProduct(props) {
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          {`$ ${parseFloat((price) * quantity).toFixed(2)}`}
-        </Text>
-        <Text style={styles.itemPricePer}>
-          {`$ ${price} ${type}`}
+          {`$${parseFloat((price) * quantity).toFixed(2)}`}
         </Text>
         <Button
           style={styles.removeItemButton}
           onPress={deleteItem}
           color="#000000"
         >
-          <Icon style={{ fontSize: 20 }} name="delete" />
+          <Icon style={{ fontSize: 20 }} name="trash-2" />
         </Button>
       </View>
     </View>

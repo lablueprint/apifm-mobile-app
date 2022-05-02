@@ -18,7 +18,18 @@ export default function StackNavigation() {
       <stackNavig.Screen name="SignIn" component={SignInScreen} />
       <stackNavig.Screen name="Marketplace" component={MarketplaceScreen} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
-      <stackNavig.Screen name="Cart" component={CartScreen} />
+      <stackNavig.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          title: 'Cart',
+          headerStyle: {
+            backgroundColor: '#FFFFFA',
+            borderBottomWidth:0,
+            elevation:0,
+          },
+        }}
+      />
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
