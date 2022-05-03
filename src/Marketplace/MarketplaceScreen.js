@@ -200,8 +200,7 @@ export default function MarketplaceScreen({ navigation }) {
           produce.fields.Price = 'Unknown';
         }
         if (!('Type Tags' in record.fields)) {
-          produce.fields['Type Tags'] = '';
-          // this needs to be accounted for since multiple tags should be an array
+          produce.fields['Type Tags'] = [];
         }
         if (!('Delivery Date' in record.fields)) {
           produce.fields['Delivery Date'] = '';
@@ -362,9 +361,8 @@ export default function MarketplaceScreen({ navigation }) {
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
-            {/* error with conditional rendering, unsure why this is behaving this way */}
-            {/* {!mondayDelivery && !fridayDelivery
-              && <View style={styles.circle} />} */}
+            {!mondayDelivery && !fridayDelivery
+              && <View style={styles.circle} />}
 
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
               <Image
@@ -474,6 +472,7 @@ export default function MarketplaceScreen({ navigation }) {
             visible={showAlert}
             contentContainerStyle={styles.filterPopup}
             onDismiss={() => {
+              setShowAlert(false);
               setCalendarVisibility(true);
             }}
           >

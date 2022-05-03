@@ -43,6 +43,24 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     backgroundColor: '#868686',
   },
+  tagsLine: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
+  tagText: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#000000',
+  },
+  tagContainer: {
+    backgroundColor: '#C1DDA9',
+    borderRadius: 4,
+    width: 60,
+    height: 30,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
   favoriteIcon: {
     alignSelf: 'flex-end',
     marginEnd: 13,
@@ -138,8 +156,14 @@ const styles = StyleSheet.create({
 function ProduceDetailsScreen({ route }) {
   const {
     userId, produceId, favorite, setFavorite,
-    image, name, price, unit, seller, maxQuantity, minQuantity,
+    image, name, tags, price, unit, seller, maxQuantity, minQuantity,
   } = route.params;
+
+  const produceTags = tags.map((tag) => (
+    <View style={styles.tagContainer}>
+      <Text style={styles.tagText}>{tag}</Text>
+    </View>
+  ));
 
   const [favorited, setFavorited] = useState(favorite);
 
@@ -199,8 +223,6 @@ function ProduceDetailsScreen({ route }) {
 
   const [visible, setVisible] = useState(false);
 
-  // there needs to be a constraint check that the user has selected dates to order
-  // likely needs to pass a boolean variable that ensures this is doable
   const onAddToCart = async () => {
     try {
       setVisible(true);
@@ -278,7 +300,9 @@ function ProduceDetailsScreen({ route }) {
                 <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
               </TouchableOpacity>
             </View>
-            {/* if multiple tags are a thing, then there likely needs to be multiple renders */}
+            <View style={styles.tagsLine}>
+              {produceTags}
+            </View>
             <Text style={styles.textSeller}>{seller}</Text>
             <View style={styles.sameLineContainer}>
               <View style={styles.priceUnitLine}>
@@ -348,6 +372,7 @@ ProduceDetailsScreen.propTypes = {
       setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
       price: PropTypes.number.isRequired,
       unit: PropTypes.string.isRequired,
       seller: PropTypes.string.isRequired,

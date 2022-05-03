@@ -37,6 +37,7 @@ function ProduceGrid({
       favorited={produce.Favorited}
       image={produce.Image[0].url}
       name={produce.Name}
+      tags={produce['Type Tags']}
       price={produce.Price}
       unit={produce.Unit}
       seller={produce.Seller}
