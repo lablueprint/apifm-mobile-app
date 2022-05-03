@@ -75,9 +75,16 @@ function DrawerRoutes() {
         drawerActiveTintColor: '#34221D',
         drawerInactiveTintColor: '#34221D',
         drawerItemStyle: {
-          right: 25, borderTopRightRadius: 25, borderBottomRightRadius: 25, width: '80%',
+          right: 25,
+          borderTopRightRadius: 25,
+          borderBottomRightRadius: 25,
+          width: '80%',
         },
-        drawerLabelStyle: { left: 10, bottom: 1 },
+        drawerLabelStyle: {
+          left: 10,
+          bottom: 1,
+          fontFamily: 'JosefinSans-Medium',
+        },
       }}
     >
       <Drawer.Screen
@@ -119,7 +126,7 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Landing Page">
+    <stackNavig.Navigator initialRouteName="Marketplace">
       <stackNavig.Screen name="Landing Page" component={LandingPage} options={{ headerShown: false }} />
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
