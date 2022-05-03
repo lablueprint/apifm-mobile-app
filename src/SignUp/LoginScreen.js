@@ -3,8 +3,6 @@ import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
-import { Icon, InlineIcon } from '@iconify/react';
 // import userIcon from "@iconify/ant-design:user-outlined";
 
 const backgroundImage = require('../assets/imgs/login.png');
