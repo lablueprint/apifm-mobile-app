@@ -44,6 +44,7 @@ export default function OrderScreen({ navigation }) {
   const [orderList, setOrderList] = useState([]);
   const [itemsList, setItemsList] = useState(new Map());
   const [cardList, setCardList] = useState([]);
+  const [flag, setFlag] = useState(false);
 
   const getOrders = () => {
     var list = [];
@@ -61,7 +62,6 @@ export default function OrderScreen({ navigation }) {
             base('Produce').find(record.fields.produce_id, ((err, prodRecord) => {
                 if (err) { console.error(err); return; }
                 order.fields.produceItem = prodRecord;
-                console.log('Retrieved!', prodRecord.fields.Name);
                 const currDate = (new Date(order.fields['delivery date (temp)'])).toString();
                 if(!itemsListVar.has(currDate)) {
                     itemsListVar.set(currDate, prodRecord.fields.Name);
@@ -71,8 +71,8 @@ export default function OrderScreen({ navigation }) {
                 } else {
                     itemsListVar = itemsListVar.set(currDate, itemsListVar.get(currDate).substring(0, 22) + "...");
                 }
-                console.log("itemListVar: " + itemsListVar.get(currDate));
                 setItemsList(itemsListVar);
+                setFlag(flag => !flag);
             }));
         } else {
             console.log("ERR: misssing produce id in orders record");
@@ -98,14 +98,11 @@ export default function OrderScreen({ navigation }) {
     });
   };
 
-
-
   useEffect(() => {
     getOrders();
   }, []);
 
   useEffect(() => {
-      console.log("itemslist in other useeffect: " + itemsList.get((Array.from(orderMap))[0]));
       var i = 0;
         const OrderCards = (Array.from(orderMap)).map((items, orderDate, index) => (
           <OrderCard
@@ -119,7 +116,7 @@ export default function OrderScreen({ navigation }) {
           />
         ));
      setCardList(OrderCards);
-  }, [itemsList])
+  }, [itemsList, flag])
 
   return (
     <ScrollView style={styles.container}>
