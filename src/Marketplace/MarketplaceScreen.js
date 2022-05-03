@@ -269,13 +269,13 @@ export default function MarketplaceScreen({ navigation }) {
   const filterProduce = (listToFilter, favorites) => {
     let filteredList = [];
     if (seasonalFilter) {
-      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Seasonal'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'].includes('Seasonal')));
     }
     if (vegetablesFilter) {
-      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Vegetables'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'].includes('Vegetables')));
     }
     if (fruitsFilter) {
-      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Fruits'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'].includes('Fruits')));
     }
     if (filteredList.length) {
       if (favorites) {
