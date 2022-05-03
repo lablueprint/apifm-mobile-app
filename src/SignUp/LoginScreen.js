@@ -30,6 +30,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D763C',
     borderRadius: 30,
     fontFamily: 'JosefinSans-SemiBold',
+    marginTop: 80,
   },
   buttonText: {
     fontSize: 20,
@@ -43,7 +44,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     height: 38,
     margin: 8.5,
-    marginLeft: 30,
+    marginLeft: 50,
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
@@ -104,7 +105,7 @@ export default function LoginScreen({ navigation }) {
 
       <View style={styles.containerInputs}>
         <View style={styles.inputs}>
-          <Icon icon="ant-design:user-outlined" />
+          {/* <Icon icon="ant-design:user-outlined" /> */}
           <TextInput
             style={styles.textInput}
             value={username}
@@ -132,9 +133,6 @@ export default function LoginScreen({ navigation }) {
 
         <Text style={styles.sideText}>Forgot password?</Text>
 
-      </View>
-
-      <View style={styles.container}>
         <TouchableOpacity
           mode="contained"
           style={styles.button}
