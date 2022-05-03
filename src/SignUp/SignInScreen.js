@@ -300,7 +300,7 @@ export default function SignUpScreen({ navigation }) {
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
         <View style={styles.container}>
           <View style={styles.text}>
-            <TouchableOpacity style={styles.backArrow} onPress={() => { navigation.navigate('Landing Page'); }}>
+            <TouchableOpacity style={styles.backArrow} onPress={() => { navigation.navigate('Log In'); }}>
               <Image source={backArrow} />
             </TouchableOpacity>
             <Image style={styles.image} source={headerImage} />

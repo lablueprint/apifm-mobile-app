@@ -1,35 +1,42 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, Image, TextInput, Text,
+  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
 } from 'react-native';
-import {
-  Button,
-} from 'react-native-paper';
 import PropTypes from 'prop-types';
 
-const logoImage = require('../assets/imgs/transparent_logo.png');
+import { Icon, InlineIcon } from '@iconify/react';
+// import userIcon from "@iconify/ant-design:user-outlined";
+
+const backgroundImage = require('../assets/imgs/login.png');
 
 const styles = StyleSheet.create({
+  containerInputs: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 200,
+
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
 
   },
   button: {
-    width: 250,
-    backgroundColor: '#C4C4C4',
+    width: 300,
+    height: 40,
+    alignItems: 'center',
+    backgroundColor: '#1D763C',
     borderRadius: 30,
-    marginBottom: 23,
-    marginTop: 5,
+    fontFamily: 'JosefinSans-SemiBold',
   },
-
-  image: {
-    marginTop: 50,
-    width: 250,
-    height: 250,
-    alignSelf: 'center',
+  buttonText: {
+    fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    color: 'white',
+    marginTop: 3,
   },
 
   inputs: {
@@ -40,10 +47,45 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
-    borderRadius: 10,
-    borderColor: 'gray',
+    borderRadius: 30,
+    borderColor: '#F0EFEF',
     textAlignVertical: 'top',
-    backgroundColor: 'white',
+    backgroundColor: '#FFFFFA',
+  },
+
+  textInput: {
+    marginLeft: 7,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 16,
+    // color: '#1D763C',
+  },
+
+  sideText: {
+    marginLeft: 165,
+    fontFamily: 'JosefinSans',
+    fontSize: 12,
+    // color: '#1D763C',
+  },
+
+  bottomTextFine: {
+    // marginLeft: 7,
+    fontFamily: 'JosefinSans',
+    fontSize: 16,
+    marginTop: 80,
+
+  },
+
+  bottomTextBold: {
+    // marginLeft: 7,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 16,
+    color: '#1D763C',
+
+  },
+
+  backgroundimage: {
+    flex: 1,
+    justifyContent: 'center',
   },
 });
 
@@ -58,22 +100,20 @@ export default function LoginScreen({ navigation }) {
   const passwordInput = useRef();
 
   return (
+    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
 
-    <View style={styles.container}>
-
-      <Image style={styles.image} source={logoImage} />
-
-      <View style={styles.container}>
+      <View style={styles.containerInputs}>
         <View style={styles.inputs}>
+          <Icon icon="ant-design:user-outlined" />
           <TextInput
             style={styles.textInput}
             value={username}
             onChangeText={setUserName}
-            placeholder="Username"
+            placeholder="Email Address"
             returnKeyType="next"
             onSubmitEditing={() => { passwordInput.current.focus(); }}
             blurOnSubmit={false}
-            width={330}
+            width={300}
           />
         </View>
 
@@ -83,28 +123,32 @@ export default function LoginScreen({ navigation }) {
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            returnKeyType="next"
             blurOnSubmit={false}
-            width={330}
+            ref={passwordInput}
+            width={300}
           />
         </View>
 
-        <Button
-          mode="contained"
-          style={styles.button}
-        >
-          Login
-        </Button>
-
-        <Text>Forgot your password?</Text>
-
-        <Text>
-          Don&apos;t have an account?
-          <Text style={styles.baseText} onPress={() => handleSignUp()}> Sign Up</Text>
-        </Text>
+        <Text style={styles.sideText}>Forgot password?</Text>
 
       </View>
 
-    </View>
+      <View style={styles.container}>
+        <TouchableOpacity
+          mode="contained"
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}> Login </Text>
+        </TouchableOpacity>
+
+        <Text style={styles.bottomTextFine}>
+          Don&apos;t have an account?
+          <Text style={styles.bottomTextBold} onPress={() => handleSignUp()}> Sign Up</Text>
+        </Text>
+      </View>
+
+    </ImageBackground>
   );
 }
 
