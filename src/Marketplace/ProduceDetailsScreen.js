@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity, TextInput,
+  View, Image, StyleSheet, TouchableOpacity, TextInput, Alert,
 } from 'react-native';
 import {
   Button, Text, Provider, Portal, Modal,
@@ -42,6 +42,24 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
     backgroundColor: '#868686',
+  },
+  tagsLine: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
+  tagText: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#000000',
+  },
+  tagContainer: {
+    backgroundColor: '#C1DDA9',
+    borderRadius: 4,
+    width: 60,
+    height: 30,
+    alignItems: 'center',
+    marginLeft: 8,
   },
   favoriteIcon: {
     alignSelf: 'flex-end',
@@ -137,31 +155,54 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    produceId, favorite, image, name, price, unit, seller, maxQuantity,
+    userId, produceId, favorite, setFavorite,
+    image, name, tags, price, unit, seller, maxQuantity, minQuantity,
   } = route.params;
+
+  const produceTags = tags.map((tag) => (
+    <View style={styles.tagContainer}>
+      <Text style={styles.tagText}>{tag}</Text>
+    </View>
+  ));
 
   const [favorited, setFavorited] = useState(favorite);
 
+  const addToFavorites = async (user, produce, favcondition) => {
+    await base('Users').find(user, (err, record) => {
+      if (err) {
+        Alert.alert(err.error, err.message);
+        return;
+      }
+      let currentFavorites = record.fields.favorites;
+      if (typeof currentFavorites === 'undefined') {
+        currentFavorites = [];
+      }
+      if (favcondition) {
+        currentFavorites.push(produce);
+      } else {
+        currentFavorites = currentFavorites.filter((item) => item !== produce);
+      }
+      base('Users').update([
+        {
+          id: user,
+          fields: {
+            favorites: currentFavorites,
+          },
+        },
+      ]);
+    });
+  };
+
   const onPressHeart = () => {
     const newFav = !favorited;
+    addToFavorites(userId, produceId, newFav);
     setFavorited(newFav);
-    base('Produce').update([
-      {
-        id: produceId,
-        fields: {
-          Favorited: favorited,
-        },
-      },
-    ], (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
+    setFavorite(newFav);
   };
 
   const imageurl = { uri: image };
 
-  const [orderQuantity, setOrderQuantity] = useState('1');
+  const [orderQuantity, setOrderQuantity] = useState(minQuantity.toString());
 
   const onChangeQuantity = (e) => {
     if (e === '') {
@@ -176,7 +217,7 @@ function ProduceDetailsScreen({ route }) {
 
   const onSubmitQuantity = () => {
     if (orderQuantity === '') {
-      setOrderQuantity('1');
+      setOrderQuantity(minQuantity.toString());
     }
   };
 
@@ -189,21 +230,19 @@ function ProduceDetailsScreen({ route }) {
       await base('CART V3').select({
       }).eachPage((records, fetchNextPage) => {
         records.forEach(
-          (record) => { // not sure if we need the [0] because i changed the airtable
-            // shopper id re-hardcoded to helen
-            if (produceId === record.fields.Produce[0] && record.fields['shopper id'][0] === 'recIpBFqr2EXNbS7d') {
-            // currently updates only for users with Chandra's ID
+          (record) => {
+            if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
               quantityToUpdate.push(record);
             }
             fetchNextPage();
           },
           (err) => {
-            if (err) { console.error(err); }
+            if (err) { Alert.alert(err.error, err.message); }
           },
         );
       });
       if (quantityToUpdate.length) {
-        const newQuantity = quantityToUpdate[0].fields.Quantity + Number(orderQuantity);
+        const newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
         await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
@@ -213,7 +252,7 @@ function ProduceDetailsScreen({ route }) {
           },
         ], (err) => {
           if (err) {
-            console.error(err);
+            Alert.alert(err.error, err.message);
           }
         });
       } else {
@@ -222,18 +261,17 @@ function ProduceDetailsScreen({ route }) {
             fields: {
               Produce: [produceId],
               quantity: Number(orderQuantity),
-              // TODO: replace shopperid with logged in user data
-              shopper: ['recIpBFqr2EXNbS7d'],
+              shopper: [userId],
             },
           },
         ], (err) => {
           if (err) {
-            console.error(err);
+            Alert.alert(err.error, err.message);
           }
         });
       }
     } catch (err) {
-      console.error(err);
+      Alert.alert(err.error, err.message);
     }
   };
 
@@ -262,6 +300,9 @@ function ProduceDetailsScreen({ route }) {
                 <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
               </TouchableOpacity>
             </View>
+            <View style={styles.tagsLine}>
+              {produceTags}
+            </View>
             <Text style={styles.textSeller}>{seller}</Text>
             <View style={styles.sameLineContainer}>
               <View style={styles.priceUnitLine}>
@@ -274,7 +315,7 @@ function ProduceDetailsScreen({ route }) {
               <View style={styles.numberChange}>
                 <TouchableOpacity
                   onPress={() => {
-                    if (Number(orderQuantity) - 1 > 0) {
+                    if (Number(orderQuantity) - 1 >= minQuantity) {
                       const updatedValue = Number(orderQuantity) - 1;
                       setOrderQuantity(updatedValue.toString());
                     }
@@ -325,14 +366,18 @@ function ProduceDetailsScreen({ route }) {
 ProduceDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
+      userId: PropTypes.string.isRequired,
       produceId: PropTypes.string.isRequired,
       favorite: PropTypes.bool.isRequired,
+      setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
       price: PropTypes.number.isRequired,
       unit: PropTypes.string.isRequired,
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
+      minQuantity: PropTypes.number.isRequired,
     }),
   }).isRequired,
 };

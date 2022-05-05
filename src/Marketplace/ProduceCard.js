@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity,
+  View, Image, StyleSheet, TouchableOpacity, Alert,
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Config from 'react-native-config';
 
+const Airtable = require('airtable');
 const missingImage = require('../assets/missingImage.png');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -60,19 +70,61 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, produceId, favorited, image, name, price, unit, seller, maxQuantity,
+  navigation, userId, showAlert, produceId, favorited,
+  image, name, tags, price, unit, seller, maxQuantity, minQuantity,
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
-  const onPressCard = () => {
-    navigation.navigate('ProduceDetails', {
-      produceId, favorite, image, name, price, unit, seller, maxQuantity,
+  const addToFavorites = async (user, produce, favcondition) => {
+    await base('Users').find(user, (err, record) => {
+      if (err) {
+        Alert.alert(err.error, err.message);
+        return;
+      }
+      let currentFavorites = record.fields.favorites;
+      if (typeof currentFavorites === 'undefined') {
+        currentFavorites = [];
+      }
+      if (favcondition) {
+        currentFavorites.push(produce);
+      } else {
+        currentFavorites = currentFavorites.filter((item) => item !== produce);
+      }
+      base('Users').update([
+        {
+          id: user,
+          fields: {
+            favorites: currentFavorites,
+          },
+        },
+      ]);
     });
   };
 
   const onPressHeart = () => {
     const newFav = !favorite;
+    addToFavorites(userId, produceId, newFav);
     setFavorite(newFav);
+  };
+
+  const onPressCard = () => {
+    const display = showAlert();
+    if (!display) {
+      navigation.navigate('ProduceDetails', {
+        produceId,
+        userId,
+        favorite,
+        setFavorite,
+        image,
+        name,
+        tags,
+        price,
+        unit,
+        seller,
+        maxQuantity,
+        minQuantity,
+      });
+    }
   };
 
   const imageurl = { uri: image };
@@ -100,14 +152,18 @@ function ProduceCard({
 
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  userId: PropTypes.string.isRequired,
+  showAlert: PropTypes.func.isRequired,
   produceId: PropTypes.string.isRequired,
   favorited: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   price: PropTypes.number.isRequired,
   unit: PropTypes.string.isRequired,
   seller: PropTypes.string.isRequired,
   maxQuantity: PropTypes.number.isRequired,
+  minQuantity: PropTypes.number.isRequired,
 };
 
 export default ProduceCard;
