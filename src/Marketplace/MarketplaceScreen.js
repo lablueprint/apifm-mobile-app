@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView, Alert,
+  Image, View, StyleSheet, ScrollView, Alert, TouchableOpacity,
 } from 'react-native';
 import {
-  Title, Text, Button, Provider, Portal, Modal,
+  Text, Provider, Portal, Modal,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import MaterialIcon from 'react-native-vector-icons/MaterialIcons';
-import FontIcon from 'react-native-vector-icons/FontAwesome';
-// for Calendar icon import Feather from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import ProduceGrid from './ProduceGrid';
+import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
+
+const Airtable = require('airtable');
+const filterIcon = require('../assets/filtericon.png');
 
 // constant user id to test for all features
 const userId = 'rec8yzLkLY6VrCKOX';
-
-const Airtable = require('airtable');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -27,36 +26,100 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  circle: {
+    position: 'absolute',
+    width: 10,
+    height: 10,
+    borderRadius: 100 / 2,
+    marginTop: 10,
+    marginLeft: 18,
+    backgroundColor: '#FF5353',
   },
-  centeredContainer: {
-    marginTop: '40%',
-    alignItems: 'center',
+  container: {
+    backgroundColor: '#FFFFFA',
+    height: '100%',
+    width: '100%',
+  },
+  topContainer: {
+    backgroundColor: '#144611',
+  },
+  topBarContainer: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignSelf: 'flex-end',
+  },
+  welcomeContainer: {
+    width: 305,
+    height: 60,
+    left: 30,
+    marginTop: 10,
+    marginBottom: 20,
+  },
+  welcomeText: {
+    fontSize: 24,
+    color: '#FFFFFA',
+  },
+  filterIcon: {
+    width: 25,
+    height: 25,
+    alignSelf: 'flex-end',
+    marginTop: 10,
+    marginRight: 10,
+    marginLeft: 4,
+  },
+  calendarIcon: {
+    color: '#FFFFFF',
+    marginTop: 10,
+    marginRight: 4,
+
+  },
+  calendarPopup: {
+    width: 360,
+    height: 335,
+    alignSelf: 'center',
+  },
+  calendarError: {
+    width: 290,
+    height: 45,
+    alignSelf: 'auto',
+  },
+  calendarErrorMessage: {
+    position: 'absolute',
+    backgroundColor: '#FF5353',
+    width: 290,
+    height: 45,
+    top: 50,
+    left: 60,
   },
   filterPopup: {
     width: 330,
     height: 470,
     alignSelf: 'center',
   },
-  titleText: {
-    marginBottom: 10,
+  sameLineContainer: {
+    display: 'flex',
+    flexDirection: 'row',
   },
-  bodyText: {
-    marginLeft: 5,
-    marginRight: 5,
-    marginBottom: 10,
+  // adjusting text is not working
+  marketplaceTabOpen: {
+    backgroundColor: '#FFFFFA',
+    width: '50%',
+    height: 50,
+    textAlign: 'center',
   },
-  button: {
-    width: '30%',
-    marginTop: 5,
-    backgroundColor: '#0492c2',
+  marketplaceTabClosed: {
+    backgroundColor: '#144611',
+    width: '50%',
+    height: 50,
+    textAlign: 'center',
   },
-  buttonContainer: {
-    marginTop: 5,
-    marginRight: 5,
-    alignItems: 'flex-end',
-    alignSelf: 'flex-end',
+  marketPlaceTextOpen: {
+    color: '#144611',
+    fontSize: 20,
+  },
+  marketPlaceTextClosed: {
+    color: '#ABBD85',
+    fontSize: 20,
   },
 });
 
@@ -65,17 +128,50 @@ export default function MarketplaceScreen({ navigation }) {
   const [unsortedProduce, setUnsortedProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);
 
+  const [calendarVisibility, setCalendarVisibility] = useState(false);
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [favoritesFilter, setFavoritesFilter] = useState(false);
 
+  const [mondayDelivery, setMondayDelivery] = useState(false);
+  const [fridayDelivery, setFridayDelivery] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
+  const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
+    let deliveryList = listToDeliver;
+    if (mondayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Monday' || produce['Delivery Date'] === 'All'));
+    }
+    if (fridayState) {
+      deliveryList = listToDeliver.filter((produce) => (produce['Delivery Date'] === 'Friday' || produce['Delivery Date'] === 'All'));
+    }
+    return deliveryList;
+  };
+
+  const selectDayAlert = () => {
+    if (!mondayDelivery && !fridayDelivery) {
+      return true;
+    }
+    return false;
+  };
+
   const getProduce = async () => {
     let favorites = [];
+    let mondayState = false;
+    let fridayState = false;
     await base('Users').find(userId, (err, record) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       favorites = record.fields.favorites;
+      if (record.fields['Delivery Date'] === 'Monday') {
+        mondayState = true;
+        setMondayDelivery(true);
+      }
+      if (record.fields['Delivery Date'] === 'Friday') {
+        fridayState = true;
+        setFridayDelivery(true);
+      }
     });
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -88,8 +184,11 @@ export default function MarketplaceScreen({ navigation }) {
         if (!('Image' in record.fields)) {
           produce.fields.Image = [{ url: '' }];
         }
-        if (!('Quantity' in record.fields)) {
-          produce.fields.Quantity = 1;
+        if (!('Maximum Quantity' in record.fields)) {
+          produce.fields['Maximum Quantity'] = 1;
+        }
+        if (!('Minimum Quantity' in record.fields)) {
+          produce.fields['Minimum Quantity'] = 1;
         }
         if (!('Unit' in record.fields)) {
           produce.fields.Unit = 'Uknown';
@@ -101,7 +200,10 @@ export default function MarketplaceScreen({ navigation }) {
           produce.fields.Price = 'Unknown';
         }
         if (!('Type Tags' in record.fields)) {
-          produce.fields['Type Tags'] = '';
+          produce.fields['Type Tags'] = [];
+        }
+        if (!('Delivery Date' in record.fields)) {
+          produce.fields['Delivery Date'] = '';
         }
         if (favorites.includes(produce.id)) {
           produce.fields.Favorited = true;
@@ -113,8 +215,8 @@ export default function MarketplaceScreen({ navigation }) {
       fetchNextPage();
     });
     setAllProduce(list);
-    setUnsortedProduce(list);
-    setProduceList(list);
+    setUnsortedProduce(deliveryProduce(list, mondayState, fridayState));
+    setProduceList(deliveryProduce(list, mondayState, fridayState));
   };
 
   useEffect(() => {
@@ -163,16 +265,17 @@ export default function MarketplaceScreen({ navigation }) {
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
+  // this function likely needs to account for multiple tags
   const filterProduce = (listToFilter, favorites) => {
     let filteredList = [];
     if (seasonalFilter) {
-      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Seasonal'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'].includes('Seasonal')));
     }
     if (vegetablesFilter) {
-      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Vegetables'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'].includes('Vegetables')));
     }
     if (fruitsFilter) {
-      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'] === 'Fruits'));
+      filteredList = filteredList.concat(listToFilter.filter((item) => item['Type Tags'].includes('Fruits')));
     }
     if (filteredList.length) {
       if (favorites) {
@@ -192,7 +295,7 @@ export default function MarketplaceScreen({ navigation }) {
     setFavoritesFilter(showFavorites);
     base('Users').find(userId, (err, record) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       let { favorites } = record.fields;
@@ -209,100 +312,187 @@ export default function MarketplaceScreen({ navigation }) {
       setAllProduce(newAllProduce);
       if (showFavorites) {
         const filteredList = newAllProduce.filter((item) => item.Favorited);
-        setUnsortedProduce(filterProduce(filteredList, true));
-        setProduceList(sortProduce(filterProduce(filteredList, true)));
+        setUnsortedProduce(filterProduce(
+          deliveryProduce(filteredList, mondayDelivery, fridayDelivery),
+          true,
+        ));
+        setProduceList(sortProduce(filterProduce(
+          deliveryProduce(filteredList, mondayDelivery, fridayDelivery),
+          true,
+        )));
       } else {
-        setUnsortedProduce(filterProduce(newAllProduce, false));
-        setProduceList(sortProduce(filterProduce(newAllProduce, false)));
+        setUnsortedProduce(filterProduce(
+          deliveryProduce(newAllProduce, mondayDelivery, fridayDelivery),
+          false,
+        ));
+        setProduceList(sortProduce(filterProduce(
+          deliveryProduce(newAllProduce, mondayDelivery, fridayDelivery),
+          false,
+        )));
       }
     });
   };
 
   useEffect(() => {
+    setUnsortedProduce(filterProduce(
+      deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
+      favoritesFilter,
+    ));
+    setProduceList(sortProduce(filterProduce(
+      deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
+      favoritesFilter,
+    )));
+    if (!mondayDelivery && !fridayDelivery) {
+      setShowAlert(true);
+    } else {
+      setShowAlert(false);
+    }
+  }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
+
+  useEffect(() => {
     setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
 
-  useEffect(() => {
-    setUnsortedProduce(filterProduce(allProduce, favoritesFilter));
-    setProduceList(sortProduce(filterProduce(allProduce, favoritesFilter)));
-  }, [seasonalFilter, vegetablesFilter, fruitsFilter]);
-
   return (
     <Provider>
-      <ScrollView style={styles.container}>
-        <View style={styles.buttonContainer}>
-          <Button
-            mode="outlined"
-            icon="account-circle"
-            style={styles.button}
-            color="white" // Text + icon colour
-            onPress={() => navigation.navigate('Profile')}
-          >
-            Profile
-          </Button>
-          <Button
-            mode="outlined"
-            icon="cart"
-            style={styles.button}
-            color="white"
-            onPress={() => navigation.navigate('Cart')}
-          >
-            Cart
-          </Button>
-        </View>
-        <View style={styles.centeredContainer}>
-          <Title style={styles.titleText}> MarketplaceScreen :) </Title>
-          <Text style={styles.bodyText}> This is the Marketplace Home. Buy food from me! </Text>
-          <Button
-            mode="contained"
-            style={styles.button}
-            onPress={() => navigation.navigate('SignIn')}
-          >
-            SIGN OUT
-          </Button>
-        </View>
-        <View>
-          <View>
-            <TouchableOpacity>
-              <FontIcon name={favoritesFilter ? 'heart' : 'heart-o'} onPress={filterFavorites} />
+      <View style={styles.container}>
+        <View style={styles.topContainer}>
+          <View style={styles.topBarContainer}>
+            <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
+              <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
-            <TouchableOpacity>
-              <MaterialIcon onPress={() => { setFilterVisibility(true); }} name="settings-input-composite" size={20} />
+            {!mondayDelivery && !fridayDelivery
+              && <View style={styles.circle} />}
+
+            <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
+              <Image
+                style={styles.filterIcon}
+                source={filterIcon}
+              />
+            </TouchableOpacity>
+          </View>
+          <View style={styles.welcomeContainer}>
+            <Text style={styles.welcomeText}>Hello YOUR NAME,</Text>
+            <Text style={styles.welcomeText}>Order your produce here!</Text>
+          </View>
+
+          <View style={styles.sameLineContainer}>
+            <TouchableOpacity
+              style={favoritesFilter ? styles.marketplaceTabClosed : styles.marketplaceTabOpen}
+              activeOpacity={1}
+              onPress={() => {
+                if (favoritesFilter) {
+                  filterFavorites();
+                }
+              }}
+            >
+              <View
+                style={favoritesFilter ? styles.marketplaceTextClosed : styles.marketplaceTextOpen}
+              >
+                <Text>
+                  MARKETPLACE
+                </Text>
+              </View>
             </TouchableOpacity>
 
-          </View>
-          <View>
-            <Portal>
-              <Modal
-                visible={filterVisibility}
-                onDismiss={() => {
-                  setFilterVisibility(false);
-                }}
-                contentContainerStyle={styles.filterPopup}
+            <TouchableOpacity
+              style={favoritesFilter ? styles.marketplaceTabOpen : styles.marketplaceTabClosed}
+              activeOpacity={1}
+              onPress={() => {
+                if (!favoritesFilter) {
+                  filterFavorites();
+                }
+              }}
+            >
+              <View
+                style={favoritesFilter ? styles.marketplaceTextOpen : styles.marketplaceTextClosed}
               >
-                <FilterPopup
-                  setVisibility={setFilterVisibility}
-                  aZ={aZSort}
-                  setAZ={setAZSort}
-                  zA={zASort}
-                  setZA={setZASort}
-                  lowHigh={lowHighSort}
-                  setLowHigh={setLowHighSort}
-                  highLow={highLowSort}
-                  setHighLow={setHighLowSort}
-                  seasonal={seasonalFilter}
-                  setSeasonal={setSeasonalFilter}
-                  vegetables={vegetablesFilter}
-                  setVegetables={setVegetablesFilter}
-                  fruits={fruitsFilter}
-                  setFruits={setFruitsFilter}
-                />
-              </Modal>
-            </Portal>
+                <Text>
+                  FAVORITES
+                </Text>
+              </View>
+
+            </TouchableOpacity>
           </View>
-          <ProduceGrid navigation={navigation} userId={userId} produceList={produceList} />
+
         </View>
-      </ScrollView>
+        <View>
+          <Portal>
+            <Modal
+              visible={calendarVisibility}
+              onDismiss={() => {
+                setCalendarVisibility(false);
+              }}
+              contentContainerStyle={styles.calendarPopup}
+            >
+              <CalendarPopup
+                userId={userId}
+                setVisibility={setCalendarVisibility}
+                mondayDelivery={mondayDelivery}
+                setMondayDelivery={setMondayDelivery}
+                fridayDelivery={fridayDelivery}
+                setFridayDelivery={setFridayDelivery}
+                setShowAlert={setShowAlert}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={filterVisibility}
+              onDismiss={() => {
+                setFilterVisibility(false);
+              }}
+              contentContainerStyle={styles.filterPopup}
+            >
+              <FilterPopup
+                setVisibility={setFilterVisibility}
+                aZ={aZSort}
+                setAZ={setAZSort}
+                zA={zASort}
+                setZA={setZASort}
+                lowHigh={lowHighSort}
+                setLowHigh={setLowHighSort}
+                highLow={highLowSort}
+                setHighLow={setHighLowSort}
+                seasonal={seasonalFilter}
+                setSeasonal={setSeasonalFilter}
+                vegetables={vegetablesFilter}
+                setVegetables={setVegetablesFilter}
+                fruits={fruitsFilter}
+                setFruits={setFruitsFilter}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        {/* this needs to be adjusted so that it does not interfere with other buttons */}
+        {/* <View>
+          <Modal
+            visible={showAlert}
+            contentContainerStyle={styles.filterPopup}
+            onDismiss={() => {
+              setShowAlert(false);
+              setCalendarVisibility(true);
+            }}
+          >
+            <View style={styles.calendarErrorMessage}>
+              <Text>
+                Looks like you don&apos;t have a delivery date
+                yet. Click here to select a delivery date!
+              </Text>
+            </View>
+          </Modal>
+        </View> */}
+        <ScrollView>
+          <ProduceGrid
+            navigation={navigation}
+            userId={userId}
+            showAlert={selectDayAlert}
+            produceList={produceList}
+          />
+        </ScrollView>
+      </View>
     </Provider>
 
   );
