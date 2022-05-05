@@ -358,9 +358,6 @@ export default function MarketplaceScreen({ navigation }) {
       <View style={styles.container}>
         <View style={styles.topContainer}>
           <View style={styles.topBarContainer}>
-            <TouchableOpacity onPress={() => { navigation.navigate('Cart') }}>
-              <FeatherIcon style={styles.calendarIcon} name="shopping-cart" size={24} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
