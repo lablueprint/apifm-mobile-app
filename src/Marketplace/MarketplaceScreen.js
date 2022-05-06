@@ -96,6 +96,13 @@ const styles = StyleSheet.create({
     height: 470,
     alignSelf: 'center',
   },
+  cartIcon: {
+    position: 'absolute',
+    left: 50,
+    bottom: 60,
+    width: 80,
+    height: 80,
+  },
   sameLineContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -356,11 +363,12 @@ export default function MarketplaceScreen({ navigation }) {
   return (
     <Provider>
       <View style={styles.container}>
+        {/* style the cart button */}
+        {/* <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
+          <FeatherIcon style={styles.cartIcon} name="shopping-cart" size={24} />
+        </TouchableOpacity> */}
         <View style={styles.topContainer}>
           <View style={styles.topBarContainer}>
-            <TouchableOpacity onPress={() => { navigation.navigate('Cart') }}>
-              <FeatherIcon style={styles.calendarIcon} name="shopping-cart" size={24} />
-            </TouchableOpacity>
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
@@ -469,30 +477,36 @@ export default function MarketplaceScreen({ navigation }) {
             </Modal>
           </Portal>
         </View>
-        {/* this needs to be adjusted so that it does not interfere with other buttons */}
-        {/* <View>
-          <Modal
-            visible={showAlert}
-            contentContainerStyle={styles.filterPopup}
-            onDismiss={() => {
-              setShowAlert(false);
-              setCalendarVisibility(true);
-            }}
-          >
-            <View style={styles.calendarErrorMessage}>
-              <Text>
-                Looks like you don&apos;t have a delivery date
-                yet. Click here to select a delivery date!
-              </Text>
-            </View>
-          </Modal>
-        </View> */}
+        <View>
+          <Portal>
+            <Modal
+              visible={showAlert}
+              contentContainerStyle={styles.calendarErrorMessage}
+              onDismiss={() => {
+                setShowAlert(false);
+              }}
+              theme={{
+                colors: {
+                  backdrop: 'transparent',
+                },
+              }}
+            >
+              <View>
+                <Text>
+                  Looks like you don&apos;t have a delivery date
+                  yet. Click here to select a delivery date!
+                </Text>
+              </View>
+            </Modal>
+          </Portal>
+        </View>
         <ScrollView>
           <ProduceGrid
             navigation={navigation}
             userId={userId}
             showAlert={selectDayAlert}
             produceList={produceList}
+            mondayDelivery={mondayDelivery}
           />
         </ScrollView>
       </View>
@@ -502,5 +516,11 @@ export default function MarketplaceScreen({ navigation }) {
 }
 
 MarketplaceScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    dispatch: PropTypes.func,
+    DrawerActions: PropTypes.shape({
+      openDrawer: PropTypes.func,
+    }),
+  }).isRequired,
 };
