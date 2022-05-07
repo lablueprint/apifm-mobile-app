@@ -16,7 +16,6 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-// TODO: leaving room at the top for the menu header
 const styles = StyleSheet.create({
   container: {
     marginLeft: '6%',
@@ -24,14 +23,14 @@ const styles = StyleSheet.create({
     width: '88%',
   },
   title: {
-    marginTop: 35,
+    marginTop: '16%',
     fontSize: 26,
     fontFamily: 'JosefinSans-Bold',
     color: '#1D763C',
   },
   subTitle: {
     marginTop: 8,
-    marginBottom: 25,
+    marginBottom: '5%',
     marginLeft: 7,
     fontSize: 17,
     fontFamily: 'JosefinSans-Regular',
@@ -73,7 +72,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
   },
   bottomText: {
-    marginTop: 13,
+    marginTop: '4%',
     fontSize: 14,
     color: '#A4A4A4',
     fontFamily: 'JosefinSans-Regular',
@@ -85,7 +84,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-MediumItalic',
   },
   iconContainer: {
-    marginTop: 25,
+    marginTop: '3%',
     flexDirection: 'row',
     justifyContent: 'center',
   },
@@ -128,7 +127,7 @@ export default function ContactScreen({ navigation }) { // unused navigation
   };
 
   return (
-    <View style={{ backgroundColor: '#FCF7F0' }}>
+    <View style={{ backgroundColor: '#FCF7F0', height: '100%' }}>
       <View style={styles.container}>
         <Text style={styles.title}> Get In Touch! </Text>
         <Text style={styles.subTitle}>
