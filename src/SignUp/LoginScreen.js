@@ -3,7 +3,9 @@ import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-// import userIcon from "@iconify/ant-design:user-outlined";
+
+import Icon from 'react-native-vector-icons/Feather';
+import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
 
 const backgroundImage = require('../assets/imgs/login.png');
 
@@ -13,12 +15,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 200,
-
-  },
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
 
   },
   button: {
@@ -37,6 +33,10 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 3,
   },
+  icon: {
+    paddingLeft: '5%',
+    paddingBottom: '1%',
+  },
 
   inputs: {
     borderWidth: 1,
@@ -48,26 +48,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
     borderColor: '#F0EFEF',
-    textAlignVertical: 'top',
     backgroundColor: '#FFFFFA',
+
   },
 
   textInput: {
-    marginLeft: 7,
+    marginLeft: 5,
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
-    // color: '#1D763C',
+    color: '#868686',
   },
 
   sideText: {
     marginLeft: 165,
     fontFamily: 'JosefinSans',
     fontSize: 12,
-    // color: '#1D763C',
   },
 
   bottomTextFine: {
-    // marginLeft: 7,
     fontFamily: 'JosefinSans',
     fontSize: 16,
     marginTop: 80,
@@ -75,14 +73,13 @@ const styles = StyleSheet.create({
   },
 
   bottomTextBold: {
-    // marginLeft: 7,
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     color: '#1D763C',
 
   },
 
-  backgroundimage: {
+  backgroundImage: {
     flex: 1,
     justifyContent: 'center',
   },
@@ -99,11 +96,17 @@ export default function LoginScreen({ navigation }) {
   const passwordInput = useRef();
 
   return (
-    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
 
       <View style={styles.containerInputs}>
         <View style={styles.inputs}>
-          {/* <Icon icon="ant-design:user-outlined" /> */}
+          <Icon
+            style={styles.icon}
+            name="user"
+            size={22}
+            color="#868686"
+
+          />
           <TextInput
             style={styles.textInput}
             value={username}
@@ -117,6 +120,12 @@ export default function LoginScreen({ navigation }) {
         </View>
 
         <View style={styles.inputs}>
+          <LockIcon
+            style={styles.icon}
+            name="lock"
+            size={22}
+            color="#868686"
+          />
           <TextInput
             style={styles.textInput}
             value={password}

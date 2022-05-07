@@ -3,12 +3,13 @@ import {
   View, StyleSheet, TextInput, Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
-  Title, Button,
+  Title,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
 const Airtable = require('airtable');
 const backgroundImage = require('../assets/imgs/signin.png');
@@ -22,8 +23,6 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 
 const headerImage = require('../assets/imgs/header.png');
 
-const backArrow = require('../assets/imgs/back_arrow.png');
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -31,7 +30,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     // backgroundColor: '#FFFFFF',
     height: 844,
-    width: 390,
+    width: '100%',
+    padding: '8%',
 
   },
   button: {
@@ -45,17 +45,18 @@ const styles = StyleSheet.create({
 
   },
   backArrow: {
-    flex: 1,
-    marginTop: 10,
-    marginLeft: 10,
+    paddingLeft: 15,
   },
   text: {
+    flex: 1,
+    flexDirection: 'row',
+    // marginTop: 30,
     width: 350,
   },
   image: {
     width: 201,
     height: 55,
-    marginLeft: 70,
+    marginLeft: 25,
   },
   backgroundimage: {
     flex: 1,
@@ -68,9 +69,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     height: 38,
     margin: 7.5,
-    marginLeft: 30,
+    // marginLeft: 30,
     flexDirection: 'row',
-    alignSelf: 'flex-start',
+    // justifyContent: 'center',
+    // alignSelf: 'flex-start',
     alignItems: 'center',
     borderRadius: 15,
     borderColor: (134, 134, 134, 0.31),
@@ -81,7 +83,6 @@ const styles = StyleSheet.create({
     marginLeft: 7,
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 14,
-    // color: '#1D763C',
   },
   multiline: {
     marginLeft: 17,
@@ -119,12 +120,11 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginLeft: 17,
-    marginTop: 5,
     width: 330,
     margin: 8.5,
     flexDirection: 'row',
-    alignItems: 'center',
-    textAlignVertical: 'center',
+    // alignItems: 'center',
+    // textAlignVertical: 'center',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
@@ -300,13 +300,20 @@ export default function SignUpScreen({ navigation }) {
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
         <View style={styles.container}>
           <View style={styles.text}>
-            <TouchableOpacity style={styles.backArrow} onPress={() => { navigation.navigate('Log In'); }}>
-              <Image source={backArrow} />
+
+            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+              {/* <Image source={backArrow} /> */}
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
             </TouchableOpacity>
+
             <Image style={styles.image} source={headerImage} />
           </View>
 
-          {/* <Image style={styles.image} source={headerImage} /> */}
           <Text style={styles.titleText}>Sign Up</Text>
           <View style={styles.inputs}>
             <TextInput
@@ -461,10 +468,19 @@ export default function SignUpScreen({ navigation }) {
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
       <View style={styles.container}>
+
         <View style={styles.text}>
-          <TouchableOpacity style={styles.backArrow} onPress={() => { setPage1(!page1); }}>
-            <Image source={backArrow} />
+
+          <TouchableOpacity onPress={() => { setPage1(!page1); }}>
+            {/* <Image source={backArrow} /> */}
+            <ArrowIcon
+              style={styles.backArrow}
+              name="arrowleft"
+              size={34}
+              color="#FF9F00"
+            />
           </TouchableOpacity>
+
           <Image style={styles.image} source={headerImage} />
         </View>
 
@@ -514,7 +530,7 @@ export default function SignUpScreen({ navigation }) {
           />
         </View>
 
-        <View style={styles.inputs}>
+        <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
           <TextInput
             style={styles.textInput}
             value={zip}
