@@ -64,3 +64,9 @@ buck-out/
 
 #AIRTABLE
 .env
+
+#MainApplication
+/android/app/src/main/java/com/apifm/MainApplication.java
+
+.gitignore
+yarn.lock
