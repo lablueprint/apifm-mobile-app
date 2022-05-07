@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View, Text, StyleSheet, TouchableOpacity, Alert,
+  View, Text, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { Button } from 'react-native-paper';
-import Config from 'react-native-config';
-
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   popupContainer: {
@@ -65,12 +55,12 @@ const styles = StyleSheet.create({
 });
 
 function CalendarPopup({
-  userId, setVisibility, mondayDelivery, setMondayDelivery,
+  setVisibility, mondayDelivery, setMondayDelivery,
   fridayDelivery, setFridayDelivery, setShowAlert,
+  displayMonday, displayFriday,
 }) {
   const [monday, setMonday] = useState(mondayDelivery);
   const [friday, setFriday] = useState(fridayDelivery);
-  const [save, setSave] = useState(false);
 
   // currently unsure as to how the date ordering restrictions should work
   // if it is a weekend (when no one can order) should the user not be able to view any
@@ -80,37 +70,12 @@ function CalendarPopup({
   // previously selected Friday, should the user's default order date be automatically switched
   // to Monday in case so that the user can still view produce available to them?
   // const today = new Date();
-  const tempToday = new Date();
-  const thisFriday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 5)));
-  const displayFriday = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}`;
-  const nextMonday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 8)));
-  const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
 
   const updateDelivery = () => {
     setMondayDelivery(monday);
     setFridayDelivery(friday);
-    let date = '';
-    if (monday) {
-      date = 'Monday';
-      setShowAlert(true);
-    }
-    if (friday) {
-      date = 'Friday';
-      setShowAlert(true);
-    }
-    if (save) {
-      base('Users').update([
-        {
-          id: userId,
-          fields: {
-            'Delivery Date': date,
-          },
-        },
-      ], (err) => {
-        if (err) {
-          Alert.alert(err.error, err.message);
-        }
-      });
+    if (monday || friday) {
+      setShowAlert(true); setShowAlert(true);
     }
     setVisibility(false);
   };
@@ -171,12 +136,6 @@ function CalendarPopup({
         {/* )} */}
       </View>
 
-      <View>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setSave(!save); }} name={save ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
-        </TouchableOpacity>
-        <Text>Save this day of the week for future deliveries.</Text>
-      </View>
       <Button
         onPress={updateDelivery}
       >
@@ -187,13 +146,14 @@ function CalendarPopup({
 }
 
 CalendarPopup.propTypes = {
-  userId: PropTypes.string.isRequired,
   setVisibility: PropTypes.func.isRequired,
   mondayDelivery: PropTypes.bool.isRequired,
   setMondayDelivery: PropTypes.func.isRequired,
   fridayDelivery: PropTypes.bool.isRequired,
   setFridayDelivery: PropTypes.func.isRequired,
   setShowAlert: PropTypes.func.isRequired,
+  displayMonday: PropTypes.string.isRequired,
+  displayFriday: PropTypes.string.isRequired,
 };
 
 export default CalendarPopup;

@@ -131,6 +131,15 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  const today = new Date();
+  const tempToday = new Date();
+  const thisFriday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 5)));
+  const displayFriday = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}`;
+  const thisTuesday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 2)));
+  const displayTuesday = `${String(thisTuesday.getMonth() + 1).padStart(2, '0')}/${String(thisTuesday.getDate()).padStart(2, '0')}`;
+  const nextMonday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 8)));
+  const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
+
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);
@@ -155,7 +164,7 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   const selectDayAlert = () => {
-    if (!mondayDelivery && !fridayDelivery) {
+    if (today.getDay() === 3 || (!mondayDelivery && !fridayDelivery)) {
       return true;
     }
     return false;
@@ -164,21 +173,17 @@ export default function MarketplaceScreen({ navigation }) {
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
-    let fridayState = false;
+    if (today.getDay() === 3) {
+      mondayState = true;
+      setMondayDelivery(true);
+    }
+    const fridayState = false;
     await base('Users').find(userId, (err, record) => {
       if (err) {
         Alert.alert(err.error, err.message);
         return;
       }
       favorites = record.fields.favorites;
-      if (record.fields['Delivery Date'] === 'Monday') {
-        mondayState = true;
-        setMondayDelivery(true);
-      }
-      if (record.fields['Delivery Date'] === 'Friday') {
-        fridayState = true;
-        setFridayDelivery(true);
-      }
     });
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -437,13 +442,14 @@ export default function MarketplaceScreen({ navigation }) {
               contentContainerStyle={styles.calendarPopup}
             >
               <CalendarPopup
-                userId={userId}
                 setVisibility={setCalendarVisibility}
                 mondayDelivery={mondayDelivery}
                 setMondayDelivery={setMondayDelivery}
                 fridayDelivery={fridayDelivery}
                 setFridayDelivery={setFridayDelivery}
                 setShowAlert={setShowAlert}
+                displayMonday={displayMonday}
+                displayFriday={displayFriday}
               />
             </Modal>
           </Portal>
@@ -500,6 +506,27 @@ export default function MarketplaceScreen({ navigation }) {
             </Modal>
           </Portal>
         </View>
+        {(mondayDelivery || fridayDelivery)
+          && (
+            <TouchableOpacity onPress={() => {
+              const newCalVis = !calendarVisibility;
+              setCalendarVisibility(newCalVis);
+            }}
+            >
+              <View>
+                <Text>
+                  Delivery:
+                  {' '}
+                  {(mondayDelivery) ? `Mon. ${displayMonday}` : `Fri. ${displayFriday}`}
+                </Text>
+                <Text>
+                  Order by
+                  {' '}
+                  {(mondayDelivery) ? `${displayFriday} @ 3 PM!` : `${displayTuesday} @ 5 PM!`}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          )}
         <ScrollView>
           <ProduceGrid
             navigation={navigation}
