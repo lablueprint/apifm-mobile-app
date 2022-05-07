@@ -173,9 +173,8 @@ export default function MarketplaceScreen({ navigation }) {
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
-    if (today.getDay() === 3) {
+    if (today.getDay() === 3 || (today.getDay() === 2 && today.getHours() < 18)) {
       mondayState = true;
-      setMondayDelivery(true);
     }
     const fridayState = false;
     await base('Users').find(userId, (err, record) => {
@@ -277,7 +276,6 @@ export default function MarketplaceScreen({ navigation }) {
   const [vegetablesFilter, setVegetablesFilter] = useState(false);
   const [fruitsFilter, setFruitsFilter] = useState(false);
 
-  // this function likely needs to account for multiple tags
   const filterProduce = (listToFilter, favorites) => {
     let filteredList = [];
     if (seasonalFilter) {
@@ -528,13 +526,23 @@ export default function MarketplaceScreen({ navigation }) {
             </TouchableOpacity>
           )}
         <ScrollView>
-          <ProduceGrid
-            navigation={navigation}
-            userId={userId}
-            showAlert={selectDayAlert}
-            produceList={produceList}
-            mondayDelivery={mondayDelivery}
-          />
+          {(today.getDay() === 0 || today.getDay() === 6
+          || (today.getDay() === 5 && today.getHours() >= 16))
+            ? (
+              <View>
+                <Text>No produce for you!</Text>
+              </View>
+            )
+            : (
+              <ProduceGrid
+                navigation={navigation}
+                userId={userId}
+                showAlert={selectDayAlert}
+                produceList={produceList}
+                mondayDelivery={mondayDelivery}
+              />
+            )}
+
         </ScrollView>
       </View>
     </Provider>
