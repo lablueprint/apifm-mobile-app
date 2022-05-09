@@ -1,21 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, Image, StyleSheet, TouchableOpacity,
+  View, StyleSheet, TouchableOpacity,
 } from 'react-native';
 import { Text } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/FontAwesome';
-
-const missingImage = require('../assets/missingImage.png');
-const Airtable = require('airtable');
-import Config from 'react-native-config';
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -29,13 +17,6 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-  },
-  favoriteIcon: {
-    width: 15,
-    height: 15,
-    alignSelf: 'flex-end',
-    marginTop: 10,
-    marginEnd: 10,
   },
   image: {
     marginTop: 12,
@@ -70,18 +51,16 @@ const styles = StyleSheet.create({
 });
 
 function OrderCard({
-    navigation, orderId, date, items, itemsList,
+  navigation, orderId, items, itemsList,
 }) {
-  const [names, setNames] = useState("");
   const [itemList, setItemList] = useState(itemsList.get(new Date(items[0]).toString()));
+  const dateObj = new Date(items[0]);
+  const date = dateObj.toDateString();
+
   const onPressCard = () => {
-    const dateObj = new Date(items[0]);
     const time = dateObj.toLocaleTimeString('en-US');
-    date =  dateObj.toDateString();
-    console.log("Items list in card: " + itemsList.get(dateObj.toString()));
-    console.log("nav in card" + navigation);
     navigation.navigate('OrderDetails', {
-        navigation, orderId, date, time, items, itemsList,
+      navigation, orderId, date, time, items,
     });
   };
 
@@ -89,16 +68,19 @@ function OrderCard({
     setItemList(itemsList.get(new Date(items[0]).toString()));
   }, [items]);
 
-//    const constItemsList = "Apple, Bokchoy, Strawberry, ...";
-
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
         <View style={styles.image} />
-        <Text style={styles.name}>Order ID #{orderId}</Text>
+        <Text style={styles.name}>
+          Order ID #
+          {orderId}
+        </Text>
         <View style={styles.bottom}>
           <Text style={styles.date}>
-            Delivered on {new Date(items[0]).toDateString()}
+            Delivered on
+            {' '}
+            {date}
           </Text>
           <Text style={styles.quantity}>
             {itemList}
@@ -112,9 +94,8 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
-  date: PropTypes.instanceOf(Date).isRequired,
   items: PropTypes.arrayOf(PropTypes.Object).isRequired,
-  itemsList: PropTypes.object.isRequired,
+  itemsList: PropTypes.instanceOf(Map).isRequired,
 };
 
 export default OrderCard;

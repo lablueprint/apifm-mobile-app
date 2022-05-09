@@ -1,6 +1,7 @@
+/* eslint-disable no-plusplus */
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Alert, ScrollView, TouchableWithoutFeedback,
+  View, StyleSheet, ScrollView,
 } from 'react-native';
 import {
   Text, Button, Title,
@@ -9,7 +10,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import OrderItem from '../Orders/OrderItem';
+import OrderItem from './OrderItem';
 
 const styles = StyleSheet.create({
   container: {
@@ -20,18 +21,6 @@ const styles = StyleSheet.create({
     marginTop: '8%',
     marginHorizontal: '8%',
     marginBottom: '4%',
-
-    //    alignItems: 'left',
-  },
-  scrollView: {
-    flex: 1,
-    width: '95%',
-    marginBottom: '2%',
-  },
-  bodyText: {
-    marginLeft: 5,
-    marginRight: 5,
-    fontSize: 20,
   },
   button: {
     width: '40%',
@@ -44,10 +33,10 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   details: {
-      fontSize: 14,
-      marginBottom: '2%',
-      color: 'black',
-      marginLeft: -5,
+    fontSize: 14,
+    marginBottom: '2%',
+    color: 'black',
+    marginLeft: -5,
   },
   titleText: {
     marginBottom: '3%',
@@ -61,8 +50,6 @@ const styles = StyleSheet.create({
     color: '#636363',
   },
   header: {
-//    marginTop: '8%',
-//    marginHorizontal: '8%',
     marginBottom: '4%',
     borderBottomColor: '#868686',
     borderBottomWidth: 2,
@@ -109,23 +96,20 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-const CONST_USER = "helen@gmail.com";
-const CONST_USER_ID = "recIpBFqr2EXNbS7d";
+const CONST_USER = 'helen@gmail.com';
+const CONST_USER_ID = 'recIpBFqr2EXNbS7d';
 
 export default function OrderDetailsScreen({ route }) {
- const {
-    navigation, orderId, date, time, items, itemsList,
- } = route.params;
- console.log("nav " + navigation);
+  const {
+    navigation, orderId, date, time, items,
+  } = route.params;
+
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
-  const [itemList, setItemList] = useState([]);
   const [productList, setProductList] = useState([]);
-  const [refresh, setRefresh] = useState(0);
 
   const setOrderDetails = (useremail) => {
     base('Users').select({
@@ -150,64 +134,53 @@ export default function OrderDetailsScreen({ route }) {
 
   // Add current items to airtable in the Cart table
   const orderAgain = () => {
-    var cartObj = [];
-    for (var i = 0; i < items[1].length; i++) {
-        var cartRow = {};
-        cartRow.fields =
-        {
-            "Produce":  items[1][i].produce_id,
-            "shopper": [CONST_USER_ID],
-            "quantity": items[1][i].Quantity,
-        }
-        cartObj.push(cartRow);
+    const cartObj = [];
+    for (let i = 0; i < items[1].length; i++) {
+      const cartRow = {};
+      cartRow.fields = {
+        Produce: items[1][i].produce_id,
+        shopper: [CONST_USER_ID],
+        quantity: items[1][i].Quantity,
+      };
+      cartObj.push(cartRow);
     }
-    base('CART V3').create(cartObj, function(err, records) {
+    base('CART V3').create(cartObj, (err) => {
       if (err) {
         console.error(err);
-        return;
       }
-      records.forEach(function (record) {
-        console.log(record.getId());
-      });
     });
   };
 
-
-useEffect(() => {
+  useEffect(() => {
     // TODO: replace hardcoded email with logged in user info
     setOrderDetails(CONST_USER);
     setDeliveryFee(10);
     setFreeFee(20);
-    setDeliveryDate('January 2023!');
-    const regItemList = [];
     setCount(items[1].length);
-    var totalPrice = 0;
-    var quantities = [];
+    const regItemList = [];
+    let totalPrice = 0;
+    const quantities = [];
+
     items[1].forEach((item) => {
-        console.log("in foreach items: " + String(item.Quantity));
-        base('Produce').find(item.produce_id, ((err, prodRecord) => {
-          if (err) { console.error(err); return; }
-          const prodItem = prodRecord;
-          regItemList.push(prodItem.fields);
-          quantities.push(String(item.Quantity));
-          totalPrice += parseFloat(item.Quantity) * parseFloat(prodItem.fields.Price);
-          setTotal(totalPrice);
-          if(regItemList.length === items[1].length){
-            console.log("Should be correct quantity: " + String(item.Quantity))
-            const products = regItemList.map((prodItem, ind) => (
-                <OrderItem
-                  setRefresh={setRefresh}
-                  refresh={refresh}
-                  name={prodItem.Name}
-                  price={prodItem.Price}
-                  type={prodItem.Unit}
-                  quantity={quantities[ind]}
-                />
-            ));
-            setProductList(products);
-            setItemList(regItemList);
-          }
-        }));
+      base('Produce').find(item.produce_id, ((err, prodRecord) => {
+        if (err) { console.error(err); return; }
+        const prodItem = prodRecord;
+        regItemList.push(prodItem.fields);
+        quantities.push(String(item.Quantity));
+        totalPrice += parseFloat(item.Quantity) * parseFloat(prodItem.fields.Price);
+        setTotal(totalPrice);
+        if (regItemList.length === items[1].length) {
+          const products = regItemList.map((prodItemIter, ind) => (
+            <OrderItem
+              name={prodItemIter.Name}
+              price={prodItemIter.Price}
+              type={prodItemIter.Unit}
+              quantity={quantities[ind]}
+            />
+          ));
+          setProductList(products);
+        }
+      }));
     });
   }, []);
 
@@ -215,8 +188,21 @@ useEffect(() => {
     <ScrollView styles={styles.centeredContainer}>
       <View style={styles.shippingContainer}>
         <View style={styles.header}>
-          <Title style={styles.titleText}> Order ID #{orderId}</Title>
-          <Text style={styles.details}> Delivered on {date} at {time}</Text>
+          <Title style={styles.titleText}>
+            {' '}
+            Order ID #
+            {orderId}
+          </Title>
+          <Text style={styles.details}>
+            {' '}
+            Delivered on
+            {' '}
+            {date}
+            {' '}
+            at
+            {' '}
+            {time}
+          </Text>
         </View>
 
         <Text style={[styles.title, { fontWeight: '700', marginLeft: '0%', marginBottom: '0%' }]}>
@@ -241,7 +227,7 @@ useEffect(() => {
       </View>
       <View style={styles.subcontainer}>
         <View>
-            {productList}
+          {productList}
         </View>
       </View>
       <View style={[styles.subcontainer]}>
@@ -292,7 +278,6 @@ useEffect(() => {
           onPress={() => {
             // TODO: replace hardcoded email with logged in user info
             orderAgain();
-            console.log("nav " + navigation);
             navigation.navigate('Cart');
           }}
         >
@@ -304,17 +289,13 @@ useEffect(() => {
 }
 
 OrderDetailsScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }),
-  orderId: PropTypes.string,
-  date: PropTypes.String,
-  time: PropTypes.String,
-  items: PropTypes.arrayOf(PropTypes.Object),
-  itemsList: PropTypes.string,
-//  favorited: PropTypes.bool.isRequired,
-//  image: PropTypes.string.isRequired,
-//  name: PropTypes.string.isRequired,
-//  price: PropTypes.number.isRequired,
-//  unit: PropTypes.string.isRequired,
-//  seller: PropTypes.string.isRequired,
-//  maxQuantity: PropTypes.number.isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      navigation: PropTypes.shape({ navigate: PropTypes.func }),
+      orderId: PropTypes.string,
+      date: PropTypes.string,
+      time: PropTypes.string,
+      items: PropTypes.arrayOf(PropTypes.Object),
+    }),
+  }).isRequired,
 };
