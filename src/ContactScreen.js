@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, TextInput, Alert, Linking,
+  View, StyleSheet, ScrollView, TextInput, Alert, Linking,
 } from 'react-native';
 import { Text, Button } from 'react-native-paper';
 import Config from 'react-native-config';
@@ -21,9 +21,10 @@ const styles = StyleSheet.create({
     marginLeft: '6%',
     marginRight: '6%',
     width: '88%',
+    height: '100%',
   },
   title: {
-    marginTop: '16%',
+    marginTop: '18%',
     fontSize: 26,
     fontFamily: 'JosefinSans-Bold',
     color: '#1D763C',
@@ -127,7 +128,7 @@ export default function ContactScreen({ navigation }) { // unused navigation
   };
 
   return (
-    <View style={{ backgroundColor: '#FCF7F0', height: '100%' }}>
+    <ScrollView style={{ backgroundColor: '#FCF7F0', height: '100%' }}>
       <View style={styles.container}>
         <Text style={styles.title}> Get In Touch! </Text>
         <Text style={styles.subTitle}>
@@ -194,7 +195,7 @@ export default function ContactScreen({ navigation }) { // unused navigation
           />
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
