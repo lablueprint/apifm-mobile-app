@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  Image, View, StyleSheet, ScrollView, Alert, TouchableOpacity,
+  Image, ImageBackground, View, StyleSheet, ScrollView, Alert, TouchableOpacity,
 } from 'react-native';
 import {
   Text, Provider, Portal, Modal,
@@ -13,6 +13,12 @@ import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
 
 const Airtable = require('airtable');
+// const sadfruit = require('../assets/sadmango.svg');
+const tabonmarketplace = require('../assets/tabonmarketplace.png');
+const tabonfavorites = require('../assets/tabonfavorites.png');
+const taboffmarketplace = require('../assets/taboffmarketplace.png');
+const tabofffavorites = require('../assets/tabofffavorites.png');
+
 const filterIcon = require('../assets/filtericon.png');
 
 // constant user id to test for all features
@@ -107,24 +113,24 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
   },
-  // adjusting text is not working
-  marketplaceTabOpen: {
-    backgroundColor: '#FFFFFA',
-    width: '50%',
-    height: 50,
+  marketplaceTabImage: {
+    width: '100%',
+    height: '100%',
     textAlign: 'center',
   },
-  marketplaceTabClosed: {
-    backgroundColor: '#144611',
+  marketplaceTab: {
     width: '50%',
-    height: 50,
-    textAlign: 'center',
+    height: 70,
   },
   marketPlaceTextOpen: {
+    marginTop: '12%',
+    alignSelf: 'center',
     color: '#144611',
     fontSize: 20,
   },
   marketPlaceTextClosed: {
+    marginTop: '12%',
+    alignSelf: 'center',
     color: '#ABBD85',
     fontSize: 20,
   },
@@ -392,7 +398,7 @@ export default function MarketplaceScreen({ navigation }) {
 
           <View style={styles.sameLineContainer}>
             <TouchableOpacity
-              style={favoritesFilter ? styles.marketplaceTabClosed : styles.marketplaceTabOpen}
+              style={styles.marketplaceTab}
               activeOpacity={1}
               onPress={() => {
                 if (favoritesFilter) {
@@ -400,17 +406,20 @@ export default function MarketplaceScreen({ navigation }) {
                 }
               }}
             >
-              <View
-                style={favoritesFilter ? styles.marketplaceTextClosed : styles.marketplaceTextOpen}
+              <ImageBackground
+                style={styles.marketplaceTabImage}
+                source={favoritesFilter ? taboffmarketplace : tabonmarketplace}
               >
-                <Text>
+                <Text style={favoritesFilter
+                  ? styles.marketPlaceTextClosed : styles.marketPlaceTextOpen}
+                >
                   MARKETPLACE
                 </Text>
-              </View>
+              </ImageBackground>
             </TouchableOpacity>
 
             <TouchableOpacity
-              style={favoritesFilter ? styles.marketplaceTabOpen : styles.marketplaceTabClosed}
+              style={styles.marketplaceTab}
               activeOpacity={1}
               onPress={() => {
                 if (!favoritesFilter) {
@@ -418,13 +427,16 @@ export default function MarketplaceScreen({ navigation }) {
                 }
               }}
             >
-              <View
-                style={favoritesFilter ? styles.marketplaceTextOpen : styles.marketplaceTextClosed}
+              <ImageBackground
+                style={styles.marketplaceTabImage}
+                source={favoritesFilter ? tabonfavorites : tabofffavorites}
               >
-                <Text>
+                <Text style={favoritesFilter
+                  ? styles.marketPlaceTextOpen : styles.marketPlaceTextClosed}
+                >
                   FAVORITES
                 </Text>
-              </View>
+              </ImageBackground>
 
             </TouchableOpacity>
           </View>
@@ -530,7 +542,7 @@ export default function MarketplaceScreen({ navigation }) {
           || (today.getDay() === 5 && today.getHours() >= 16))
             ? (
               <View>
-                <Text>No produce for you!</Text>
+                {/* <Image source={sadfruit} /> */}
               </View>
             )
             : (
