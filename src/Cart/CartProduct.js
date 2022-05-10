@@ -26,8 +26,8 @@ const styles = StyleSheet.create({
     height: 130,
     borderBottomWidth: 1,
     borderBottomColor: '#C4C4C4',
-    marginTop:1,
-    marginBottom:1,
+    marginTop: 1,
+    marginBottom: 1,
   },
   container2: {
     flex: 1,
