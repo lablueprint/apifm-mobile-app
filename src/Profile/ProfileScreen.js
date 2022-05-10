@@ -30,7 +30,7 @@ export default function ProfileScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Title style={styles.titleText}>
-        <Icon style={{ fontSize: 20 }} name="account-circle" />
+        <Icon style={{ fontSize: 20 }} name="account-outline" />
         ProfileScreen
       </Title>
       <Text style={styles.bodyText}> This is my account page. I am a happy farmer. </Text>

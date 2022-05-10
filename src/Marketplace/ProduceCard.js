@@ -70,8 +70,8 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, userId, produceId, favorited,
-  image, name, price, unit, seller, maxQuantity,
+  navigation, userId, showAlert, produceId, favorited,
+  image, name, tags, price, unit, seller, maxQuantity, minQuantity,
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
@@ -108,18 +108,23 @@ function ProduceCard({
   };
 
   const onPressCard = () => {
-    navigation.navigate('ProduceDetails', {
-      produceId,
-      userId,
-      favorite,
-      setFavorite,
-      image,
-      name,
-      price,
-      unit,
-      seller,
-      maxQuantity,
-    });
+    const display = showAlert();
+    if (!display) {
+      navigation.navigate('ProduceDetails', {
+        produceId,
+        userId,
+        favorite,
+        setFavorite,
+        image,
+        name,
+        tags,
+        price,
+        unit,
+        seller,
+        maxQuantity,
+        minQuantity,
+      });
+    }
   };
 
   const imageurl = { uri: image };
@@ -148,14 +153,17 @@ function ProduceCard({
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   userId: PropTypes.string.isRequired,
+  showAlert: PropTypes.func.isRequired,
   produceId: PropTypes.string.isRequired,
   favorited: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+  tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
   price: PropTypes.number.isRequired,
   unit: PropTypes.string.isRequired,
   seller: PropTypes.string.isRequired,
   maxQuantity: PropTypes.number.isRequired,
+  minQuantity: PropTypes.number.isRequired,
 };
 
 export default ProduceCard;

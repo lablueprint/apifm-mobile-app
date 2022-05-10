@@ -43,6 +43,24 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 15,
     backgroundColor: '#868686',
   },
+  tagsLine: {
+    display: 'flex',
+    flexDirection: 'row',
+    marginLeft: 10,
+  },
+  tagText: {
+    marginTop: 5,
+    fontSize: 12,
+    color: '#000000',
+  },
+  tagContainer: {
+    backgroundColor: '#C1DDA9',
+    borderRadius: 4,
+    width: 60,
+    height: 30,
+    alignItems: 'center',
+    marginLeft: 8,
+  },
   favoriteIcon: {
     alignSelf: 'flex-end',
     marginEnd: 13,
@@ -137,8 +155,15 @@ const styles = StyleSheet.create({
 
 function ProduceDetailsScreen({ route }) {
   const {
-    userId, produceId, favorite, setFavorite, image, name, price, unit, seller, maxQuantity,
+    userId, produceId, favorite, setFavorite,
+    image, name, tags, price, unit, seller, maxQuantity, minQuantity,
   } = route.params;
+
+  const produceTags = tags.map((tag) => (
+    <View style={styles.tagContainer}>
+      <Text style={styles.tagText}>{tag}</Text>
+    </View>
+  ));
 
   const [favorited, setFavorited] = useState(favorite);
 
@@ -177,7 +202,7 @@ function ProduceDetailsScreen({ route }) {
 
   const imageurl = { uri: image };
 
-  const [orderQuantity, setOrderQuantity] = useState('1');
+  const [orderQuantity, setOrderQuantity] = useState(minQuantity.toString());
 
   const onChangeQuantity = (e) => {
     if (e === '') {
@@ -192,7 +217,7 @@ function ProduceDetailsScreen({ route }) {
 
   const onSubmitQuantity = () => {
     if (orderQuantity === '') {
-      setOrderQuantity('1');
+      setOrderQuantity(minQuantity.toString());
     }
   };
 
@@ -275,6 +300,9 @@ function ProduceDetailsScreen({ route }) {
                 <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
               </TouchableOpacity>
             </View>
+            <View style={styles.tagsLine}>
+              {produceTags}
+            </View>
             <Text style={styles.textSeller}>{seller}</Text>
             <View style={styles.sameLineContainer}>
               <View style={styles.priceUnitLine}>
@@ -287,7 +315,7 @@ function ProduceDetailsScreen({ route }) {
               <View style={styles.numberChange}>
                 <TouchableOpacity
                   onPress={() => {
-                    if (Number(orderQuantity) - 1 > 0) {
+                    if (Number(orderQuantity) - 1 >= minQuantity) {
                       const updatedValue = Number(orderQuantity) - 1;
                       setOrderQuantity(updatedValue.toString());
                     }
@@ -344,10 +372,12 @@ ProduceDetailsScreen.propTypes = {
       setFavorite: PropTypes.func.isRequired,
       image: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
+      tags: PropTypes.arrayOf(PropTypes.string.isRequired).isRequired,
       price: PropTypes.number.isRequired,
       unit: PropTypes.string.isRequired,
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
+      minQuantity: PropTypes.number.isRequired,
     }),
   }).isRequired,
 };
