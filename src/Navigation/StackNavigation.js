@@ -13,12 +13,15 @@ import LandingPage from '../SignUp/LandingPage';
 import LoginScreen from '../SignUp/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
+import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
+import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
 import OrderScreen from '../Orders/OrderScreen';
 import OrderDetailsScreen from '../Orders/OrderDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
+
 const Drawer = createDrawerNavigator();
 
 const styles = StyleSheet.create({
@@ -106,7 +109,7 @@ function DrawerRoutes() {
       />
       <Drawer.Screen
         name="Orders"
-        component={OrderScreen} // TODO: change to past orders screen once it is implemented
+        component={OrderScreen}
         options={{
           title: 'Past orders',
           drawerIcon: cartIcon,
@@ -135,6 +138,8 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
+      <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
+      <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
       <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
