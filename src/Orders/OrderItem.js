@@ -92,8 +92,7 @@ export default function OrderItem(props) {
         </Text>
         <View>
           <Text style={styles.itemQuantityType}>
-            Quantity&nbsp;
-            {quantity}
+            {`Quantity ${quantity}`}
           </Text>
         </View>
       </View>

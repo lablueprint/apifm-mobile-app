@@ -78,9 +78,7 @@ function OrderCard({
         </Text>
         <View style={styles.bottom}>
           <Text style={styles.date}>
-            Delivered on
-            {' '}
-            {date}
+            {`Delivered on ${date}`}
           </Text>
           <Text style={styles.quantity}>
             {itemList}
@@ -94,7 +92,12 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
-  items: PropTypes.arrayOf(PropTypes.Object).isRequired,
+  items: PropTypes.arrayOf(
+    PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.arrayOf(PropTypes.object),
+    ])
+  ),
   itemsList: PropTypes.instanceOf(Map).isRequired,
 };
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-plusplus */
 import React, { useEffect, useState } from 'react';
 import {
   View, StyleSheet, ScrollView,
@@ -132,23 +131,45 @@ export default function OrderDetailsScreen({ route }) {
       });
   };
 
-  // Add current items to airtable in the Cart table
-  const orderAgain = () => {
-    const cartObj = [];
-    for (let i = 0; i < items[1].length; i++) {
-      const cartRow = {};
-      cartRow.fields = {
-        Produce: items[1][i].produce_id,
-        shopper: [CONST_USER_ID],
-        quantity: items[1][i].Quantity,
-      };
-      cartObj.push(cartRow);
-    }
+  // Helper function to wait for [ms] milliseconds
+  function timer(ms) { return new Promise((res) => setTimeout(res, ms)); }
+
+  // Batch function to serialize airtable calls (since api is rate limited at
+  // 10 row updates at a time)
+  const cartBatch = async (cartObj) => { // 3
     base('CART V3').create(cartObj, (err) => {
       if (err) {
         console.error(err);
       }
     });
+    await timer(1000);
+  };
+
+  // Add current items to airtable in the Cart table
+  const orderAgain = async () => {
+    const cartBatches = [];
+    for (let j = 0; j < Math.floor(items[1].length / 10) + 1; j += 1) {
+      const cartObj = [];
+      let upper = items[1].length % 10;
+
+      if (j < Math.floor(items[1].length / 10)) {
+        upper = 10;
+      }
+      for (let i = 0; i < upper; i += 1) {
+        const cartRow = {};
+        cartRow.fields = {
+          Produce: items[1][i].produce_id,
+          shopper: [CONST_USER_ID],
+          quantity: items[1][i].Quantity,
+        };
+        cartObj.push(cartRow);
+      }
+      cartBatches.push(cartObj);
+    }
+
+    for (let i = 0; i < cartBatches.length; i += 1) {
+      await cartBatch(cartBatches[i]);
+    }
   };
 
   useEffect(() => {
@@ -176,6 +197,7 @@ export default function OrderDetailsScreen({ route }) {
               price={prodItemIter.Price}
               type={prodItemIter.Unit}
               quantity={quantities[ind]}
+              key={ind}
             />
           ));
           setProductList(products);
@@ -189,19 +211,10 @@ export default function OrderDetailsScreen({ route }) {
       <View style={styles.shippingContainer}>
         <View style={styles.header}>
           <Title style={styles.titleText}>
-            {' '}
-            Order ID #
-            {orderId}
+            {` Order ID #${orderId}`}
           </Title>
           <Text style={styles.details}>
-            {' '}
-            Delivered on
-            {' '}
-            {date}
-            {' '}
-            at
-            {' '}
-            {time}
+            {` Delivered on ${date} at ${time}`}
           </Text>
         </View>
 
@@ -295,7 +308,12 @@ OrderDetailsScreen.propTypes = {
       orderId: PropTypes.string,
       date: PropTypes.string,
       time: PropTypes.string,
-      items: PropTypes.arrayOf(PropTypes.Object),
+      items: PropTypes.arrayOf(
+        PropTypes.oneOfType([
+          PropTypes.string,
+          PropTypes.arrayOf(PropTypes.object),
+        ]),
+      ),
     }),
   }).isRequired,
 };

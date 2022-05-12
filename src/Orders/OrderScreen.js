@@ -55,7 +55,10 @@ export default function OrderScreen({ navigation }) {
         const order = record;
         order.fields.orderId = order.id;
         if (!('delivery date (temp)' in record.fields)) {
-          order.fields['delivery date (temp)'] = 'September 5, 2022';
+          return;
+        }
+        if (!('Quantity' in record.fields)) {
+          return;
         }
         if (('produce_id' in record.fields)) {
           base('Produce').find(record.fields.produce_id, ((err, prodRecord) => {
@@ -74,9 +77,6 @@ export default function OrderScreen({ navigation }) {
           }));
         } else {
           console.log('ERR: misssing produce id in orders record');
-        }
-        if (!('Quantity' in record.fields)) {
-          order.fields.Quantity = 1;
         }
         const currDate = new Date(order.fields['delivery date (temp)']).toString();
         if (!condenseOrders.has(currDate)) {
@@ -105,7 +105,7 @@ export default function OrderScreen({ navigation }) {
         style={styles.orderCard}
         navigation={navigation}
         orderId={(i++).toString()}
-        key={(i++).toString()}
+        key={(i).toString()}
         items={items}
         itemsList={itemsList}
       />
