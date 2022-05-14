@@ -20,6 +20,7 @@ const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
 const sadDurian = require('../assets/saddurian.png');
+const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
 
 // constant user id to test for all features
@@ -137,6 +138,21 @@ const styles = StyleSheet.create({
     marginTop: '15%',
     width: 124,
     height: 156,
+  },
+  cartButtonCircle: {
+    position: 'absolute',
+    bottom: 60,
+    right: '5%',
+    backgroundColor: '#FF9F00',
+    borderRadius: 100 / 2,
+    width: 80,
+    height: 80,
+    alignItems: 'center',
+  },
+  cartButtonImage: {
+    marginTop: 18,
+    width: 42,
+    height: 42,
   },
 });
 
@@ -377,7 +393,7 @@ export default function MarketplaceScreen({ navigation }) {
     <Provider>
       <View style={styles.container}>
         {/* style the cart button */}
-        {/* <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
+        {/* <TouchableOpacity >
           <FeatherIcon style={styles.cartIcon} name="shopping-cart" size={24} />
         </TouchableOpacity> */}
         <View style={styles.topContainer}>
@@ -542,8 +558,8 @@ export default function MarketplaceScreen({ navigation }) {
             </TouchableOpacity>
           )}
         <ScrollView>
-          {(today.getDay() === 0 || today.getDay() === 6
-          || (today.getDay() === 5 && today.getHours() >= 16))
+          {(today.getDay() === 0 || today.getDay() === 6)
+          // || (today.getDay() === 5 && today.getHours() >= 16))
             ? (
               <View style={styles.closedMartketContainer}>
                 <Image source={sadDurian} style={styles.closedMarketImage} />
@@ -566,6 +582,12 @@ export default function MarketplaceScreen({ navigation }) {
             )}
 
         </ScrollView>
+        <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
+          <View style={styles.cartButtonCircle}>
+            <Image source={cart} style={styles.cartButtonImage} />
+          </View>
+        </TouchableOpacity>
+
       </View>
     </Provider>
 
