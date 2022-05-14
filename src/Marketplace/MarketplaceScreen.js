@@ -19,6 +19,7 @@ const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
+const sadDurian = require('../assets/saddurian.png');
 const filterIcon = require('../assets/filtericon.png');
 
 // constant user id to test for all features
@@ -102,13 +103,6 @@ const styles = StyleSheet.create({
     height: 470,
     alignSelf: 'center',
   },
-  cartIcon: {
-    position: 'absolute',
-    left: 50,
-    bottom: 60,
-    width: 80,
-    height: 80,
-  },
   sameLineContainer: {
     display: 'flex',
     flexDirection: 'row',
@@ -133,6 +127,16 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#ABBD85',
     fontSize: 20,
+  },
+  closedMartketContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+  },
+  closedMarketImage: {
+    marginTop: '15%',
+    width: 124,
+    height: 156,
   },
 });
 
@@ -541,8 +545,13 @@ export default function MarketplaceScreen({ navigation }) {
           {(today.getDay() === 0 || today.getDay() === 6
           || (today.getDay() === 5 && today.getHours() >= 16))
             ? (
-              <View>
-                {/* <Image source={sadfruit} /> */}
+              <View style={styles.closedMartketContainer}>
+                <Image source={sadDurian} style={styles.closedMarketImage} />
+                <Text>Aw that stinks!</Text>
+                <Text style={{ width: 250, height: 50 }}>
+                  The Marketplace is closed at the moment.
+                  Please come back when the produce list gets updated on Monday.
+                </Text>
               </View>
             )
             : (
