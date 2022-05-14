@@ -17,6 +17,7 @@ import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
+import TermsScreen from '../SignUp/TermsScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -95,6 +96,16 @@ function DrawerRoutes() {
         options={{
           title: 'Profile',
           drawerIcon: profileIcon,
+        }}
+      />
+      <Drawer.Screen
+        name="TermDrawer"
+        component={TermsScreen}
+        options={{
+          title: 'Terms',
+          drawerIcon: profileIcon,
+          headerTitle: '',
+          headerTransparent: true,
         }}
       />
       <Drawer.Screen
