@@ -548,7 +548,7 @@ export default function MarketplaceScreen({ navigation }) {
               <View style={styles.closedMartketContainer}>
                 <Image source={sadDurian} style={styles.closedMarketImage} />
                 <Text>Aw that stinks!</Text>
-                <Text style={{ width: 250, height: 50 }}>
+                <Text style={{ width: 250, height: 50, textAlign: 'center' }}>
                   The Marketplace is closed at the moment.
                   Please come back when the produce list gets updated on Monday.
                 </Text>
@@ -560,6 +560,7 @@ export default function MarketplaceScreen({ navigation }) {
                 userId={userId}
                 showAlert={selectDayAlert}
                 produceList={produceList}
+                favorites={favoritesFilter}
                 mondayDelivery={mondayDelivery}
               />
             )}

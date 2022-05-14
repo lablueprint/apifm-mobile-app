@@ -1,9 +1,11 @@
 import React from 'react';
 import {
-  View, StyleSheet,
+  View, StyleSheet, Text, Image,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import ProduceCard from './ProduceCard';
+
+const daikon = require('../assets/daikononly.png');
 
 const styles = StyleSheet.create({
   produceCardsContainer: {
@@ -21,10 +23,20 @@ const styles = StyleSheet.create({
     width: 154,
     height: 206,
   },
+  noFavoritesContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    marginTop: '15%',
+  },
+  noFavoritesImage: {
+    width: 105,
+    height: 105,
+  },
 });
 
 function ProduceGrid({
-  navigation, userId, showAlert, produceList, mondayDelivery,
+  navigation, userId, showAlert, produceList, favorites, mondayDelivery,
 }) {
   const produceCards = produceList.map((produce) => (
     <ProduceCard
@@ -48,8 +60,23 @@ function ProduceGrid({
   ));
 
   return (
-    <View style={styles.produceCardsContainer}>
-      { produceCards }
+    <View>
+      {(favorites && produceList.length === 0)
+        ? (
+          <View style={styles.noFavoritesContainer}>
+            <Image source={daikon} style={styles.noFavoritesImage} />
+            <Text>Your Favorites is Empty</Text>
+            <Text style={{ width: 200, height: 40, textAlign: 'center' }}>
+              Looks like you don&apos;t
+              have any items in your favorites yet.
+            </Text>
+          </View>
+        )
+        : (
+          <View style={styles.produceCardsContainer}>
+            { produceCards }
+          </View>
+        )}
     </View>
   );
 }
@@ -60,6 +87,7 @@ ProduceGrid.propTypes = {
   showAlert: PropTypes.func.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   produceList: PropTypes.array.isRequired,
+  favorites: PropTypes.bool.isRequired,
   mondayDelivery: PropTypes.bool.isRequired,
 };
 
