@@ -13,7 +13,7 @@ import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
 
 const Airtable = require('airtable');
-// const sadfruit = require('../assets/sadmango.svg');
+
 const tabonmarketplace = require('../assets/tabonmarketplace.png');
 const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
@@ -190,7 +190,8 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   const selectDayAlert = () => {
-    if (today.getDay() === 3 || (!mondayDelivery && !fridayDelivery)) {
+    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3
+     || (!mondayDelivery && !fridayDelivery)) {
       return true;
     }
     return false;
@@ -199,8 +200,9 @@ export default function MarketplaceScreen({ navigation }) {
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
-    if (today.getDay() === 3 || (today.getDay() === 2 && today.getHours() < 18)) {
+    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3) {
       mondayState = true;
+      setMondayDelivery(true);
     }
     const fridayState = false;
     await base('Users').find(userId, (err, record) => {
@@ -208,7 +210,9 @@ export default function MarketplaceScreen({ navigation }) {
         Alert.alert(err.error, err.message);
         return;
       }
-      favorites = record.fields.favorites;
+      if (typeof record.fields.favorites !== 'undefined') {
+        favorites = record.fields.favorites;
+      }
     });
     const list = [];
     await base('Produce').select({}).eachPage((records, fetchNextPage) => {
@@ -378,7 +382,8 @@ export default function MarketplaceScreen({ navigation }) {
       deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
       favoritesFilter,
     )));
-    if (!mondayDelivery && !fridayDelivery) {
+    if (!mondayDelivery && !fridayDelivery
+      && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)) {
       setShowAlert(true);
     } else {
       setShowAlert(false);
@@ -392,16 +397,13 @@ export default function MarketplaceScreen({ navigation }) {
   return (
     <Provider>
       <View style={styles.container}>
-        {/* style the cart button */}
-        {/* <TouchableOpacity >
-          <FeatherIcon style={styles.cartIcon} name="shopping-cart" size={24} />
-        </TouchableOpacity> */}
         <View style={styles.topContainer}>
           <View style={styles.topBarContainer}>
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
             {!mondayDelivery && !fridayDelivery
+            && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)
               && <View style={styles.circle} />}
 
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
@@ -465,7 +467,8 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={calendarVisibility}
+              visible={calendarVisibility
+                && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)}
               onDismiss={() => {
                 setCalendarVisibility(false);
               }}
@@ -539,8 +542,10 @@ export default function MarketplaceScreen({ navigation }) {
         {(mondayDelivery || fridayDelivery)
           && (
             <TouchableOpacity onPress={() => {
-              const newCalVis = !calendarVisibility;
-              setCalendarVisibility(newCalVis);
+              if (!((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)) {
+                const newCalVis = !calendarVisibility;
+                setCalendarVisibility(newCalVis);
+              }
             }}
             >
               <View>
@@ -558,8 +563,8 @@ export default function MarketplaceScreen({ navigation }) {
             </TouchableOpacity>
           )}
         <ScrollView>
-          {(today.getDay() === 0 || today.getDay() === 6)
-          // || (today.getDay() === 5 && today.getHours() >= 16))
+          {(today.getDay() === 0 || today.getDay() === 6
+          || (today.getDay() === 5 && today.getHours() >= 16))
             ? (
               <View style={styles.closedMartketContainer}>
                 <Image source={sadDurian} style={styles.closedMarketImage} />
