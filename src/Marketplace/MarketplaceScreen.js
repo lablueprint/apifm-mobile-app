@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
+import CloseIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
@@ -19,6 +20,7 @@ const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
+const wednesdayError = require('../assets/wednesdayalert.png');
 const errorbackground = require('../assets/errormessage.png');
 const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
@@ -101,6 +103,12 @@ const styles = StyleSheet.create({
     left: '14.5%',
     alignItems: 'center',
   },
+  wednesdayAlertContainer: {
+    width: 360,
+    height: 335,
+    backgroundColor: '#FFFFFA',
+    alignSelf: 'center',
+  },
   filterPopup: {
     width: 330,
     height: 470,
@@ -181,6 +189,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
+  const [wednesdayAlert, setWednesdayAlert] = useState(false);
 
   const deliveryProduce = (listToDeliver, mondayState, fridayState) => {
     let deliveryList = listToDeliver;
@@ -207,6 +216,7 @@ export default function MarketplaceScreen({ navigation }) {
     if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3) {
       mondayState = true;
       setMondayDelivery(true);
+      setWednesdayAlert(true);
     }
     const fridayState = false;
     await base('Users').find(userId, (err, record) => {
@@ -463,7 +473,6 @@ export default function MarketplaceScreen({ navigation }) {
                   FAVORITES
                 </Text>
               </ImageBackground>
-
             </TouchableOpacity>
           </View>
 
@@ -541,6 +550,28 @@ export default function MarketplaceScreen({ navigation }) {
             </Modal>
           </Portal>
         </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={wednesdayAlert}
+              contentContainerStyle={styles.wednesdayAlertContainer}
+              onDismiss={() => {
+                setWednesdayAlert(false);
+              }}
+            >
+              <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setWednesdayAlert(false); }}>
+                <CloseIcon name="close" size={22} />
+              </TouchableOpacity>
+              <Image
+                source={wednesdayError}
+                style={{
+                  width: 260, height: 260, alignSelf: 'center', marginTop: 20,
+                }}
+              />
+            </Modal>
+          </Portal>
+        </View>
+
         {(mondayDelivery || fridayDelivery)
           && (
             <TouchableOpacity onPress={() => {
@@ -550,13 +581,14 @@ export default function MarketplaceScreen({ navigation }) {
               }
             }}
             >
-              <View>
-                <Text>
+              <View style={styles.sameLineContainer}>
+                <Text style={{ marginLeft: 15, fontFamily: 'JosefinSans-SemiBold', paddingBottom: 5 }}>
                   Delivery:
                   {' '}
                   {(mondayDelivery) ? `Mon. ${displayMonday}` : `Fri. ${displayFriday}`}
+                  {'. '}
                 </Text>
-                <Text>
+                <Text style={{ fontFamily: 'JosefinSans-SemiBold', color: '#FF0000' }}>
                   Order by
                   {' '}
                   {(mondayDelivery) ? `${displayFriday} @ 3 PM!` : `${displayTuesday} @ 5 PM!`}
@@ -587,7 +619,6 @@ export default function MarketplaceScreen({ navigation }) {
                 mondayDelivery={mondayDelivery}
               />
             )}
-
         </ScrollView>
         <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
           <View style={styles.cartButtonCircle}>

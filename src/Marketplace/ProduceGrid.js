@@ -65,8 +65,11 @@ function ProduceGrid({
         ? (
           <View style={styles.noFavoritesContainer}>
             <Image source={daikon} style={styles.noFavoritesImage} />
-            <Text>Your Favorites is Empty</Text>
-            <Text style={{ width: 200, height: 40, textAlign: 'center' }}>
+            <Text style={{ fontFamily: 'JosefinSans-SemiBold', fontSize: 18, padding: 10 }}>Your Favorites is Empty</Text>
+            <Text style={{
+              fontFamily: 'JosefinSans-Regular', width: 200, height: 40, textAlign: 'center',
+            }}
+            >
               Looks like you don&apos;t
               have any items in your favorites yet.
             </Text>
