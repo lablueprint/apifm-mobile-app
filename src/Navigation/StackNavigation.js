@@ -7,9 +7,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import CustomDrawer from './CustomDrawer';
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
-import SignUpScreen from '../SignUp/SignInScreen';
-import SignUpConfirmation from '../SignUp/SignInScreen2';
-import LandingPage from '../SignUp/LandingPage';
+import SignUpScreen from '../SignUp/SignUpScreen';
+import SignUpConfirmation from '../SignUp/SignUpScreen2';
 import LoginScreen from '../SignUp/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
@@ -139,8 +138,7 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Marketplace">
-      <stackNavig.Screen name="Landing Page" component={LandingPage} options={{ headerShown: false }} />
+    <stackNavig.Navigator initialRouteName="Log In">
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
