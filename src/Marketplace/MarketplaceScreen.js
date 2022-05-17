@@ -602,8 +602,15 @@ export default function MarketplaceScreen({ navigation }) {
             ? (
               <View style={styles.closedMartketContainer}>
                 <Image source={sadDurian} style={styles.closedMarketImage} />
-                <Text>Aw that stinks!</Text>
-                <Text style={{ width: 250, height: 50, textAlign: 'center' }}>
+                <Text style={{ fontFamily: 'JosefinSans-SemiBold', fontSize: 18, padding: 10 }}>Aw that stinks!</Text>
+                <Text style={{
+                  fontFamily: 'JosefinSans-Regular',
+                  width: 250,
+                  height: 50,
+                  textAlign: 'center',
+                  color: '#5D5D5D',
+                }}
+                >
                   The Marketplace is closed at the moment.
                   Please come back when the produce list gets updated on Monday.
                 </Text>
