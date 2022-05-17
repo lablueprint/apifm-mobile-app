@@ -19,6 +19,7 @@ const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
+const errorbackground = require('../assets/errormessage.png');
 const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
@@ -64,6 +65,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeText: {
+    fontFamily: 'JosefinSans-SemiBold',
     fontSize: 24,
     color: '#FFFFFA',
   },
@@ -72,13 +74,13 @@ const styles = StyleSheet.create({
     height: 25,
     alignSelf: 'flex-end',
     marginTop: 10,
-    marginRight: 10,
+    marginRight: 15,
     marginLeft: 4,
   },
   calendarIcon: {
     color: '#FFFFFF',
     marginTop: 10,
-    marginRight: 4,
+    marginRight: 10,
 
   },
   calendarPopup: {
@@ -86,18 +88,18 @@ const styles = StyleSheet.create({
     height: 335,
     alignSelf: 'center',
   },
-  calendarError: {
+  errorBackground: {
     width: 290,
-    height: 45,
-    alignSelf: 'auto',
+    height: 54,
   },
   calendarErrorMessage: {
     position: 'absolute',
-    backgroundColor: '#FF5353',
-    width: 290,
-    height: 45,
-    top: 50,
-    left: 60,
+    borderRadius: 15,
+    width: 400,
+    height: 70,
+    top: '-4%',
+    left: '14.5%',
+    alignItems: 'center',
   },
   filterPopup: {
     width: 330,
@@ -115,19 +117,21 @@ const styles = StyleSheet.create({
   },
   marketplaceTab: {
     width: '50%',
-    height: 70,
+    height: 80,
   },
   marketPlaceTextOpen: {
-    marginTop: '12%',
+    fontFamily: 'JosefinSans-SemiBold',
+    marginTop: '14%',
     alignSelf: 'center',
     color: '#144611',
-    fontSize: 20,
+    fontSize: 18,
   },
   marketPlaceTextClosed: {
-    marginTop: '12%',
+    fontFamily: 'JosefinSans-SemiBold',
+    marginTop: '14%',
     alignSelf: 'center',
     color: '#ABBD85',
-    fontSize: 20,
+    fontSize: 18,
   },
   closedMartketContainer: {
     display: 'flex',
@@ -530,12 +534,10 @@ export default function MarketplaceScreen({ navigation }) {
                 },
               }}
             >
-              <View>
-                <Text>
-                  Looks like you don&apos;t have a delivery date
-                  yet. Click here to select a delivery date!
-                </Text>
-              </View>
+              <Image
+                source={errorbackground}
+                style={styles.errorBackground}
+              />
             </Modal>
           </Portal>
         </View>
