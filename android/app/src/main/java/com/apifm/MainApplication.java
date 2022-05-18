@@ -8,6 +8,7 @@ import com.oblador.vectoricons.VectorIconsPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.swmansion.gesturehandler.react.RNGestureHandlerPackage;
+// import com.swmansion.gesturehandler.RNGestureHandlerPackage;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;

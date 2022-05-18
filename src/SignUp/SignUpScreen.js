@@ -11,7 +11,9 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
-const Airtable = require('airtable');
+// const Airtable = require('airtable');
+import { signupUser } from 'airlock-server';
+
 const backgroundImage = require('../assets/imgs/signin.png');
 
 const airtableConfig = {
@@ -257,40 +259,56 @@ export default function SignUpScreen({ navigation }) {
     } else if (zip === '' || isNaN(zip) || (zip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
     } else {
-      base('Users').create([
-        {
-          fields: {
-            email,
-            password,
-            'first name': firstName,
-            'last name': lastName,
-            organization,
-            'personal phone': number,
-            'business phone': busPhone,
-            'delivery recipient': recipient,
-            address,
-            'apartment number': parseInt(apt, 10),
-            zipcode: parseInt(zip, 10),
-            instructions: instr,
-          },
-        },
-      ], (error) => {
-        if (error) {
-          Alert.alert('Error!', error.message);
+      let res = null;
+      try {
+        res = signupUser(email, password);
+        res.then((result) => {
+          if (result.body.success === false) {
+            console.log('signup failure');
+          } else {
+            console.log('signup success!');
+          }
+        });
+      } catch (err) {
+        if (err) {
+          console.log('other failure');
         }
-      });
-      setFirstName('');
-      setLastName('');
-      setOrganization('');
-      setEmail('');
-      setConfirmPassword('');
-      setPassword('');
-      setNumber('');
-      setBusPhone('');
-      setAddress('');
-      setApt('');
-      setZip('');
-      setInstr('');
+      }
+
+      // base('Users').create([
+      //   {
+      //     fields: {
+      //       email,
+      //       password,
+      //       'first name': firstName,
+      //       'last name': lastName,
+      //       organization,
+      //       'personal phone': number,
+      //       'business phone': busPhone,
+      //       'delivery recipient': recipient,
+      //       address,
+      //       'apartment number': parseInt(apt, 10),
+      //       zipcode: parseInt(zip, 10),
+      //       instructions: instr,
+      //     },
+      //   },
+      // ], (error) => {
+      //   if (error) {
+      //     Alert.alert('Error!', error.message);
+      //   }
+      // });
+      // setFirstName('');
+      // setLastName('');
+      // setOrganization('');
+      // setEmail('');
+      // setConfirmPassword('');
+      // setPassword('');
+      // setNumber('');
+      // setBusPhone('');
+      // setAddress('');
+      // setApt('');
+      // setZip('');
+      // setInstr('');
       navigation.navigate('Sign Up Confirmation');
     }
   };
