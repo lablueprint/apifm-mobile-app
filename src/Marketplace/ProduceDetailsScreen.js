@@ -7,8 +7,8 @@ import {
   Button, Text, Provider, Portal, Modal,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import IconButton from 'react-native-vector-icons/Feather';
-import IconAdded from 'react-native-vector-icons/AntDesign';
+import IconButton from 'react-native-vector-icons/AntDesign';
+import ArrowIcon from 'react-native-vector-icons/Ionicons';
 import Config from 'react-native-config';
 
 const Airtable = require('airtable');
@@ -23,6 +23,21 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
+  arrowCircle: {
+    position: 'absolute',
+    borderRadius: 100 / 2,
+    width: 40,
+    height: 40,
+    backgroundColor: '#FFFFFA',
+    top: '3%',
+    left: '5%',
+  },
+  arrowIcon: {
+    color: '#34221D',
+    position: 'absolute',
+    alignSelf: 'center',
+    marginTop: 2,
+  },
   detailsContainer: {
     display: 'flex',
     flexDirection: 'column',
@@ -30,18 +45,21 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   imageContainer: {
+    position: 'absolute',
     alignSelf: 'center',
-    height: '55%',
+    height: '60%',
     width: '100%',
   },
   bottomContainer: {
+    position: 'absolute',
+    top: '57%',
     display: 'flex',
     flexDirection: 'column',
-    height: '45%',
+    height: '43%',
     width: '100%',
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    backgroundColor: '#868686',
+    backgroundColor: '#FFFFFA',
   },
   tagsLine: {
     display: 'flex',
@@ -52,6 +70,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     fontSize: 12,
     color: '#000000',
+    fontFamily: 'JosefinSans-Regular',
   },
   tagContainer: {
     backgroundColor: '#C1DDA9',
@@ -60,26 +79,30 @@ const styles = StyleSheet.create({
     height: 30,
     alignItems: 'center',
     marginLeft: 8,
+    marginTop: 8,
   },
   favoriteIcon: {
     alignSelf: 'flex-end',
+    color: '#FF5353',
     marginEnd: 13,
-    marginTop: 25,
+    marginTop: 35,
   },
   icons: {
-    color: '#FFFFFF',
+    color: '#1D763C',
     margin: 5,
   },
   textName: {
     fontSize: 28,
-    color: '#FFFFFF',
+    color: '#34221D',
     alignSelf: 'flex-start',
+    fontFamily: 'JosefinSans-Regular',
     marginStart: 18,
     marginTop: 20,
   },
   textSeller: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: '#34221D',
+    fontFamily: 'JosefinSans-Regular',
     marginStart: 20,
     marginTop: 5,
   },
@@ -90,23 +113,24 @@ const styles = StyleSheet.create({
   textPrice: {
     fontSize: 30,
     fontWeight: 'bold',
-    color: '#FFFFFF',
+    color: '#34221D',
     marginStart: 18,
-    marginTop: 60,
+    marginTop: 50,
   },
   textUnit: {
     fontSize: 16,
-    color: '#FFFFFF',
+    color: '#34221D',
     marginStart: 5,
-    marginTop: 75,
+    marginTop: 65,
   },
   textInput: {
     fontSize: 32,
-    color: '#FFFFFF',
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#1D763C',
     marginStart: 10,
     marginEnd: 10,
-    borderColor: '#FFFFFF',
-    borderWidth: 1,
+    borderColor: '#1D763C',
+    borderWidth: 2,
     borderRadius: 5,
     height: '90%',
   },
@@ -128,13 +152,15 @@ const styles = StyleSheet.create({
     height: 50,
     width: 328,
     borderRadius: 20,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#1D763C',
     alignSelf: 'center',
     marginTop: 20,
     justifyContent: 'center',
   },
   cartText: {
     fontSize: 20,
+    color: '#FFFFFA',
+    fontFamily: 'JosefinSans-SemiBold',
   },
   addedPopUpContainer: {
     height: 232,
@@ -145,15 +171,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   addedIcon: {
-    color: '#000000',
+    color: '#9CC555',
     margin: 10,
   },
   addedText: {
+    fontFamily: 'JosefinSans-SemiBold',
     fontSize: 24,
   },
 });
 
-function ProduceDetailsScreen({ route }) {
+function ProduceDetailsScreen({ navigation, route }) {
   const {
     userId, produceId, favorite, setFavorite,
     image, name, tags, price, unit, seller, maxQuantity, minQuantity,
@@ -226,8 +253,6 @@ function ProduceDetailsScreen({ route }) {
 
   const onAddToCart = async () => {
     try {
-      // figure out how updates should work: if a user wants
-      // to update delivery day? how are restrictions in place
       let deliveryDate = 'Friday';
       if (mondayDelivery) {
         deliveryDate = 'Monday';
@@ -295,7 +320,7 @@ function ProduceDetailsScreen({ route }) {
             }}
             contentContainerStyle={styles.addedPopUpContainer}
           >
-            <IconAdded style={styles.addedIcon} name="checkcircleo" size={50} />
+            <IconButton style={styles.addedIcon} name="checkcircleo" size={50} />
             <Text style={styles.addedText}>Added!</Text>
           </Modal>
         </Portal>
@@ -305,14 +330,20 @@ function ProduceDetailsScreen({ route }) {
           <View style={styles.bottomContainer}>
             <View style={styles.sameLineContainer}>
               <Text style={styles.textName}>{name}</Text>
-              <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
-                <Icon style={styles.icons} name={favorited ? 'heart' : 'heart-o'} size={20} />
+              <TouchableOpacity onPress={onPressHeart}>
+                <Icon style={styles.favoriteIcon} name={favorited ? 'heart' : 'heart-o'} size={20} />
               </TouchableOpacity>
             </View>
             <View style={styles.tagsLine}>
               {produceTags}
             </View>
-            <Text style={styles.textSeller}>{seller}</Text>
+            <Text style={styles.textSeller}>
+              Fresh from
+              {' '}
+              {seller}
+              {' '}
+              farm
+            </Text>
             <View style={styles.sameLineContainer}>
               <View style={styles.priceUnitLine}>
                 <Text style={styles.textPrice}>
@@ -332,7 +363,7 @@ function ProduceDetailsScreen({ route }) {
                 >
                   <IconButton
                     style={styles.icons}
-                    name="minus-circle"
+                    name="minuscircle"
                     size={24}
                   />
                 </TouchableOpacity>
@@ -356,16 +387,25 @@ function ProduceDetailsScreen({ route }) {
                 >
                   <IconButton
                     style={styles.icons}
-                    name="plus-circle"
+                    name="pluscircle"
                     size={24}
                   />
                 </TouchableOpacity>
               </View>
             </View>
             <TouchableOpacity onPress={onAddToCart}>
-              <Button style={styles.cartButton} color="#868686"><Text>Add to Cart</Text></Button>
+              <Button style={styles.cartButton} color="#868686"><Text style={styles.cartText}>Add to Cart</Text></Button>
             </TouchableOpacity>
           </View>
+        </View>
+
+        <View style={styles.arrowCircle}>
+          <TouchableOpacity onPress={() => {
+            navigation.navigate('Marketplace');
+          }}
+          >
+            <ArrowIcon style={styles.arrowIcon} name="arrow-back-outline" size={34} />
+          </TouchableOpacity>
         </View>
       </View>
     </Provider>
@@ -373,6 +413,7 @@ function ProduceDetailsScreen({ route }) {
 }
 
 ProduceDetailsScreen.propTypes = {
+  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
       userId: PropTypes.string.isRequired,

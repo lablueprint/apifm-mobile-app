@@ -139,7 +139,7 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
-      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
     </stackNavig.Navigator>
   );
 }
