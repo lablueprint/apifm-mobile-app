@@ -21,51 +21,56 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 const styles = StyleSheet.create({
   container: {
     margin: 10,
-    backgroundColor: '#C4C4C4',
+    backgroundColor: '#FFFFFF',
     width: 154,
-    height: 206,
     borderRadius: 15,
+  },
+  elevation: {
+    elevation: 3,
+    shadowColor: '#34221D',
   },
   cardContainer: {
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
+  image: {
+    width: '100%',
+    height: 120,
+    borderTopLeftRadius: 15,
+    borderTopRightRadius: 15,
+  },
   favoriteIcon: {
     width: 15,
     height: 15,
     alignSelf: 'flex-end',
-    marginTop: 10,
+    bottom: 51,
     marginEnd: 10,
   },
-  image: {
-    marginTop: 5,
-    width: 120,
-    height: 120,
-  },
   name: {
-    height: 20,
     alignSelf: 'flex-start',
-    fontSize: 14,
+    fontSize: 18,
     marginStart: 10,
-    marginTop: 5,
-    fontWeight: '700',
+    marginTop: 10,
+    marginBottom: 5,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#34221D',
   },
   bottom: {
-    height: 20,
     alignSelf: 'flex-start',
     flexDirection: 'row',
     marginStart: 10,
+    marginBottom: 5,
   },
   price: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: 'JosefinSans-SemiBold',
   },
   quantity: {
-    fontSize: 10,
-    fontWeight: '500',
-    marginLeft: 5,
-    marginTop: 7,
+    fontSize: 14,
+    marginLeft: 8,
+    marginTop: 5,
+    fontFamily: 'JosefinSans-Regular',
   },
 });
 
@@ -132,23 +137,25 @@ function ProduceCard({
   const imageurl = { uri: image };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPressCard}>
-      <View style={styles.cardContainer}>
-        <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
-          <Icon name={favorite ? 'heart' : 'heart-o'} size={15} />
-        </TouchableOpacity>
-        <Image style={styles.image} source={image === '' ? missingImage : imageurl} />
-        <Text style={styles.name}>{name}</Text>
-        <View style={styles.bottom}>
-          <Text style={styles.price}>
-            {`$${price}`}
-          </Text>
-          <Text style={styles.quantity}>
-            {unit}
-          </Text>
+    <View style={[styles.container, styles.elevation]}>
+      <TouchableOpacity onPress={onPressCard}>
+        <View style={styles.cardContainer}>
+          <Image style={styles.image} source={image === '' ? missingImage : imageurl} />
+          <Text style={styles.name}>{name}</Text>
+          <View style={styles.bottom}>
+            <Text style={styles.price}>
+              {`$${price}`}
+            </Text>
+            <Text style={styles.quantity}>
+              {unit}
+            </Text>
+          </View>
+          <TouchableOpacity style={styles.favoriteIcon} onPress={onPressHeart}>
+            <Icon name={favorite ? 'heart' : 'heart-o'} size={14} color="#FF6060" />
+          </TouchableOpacity>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </View>
   );
 }
 
