@@ -135,7 +135,18 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
-      <stackNavig.Screen name="Cart" component={CartScreen} />
+      <stackNavig.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          title: 'Cart',
+          headerStyle: {
+            backgroundColor: '#FFFFFA',
+            borderBottomWidth:0,
+            elevation:0,
+          },
+        }}
+      />
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />

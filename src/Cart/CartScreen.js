@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, ScrollView,
+  View, StyleSheet, ScrollView, Text, TouchableOpacity,
 } from 'react-native';
 import {
   Title, Button,
@@ -21,13 +21,17 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
+  entireScreen: {
+    flex: 1,
+    backgroundColor: '#FFFFFA',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     marginLeft: '5%',
     marginRight: '5%',
-    marginTop: '3%',
+    marginTop: '2%',
   },
   productsContainer: {
     flex: 1,
@@ -36,7 +40,9 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginBottom: '2%',
-    marginTop: '4%',
+    marginTop: '2%',
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 24,
   },
   bodyText: {
     marginLeft: '0%',
@@ -45,12 +51,13 @@ const styles = StyleSheet.create({
   button: {
     width: '30%',
     marginTop: '4%',
-    backgroundColor: '#0492c2',
+    backgroundColor: '#FF9F00',
   },
   scrollView: {
     flex: 1,
-    width: '95%',
-    marginBottom: '2%',
+    width: '98%',
+    marginBottom: 30,
+    marginTop: 15,
   },
   subtotalContainer: {
     flexDirection: 'row',
@@ -60,15 +67,30 @@ const styles = StyleSheet.create({
     marginRight: '2%',
   },
   subtotalText: {
-    fontWeight: 'normal',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 18,
-    marginLeft: '4%',
+    marginLeft: 15,
+    marginRight: 140,
   },
   subtotal: {
     marginRight: '4%',
-    marginLeft: '4%',
-    fontWeight: 'normal',
+    marginLeft: 130,
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 18,
+  },
+  continueButton: {
+    borderRadius: 25,
+    height: 50,
+    width: 300,
+    marginBottom: 60,
+    backgroundColor: '#1D763C',
+  },
+  continueButtonText: {
+    color: '#FFFFFF',
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 
@@ -122,29 +144,40 @@ export default function CartScreen({ navigation }) {
   }, [refresh]);
 
   return (
-    <View style={styles.container}>
-      <Title style={styles.titleText}>
-        Current Cart
-      </Title>
-      <ScrollView style={styles.scrollView}>
-        {products}
-      </ScrollView>
-      <View style={styles.subtotalContainer}>
-        <Title style={styles.subtotalText}>
-          Subtotal
-        </Title>
-        <Title style={styles.subtotal}>
-          {`$ ${parseFloat(subtotal).toFixed(2)}`}
-        </Title>
+    <View style={styles.entireScreen}>
+      <View style={styles.container}>
+        {/* <Title style={styles.titleText}>
+          Cart
+        </Title> */}
+        <ScrollView style={styles.scrollView}>
+          {products}
+        </ScrollView>
+        <View style={styles.subtotalContainer}>
+          <Title style={styles.subtotalText}>
+            Subtotal
+          </Title>
+          <Title style={styles.subtotal}>
+            {`$ ${parseFloat(subtotal).toFixed(2)}`}
+          </Title>
+        </View>
+        <TouchableOpacity
+          mode="contained"
+          style={styles.continueButton}
+          onPress={() => navigation.navigate('Checkout')}
+        >
+          <Text style={styles.continueButtonText}>
+            Continue
+          </Text>
+        </TouchableOpacity>
       </View>
-      <Button
+      {/* <Button
         mode="contained"
         onPress={() => {
           navigation.navigate('Checkout', { itemList });
         }}
       >
         CHECKOUT
-      </Button>
+      </Button> */}
     </View>
   );
 }
