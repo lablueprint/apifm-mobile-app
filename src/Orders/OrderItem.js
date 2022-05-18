@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     height: 125,
-    marginTop: 5,
+//    marginTop: 5,
     marginBottom: 0,
   },
   container2: {
@@ -26,42 +26,36 @@ const styles = StyleSheet.create({
 
   container3: {
     marginLeft: 0,
-    marginTop: 20,
-    width: 125,
+    marginTop: 25,
+    width: 100,
   },
 
   itemName: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 17,
     marginRight: 10,
     marginLeft: 13,
     marginTop: 0,
     marginBottom: 0,
+
   },
 
   itemQuantityType: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 14,
     marginBottom: 5,
     marginLeft: 15,
     marginTop: 5,
   },
   itemTotalPrice: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
+    fontFamily: 'JosefinSans-SemiBold',
     fontSize: 18,
     marginBottom: '0%',
     marginLeft: 100,
     marginTop: 10,
   },
   itemPricePer: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 12,
     marginBottom: 0,
     marginLeft: 100,

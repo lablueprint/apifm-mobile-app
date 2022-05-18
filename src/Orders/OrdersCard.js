@@ -8,10 +8,11 @@ import { Text } from 'react-native-paper';
 const styles = StyleSheet.create({
   container: {
     margin: 10,
-    backgroundColor: '#C4C4C4',
+    backgroundColor: '#FFFFFF',
     width: 334,
     height: 116,
     borderRadius: 15,
+    elevation: 1,
   },
   cardContainer: {
     display: 'flex',
@@ -19,19 +20,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    marginTop: 12,
-    width: 90,
-    height: 90,
+    width: 100,
+    height: 116,
     alignSelf: 'flex-start',
-    marginStart: 10,
     backgroundColor: '#A1A1A1',
+    borderBottomLeftRadius: 15,
+    borderTopLeftRadius: 15,
+    resizeMode: 'contain',
+
   },
   name: {
     height: 25,
-    fontSize: 19,
-    marginStart: -10,
-    marginTop: -80,
-    fontWeight: '700',
+    fontSize: 17,
+    marginStart: -50,
+    marginTop: 7,
+    fontFamily: 'JosefinSans-SemiBold',
   },
   bottom: {
     height: 50,
@@ -42,11 +45,15 @@ const styles = StyleSheet.create({
   },
   date: {
     alignSelf: 'flex-start',
-    marginStart: 90,
+    marginStart: 120,
+    marginTop: -100,
+    fontFamily: 'JosefinSans-Regular',
   },
   quantity: {
     alignSelf: 'flex-start',
-    marginStart: 90,
+    marginStart: 120,
+    fontFamily: 'JosefinSans-Regular',
+    marginTop: 7,
   },
 });
 
@@ -71,19 +78,17 @@ function OrderCard({
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-        <View style={styles.image} />
+        <View style={styles.image} resizeMode={"cover"}/>
+        <Text style={styles.date}>
+          {`Delivered on ${date}`}
+        </Text>
         <Text style={styles.name}>
-          Order ID #
+          ID #
           {orderId}
         </Text>
-        <View style={styles.bottom}>
-          <Text style={styles.date}>
-            {`Delivered on ${date}`}
-          </Text>
-          <Text style={styles.quantity}>
-            {itemList}
-          </Text>
-        </View>
+        <Text style={styles.quantity}>
+          {itemList}
+        </Text>
       </View>
     </TouchableOpacity>
   );

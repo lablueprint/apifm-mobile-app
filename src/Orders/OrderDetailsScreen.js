@@ -10,49 +10,54 @@ import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 import OrderItem from './OrderItem';
-
+// TODO: Delivery date in css is hardcoded rn
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: 50,
   },
   centeredContainer: {
     marginTop: '8%',
     marginHorizontal: '8%',
     marginBottom: '4%',
+    backgroundColor: '#FFFFFA',
+
   },
-  button: {
-    width: '40%',
-    marginTop: 10,
-    backgroundColor: '#0492c2',
+  background: {
+      backgroundColor: '#FFFFFA',
+
   },
   title: {
     fontSize: 18,
     marginBottom: '2%',
     color: 'black',
+    fontFamily: 'JosefinSans-SemiBold',
   },
   details: {
     fontSize: 14,
     marginBottom: '2%',
     color: 'black',
-    marginLeft: -5,
+    marginStart: 10,
+    fontFamily: 'JosefinSans-Regular',
   },
   titleText: {
     marginBottom: '3%',
     fontSize: 26,
     marginLeft: -10,
+    fontFamily: 'JosefinSans-SemiBold',
+
   },
   subdetails: {
     fontSize: 14,
     marginTop: '.5%',
-    marginBottom: '.5%',
-    color: '#636363',
+    marginBottom: '2%',
+    color: '#000000',
+    fontFamily: 'JosefinSans-Regular',
+
   },
   header: {
     marginBottom: '4%',
-    borderBottomColor: '#868686',
-    borderBottomWidth: 2,
-    borderBottomWeight: '100',
   },
   subcontainer: {
     marginHorizontal: '8%',
@@ -62,7 +67,7 @@ const styles = StyleSheet.create({
     marginHorizontal: '8%',
     marginBottom: '4%',
     borderBottomColor: 'grey',
-    borderBottomWidth: 2,
+    borderBottomWidth: 1,
   },
   shippingSubcontainer: {
     marginLeft: '0%',
@@ -83,6 +88,20 @@ const styles = StyleSheet.create({
     marginRight: '30%',
     marginBottom: '3%',
   },
+    button: {
+      borderRadius: 25,
+      height: 50,
+      width: 300,
+      marginBottom: 60,
+      backgroundColor: '#1D763C',
+    },
+    buttonText: {
+      color: '#FFFFFF',
+      fontFamily: 'JosefinSans-SemiBold',
+      fontSize: 24,
+      textAlign: 'center',
+      marginTop: -50,
+    },
 });
 
 const Airtable = require('airtable');
@@ -208,17 +227,24 @@ export default function OrderDetailsScreen({ route }) {
 
   return (
     <ScrollView styles={styles.centeredContainer}>
+      <View style={styles.background}>
       <View style={styles.shippingContainer}>
         <View style={styles.header}>
           <Title style={styles.titleText}>
             {` Order ID #${orderId}`}
           </Title>
+         <View style={{
+              flexDirection: "row",
+//              justifyContent: "space-between",
+              alignItems: "center"
+          }}>
+          <Icon size={15} color="black" name="time" />
           <Text style={styles.details}>
-            {` Delivered on ${date} at ${time}`}
+            {`Delivered on ${date} at ${time}`}
           </Text>
         </View>
-
-        <Text style={[styles.title, { fontWeight: '700', marginLeft: '0%', marginBottom: '0%' }]}>
+        </View>
+        <Text style={[styles.title, { marginLeft: '0%', marginBottom: '0%' }]}>
           Shipping Address
         </Text>
         <View style={{
@@ -229,21 +255,30 @@ export default function OrderDetailsScreen({ route }) {
             <Icon size={25} color="grey" name="location-sharp" />
           </View>
           <View style={styles.shippingSubcontainer}>
-            <Text style={[styles.subdetails, { fontWeight: '600' }]}>
+            <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-SemiBold' }]}>
               {`${shippingAddress.address}, ${shippingAddress.apartmentLine}`}
             </Text>
-            <Text style={styles.subdetails}>
+            <Text style={styles.subdetails, { fontFamily: 'JosefinSans-Regular' }}>
               {shippingAddress.zipcode}
             </Text>
           </View>
         </View>
       </View>
-      <View style={styles.subcontainer}>
+      <View style={[styles.subcontainer, { borderBottomColor: 'grey', borderBottomWidth: 1, marginBottom: '4%',}]}>
+      <Text style={[styles.title]}>
+        Review Items
+      </Text>
+        <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
+          Delivery Date: Mon, Sep 10, 2022
+        </Text>
         <View>
           {productList}
         </View>
       </View>
       <View style={[styles.subcontainer]}>
+        <Text style={[styles.title]}>
+          Order Summary
+        </Text>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
             {`Items (${count})`}
@@ -288,14 +323,17 @@ export default function OrderDetailsScreen({ route }) {
         <Button
           mode="contained"
           style={styles.button}
+          uppercase={false}
           onPress={() => {
-            // TODO: replace hardcoded email with logged in user info
             orderAgain();
             navigation.navigate('Cart');
           }}
         >
+        <Text style={styles.buttonText}>
           Order Again
+        </Text>
         </Button>
+      </View>
       </View>
     </ScrollView>
   );

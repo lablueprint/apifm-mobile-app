@@ -23,6 +23,7 @@ const CONST_USER = 'helen@gmail.com';
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#FFFFFA',
   },
   centeredContainer: {
     marginTop: '10%',
@@ -30,6 +31,15 @@ const styles = StyleSheet.create({
   titleText: {
     marginBottom: 20,
     fontSize: 30,
+    marginStart: 20,
+    fontFamily: 'JosefinSans-SemiBold',
+  },
+  subtitleText: {
+    marginBottom: 20,
+    fontSize: 20,
+    marginStart: 20,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: "#1D763C",
   },
   orderCardsContainer: {
     display: 'flex',
@@ -49,7 +59,7 @@ export default function OrderScreen({ navigation }) {
   const getOrders = () => {
     const condenseOrders = new Map();
     let itemsListVar = new Map();
-
+    let itemsListCount = new Map();
     base('Orders').select({ filterByFormula: `({user_id}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const order = record;
@@ -67,10 +77,20 @@ export default function OrderScreen({ navigation }) {
             const currDate = (new Date(order.fields['delivery date (temp)'])).toString();
             if (!itemsListVar.has(currDate)) {
               itemsListVar.set(currDate, prodRecord.fields.Name);
-            } else if (itemsListVar.get(currDate).length < 25) {
+            } else if (itemsListVar.get(currDate).indexOf(",") == -1) {
               itemsListVar.set(currDate, `${itemsListVar.get(currDate)}, ${prodRecord.fields.Name}`);
             } else {
-              itemsListVar = itemsListVar.set(currDate, `${itemsListVar.get(currDate).substring(0, 22)}...`);
+              let ind = itemsListVar.get(currDate).indexOf("+");
+              if (ind == -1) {
+                itemsListVar = itemsListVar.set(currDate, `${itemsListVar.get(currDate)} + 1 more`);
+                itemsListCount = itemsListCount.set(currDate, 1);
+              } else {
+                itemsListCount = itemsListCount.set(currDate, itemsListCount.get(currDate) + 1);
+                let newStr = itemsListVar.get(currDate);
+                newStr = newStr.substring(0, itemsListVar.get(currDate).indexOf("+") - 1);
+                newStr += ` + ${itemsListCount.get(currDate)} more`;
+                itemsListVar = itemsListVar.set(currDate, newStr);
+              }
             }
             setItemsList(itemsListVar);
             setFlag((f) => !f);
@@ -117,6 +137,7 @@ export default function OrderScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.centeredContainer}>
         <Title style={styles.titleText}> Past Orders </Title>
+        <Title style={styles.subtitleText}> September Orders </Title>
         <View style={styles.orderCardsContainer}>
           { cardList }
         </View>
