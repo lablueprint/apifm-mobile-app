@@ -78,7 +78,7 @@ function OrderCard({
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-        <View style={styles.image} resizeMode={"cover"}/>
+        <View style={styles.image}/>
         <Text style={styles.date}>
           {`Delivered on ${date}`}
         </Text>

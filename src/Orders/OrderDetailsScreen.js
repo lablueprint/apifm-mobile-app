@@ -217,6 +217,7 @@ export default function OrderDetailsScreen({ route }) {
               type={prodItemIter.Unit}
               quantity={quantities[ind]}
               key={ind}
+              image={prodItemIter.Image[1].url}
             />
           ));
           setProductList(products);

@@ -5,7 +5,7 @@ import {
 import { Text } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 
-const image = require('../assets/imgs/square_logo.png');
+const missingImage = require('../assets/imgs/square_logo.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 0,
     marginLeft: 100,
+    color: 'grey',
   },
   image: {
     width: 80,
@@ -75,18 +76,19 @@ export default function OrderItem(props) {
     price,
     type,
     quantity,
+    image,
   } = props;
-
+  const imageurl = { uri: image };
   return (
     <View style={styles.container}>
-      <Image style={styles.image} source={image} />
+      <Image style={styles.image} source={image === '' ? missingImage : imageurl} />
       <View style={styles.container3}>
         <Text style={styles.itemName}>
           {name}
         </Text>
         <View>
           <Text style={styles.itemQuantityType}>
-            {`Quantity ${quantity}`}
+            {`Quantity: ${quantity}`}
           </Text>
         </View>
       </View>
@@ -107,4 +109,5 @@ OrderItem.propTypes = {
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   quantity: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired,
 };
