@@ -26,16 +26,28 @@ const styles = StyleSheet.create({
     height: 130,
     borderBottomWidth: 1,
     borderBottomColor: '#C4C4C4',
+    marginTop: -1,
+    marginBottom: 1,
+    width: '100%',
+    marginLeft: 0,
+  },
+  containerNoBorder: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    height: 130,
+    borderBottomColor: '#C4C4C4',
     marginTop: 1,
     marginBottom: 1,
+    width: '100%',
+    marginLeft: 0,
   },
   container2: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyConent: 'center',
     flexDirection: 'column',
-    marginLeft: 0,
+    marginLeft: -5,
     marginTop: 10,
-    marginRight: 5,
+    marginRight: 8,
   },
   container3: {
     //    flex: 1,
@@ -55,6 +67,7 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 0,
     marginBottom: 0,
+    color:'#34221D'
   },
   quantityBox: {
     borderWidth: 1,
@@ -89,8 +102,9 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     marginBottom: '0%',
-    marginLeft: 185,
+    marginLeft: '33%',
     marginTop: 10,
+    color:'#34221D'
   },
   itemPricePer: {
     fontFamily: 'JosefinSans-Light',
@@ -102,7 +116,7 @@ const styles = StyleSheet.create({
   removeItemButton: {
     padding: 0,
     marginTop: 30,
-    marginLeft: 185,
+    marginLeft: '35%',
     marginRight: -20,
   },
   image: {
@@ -110,7 +124,6 @@ const styles = StyleSheet.create({
     height: 85,
     marginLeft: 5,
     marginTop: 21,
-    marginBottom: 20,
     borderRadius: 5,
   },
 });
@@ -125,6 +138,7 @@ export default function CartProduct(props) {
     type,
     initialQuantity,
     image,
+    border,
   } = props;
 
   const [quantity, setQuantity] = useState(String(initialQuantity));
@@ -170,7 +184,7 @@ export default function CartProduct(props) {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={border ? styles.container : styles.containerNoBorder}>
       <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
         <Text style={styles.itemName}>
@@ -180,17 +194,13 @@ export default function CartProduct(props) {
           {`$${price} ${type}`}
         </Text>
         <View style={styles.quantityContainer}>
-          {/* <Text style={styles.itemQuantityType}>
-            Quantity:
-            {' '}
-          </Text> */}
           <TextInput
             style={styles.quantityBox}
             keyboardType="numeric"
             value={quantity}
             onChangeText={handleQuantityChange}
           />
-          <Text style = {styles.itemQuantityType}>
+          <Text style={styles.itemQuantityType}>
             {type}
           </Text>
         </View>
@@ -220,4 +230,5 @@ CartProduct.propTypes = {
   type: PropTypes.string.isRequired,
   initialQuantity: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  border: PropTypes.bool.isRequired,
 };

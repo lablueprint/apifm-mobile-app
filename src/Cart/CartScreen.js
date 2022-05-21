@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   },
   subtotal: {
     marginRight: '4%',
-    marginLeft: 130,
+    marginLeft: 140,
     fontFamily: 'JosefinSans-Regular',
     fontSize: 18,
   },
@@ -134,13 +134,14 @@ export default function CartScreen({ navigation }) {
       type={item.unit[0]}
       initialQuantity={String(item.quantity)}
       image={item.image[0].url}
+      border
     />
   ));
 
   useEffect(() => {
     // TODO: replace hardcoded email with logged-in user data
-    getItems('helen@gmail.com');
-    calcTotal('helen@gmail.com');
+    getItems('jameshe@ucla.edu');
+    calcTotal('jameshe@ucla.edu');
   }, [refresh]);
 
   return (
@@ -163,7 +164,7 @@ export default function CartScreen({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.continueButton}
-          onPress={() => navigation.navigate('Checkout')}
+          onPress={() => navigation.navigate('Checkout', { itemList })}
         >
           <Text style={styles.continueButtonText}>
             Continue
