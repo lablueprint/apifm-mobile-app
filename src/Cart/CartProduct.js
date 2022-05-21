@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     marginBottom: '0%',
-    marginLeft: '33%',
+    marginLeft: '45%',
     marginTop: 10,
     color:'#34221D'
   },
@@ -116,7 +116,7 @@ const styles = StyleSheet.create({
   removeItemButton: {
     padding: 0,
     marginTop: 30,
-    marginLeft: '35%',
+    marginLeft: '45%',
     marginRight: -20,
   },
   image: {

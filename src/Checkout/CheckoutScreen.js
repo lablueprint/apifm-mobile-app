@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 
-import CartProduct from '../Cart/CartProduct';
+import CartProduct from '../Cart/CartProductUntoggle';
 
 const styles = StyleSheet.create({
   entireScreen: {
@@ -161,7 +161,6 @@ export default function CheckoutScreen({ route, navigation }) {
       type={item.unit[0]}
       quantity={item.quantity}
       image={item.image[0].url}
-      border={false}
     />
   ));
 
