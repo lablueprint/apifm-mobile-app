@@ -8,7 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
-import CloseIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
@@ -53,11 +53,13 @@ const styles = StyleSheet.create({
   },
   topContainer: {
     backgroundColor: '#144611',
+    paddingTop: 10,
   },
   topBarContainer: {
     display: 'flex',
     flexDirection: 'row',
     alignSelf: 'flex-end',
+    paddingBottom: 20,
   },
   welcomeContainer: {
     width: 305,
@@ -71,6 +73,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#FFFFFA',
   },
+  menuIcon: {
+    position: 'absolute',
+    marginTop: 9,
+    marginLeft: 28,
+  },
   filterIcon: {
     width: 25,
     height: 25,
@@ -82,7 +89,7 @@ const styles = StyleSheet.create({
   calendarIcon: {
     color: '#FFFFFF',
     marginTop: 10,
-    marginRight: 10,
+    marginRight: 6,
 
   },
   calendarPopup: {
@@ -129,17 +136,17 @@ const styles = StyleSheet.create({
   },
   marketPlaceTextOpen: {
     fontFamily: 'JosefinSans-SemiBold',
-    marginTop: '14%',
+    marginTop: '17%',
     alignSelf: 'center',
     color: '#144611',
-    fontSize: 18,
+    fontSize: 15,
   },
   marketPlaceTextClosed: {
     fontFamily: 'JosefinSans-SemiBold',
-    marginTop: '14%',
+    marginTop: '17%',
     alignSelf: 'center',
     color: '#ABBD85',
-    fontSize: 18,
+    fontSize: 15,
   },
   closedMartketContainer: {
     display: 'flex',
@@ -160,6 +167,10 @@ const styles = StyleSheet.create({
     width: 80,
     height: 80,
     alignItems: 'center',
+  },
+  elevation: {
+    elevation: 3,
+    shadowColor: '#34221D',
   },
   cartButtonImage: {
     marginTop: 18,
@@ -203,7 +214,7 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   const selectDayAlert = () => {
-    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3
+    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 1
      || (!mondayDelivery && !fridayDelivery)) {
       return true;
     }
@@ -213,7 +224,7 @@ export default function MarketplaceScreen({ navigation }) {
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
-    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3) {
+    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 1) {
       mondayState = true;
       setMondayDelivery(true);
       setWednesdayAlert(true);
@@ -397,7 +408,7 @@ export default function MarketplaceScreen({ navigation }) {
       favoritesFilter,
     )));
     if (!mondayDelivery && !fridayDelivery
-      && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)) {
+      && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 1)) {
       setShowAlert(true);
     } else {
       setShowAlert(false);
@@ -412,12 +423,22 @@ export default function MarketplaceScreen({ navigation }) {
     <Provider>
       <View style={styles.container}>
         <View style={styles.topContainer}>
+          <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
+            <Icon
+              size={26}
+              name="menu"
+              color="#FFFFFF"
+              style={styles.menuIcon}
+              onPress={() => { navigation.toggleDrawer(); }}
+            />
+          </TouchableOpacity>
           <View style={styles.topBarContainer}>
+
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
             {!mondayDelivery && !fridayDelivery
-            && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)
+            && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 1)
               && <View style={styles.circle} />}
 
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
@@ -481,9 +502,9 @@ export default function MarketplaceScreen({ navigation }) {
           <Portal>
             <Modal
               visible={calendarVisibility
-                && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)}
+                && !((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 1)}
               onDismiss={() => {
-                setCalendarVisibility(false);
+                setCalendarVisibility(true);
               }}
               contentContainerStyle={styles.calendarPopup}
             >
@@ -560,7 +581,7 @@ export default function MarketplaceScreen({ navigation }) {
               }}
             >
               <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setWednesdayAlert(false); }}>
-                <CloseIcon name="close" size={22} />
+                <Icon name="close" size={22} />
               </TouchableOpacity>
               <Image
                 source={wednesdayError}
@@ -575,7 +596,7 @@ export default function MarketplaceScreen({ navigation }) {
         {(mondayDelivery || fridayDelivery)
           && (
             <TouchableOpacity onPress={() => {
-              if (!((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3)) {
+              if (!((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 1)) {
                 const newCalVis = !calendarVisibility;
                 setCalendarVisibility(newCalVis);
               }
@@ -628,7 +649,7 @@ export default function MarketplaceScreen({ navigation }) {
             )}
         </ScrollView>
         <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
-          <View style={styles.cartButtonCircle}>
+          <View style={[styles.cartButtonCircle, styles.elevation]}>
             <Image source={cart} style={styles.cartButtonImage} />
           </View>
         </TouchableOpacity>
@@ -646,5 +667,6 @@ MarketplaceScreen.propTypes = {
     DrawerActions: PropTypes.shape({
       openDrawer: PropTypes.func,
     }),
+    toggleDrawer: PropTypes.func,
   }).isRequired,
 };
