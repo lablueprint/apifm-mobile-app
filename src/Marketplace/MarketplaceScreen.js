@@ -218,7 +218,7 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   const selectDayAlert = () => {
-    if (!closedMarket || (!mondayDelivery && !fridayDelivery)) {
+    if (!closedMarket && !mondayDelivery && !fridayDelivery) {
       return true;
     }
     return false;
