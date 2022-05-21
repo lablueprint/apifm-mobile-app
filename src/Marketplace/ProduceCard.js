@@ -22,8 +22,8 @@ const styles = StyleSheet.create({
   container: {
     margin: 10,
     backgroundColor: '#FFFFFF',
-    width: 154,
     borderRadius: 15,
+    width: '40%',
   },
   elevation: {
     elevation: 3,
@@ -44,12 +44,12 @@ const styles = StyleSheet.create({
     width: 15,
     height: 15,
     alignSelf: 'flex-end',
-    bottom: 51,
+    bottom: 48,
     marginEnd: 10,
   },
   name: {
     alignSelf: 'flex-start',
-    fontSize: 18,
+    fontSize: 15,
     marginStart: 10,
     marginTop: 10,
     marginBottom: 5,
@@ -63,13 +63,13 @@ const styles = StyleSheet.create({
     marginBottom: 5,
   },
   price: {
-    fontSize: 18,
+    fontSize: 17,
     fontFamily: 'JosefinSans-SemiBold',
   },
   quantity: {
-    fontSize: 14,
-    marginLeft: 8,
-    marginTop: 5,
+    fontSize: 12,
+    marginLeft: 6,
+    marginTop: 6,
     fontFamily: 'JosefinSans-Regular',
   },
 });
