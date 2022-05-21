@@ -3,7 +3,7 @@ import {
   View, StyleSheet, ScrollView, Text, TouchableOpacity,
 } from 'react-native';
 import {
-  Title, Button,
+  Title,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
@@ -163,7 +163,7 @@ export default function CartScreen({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.continueButton}
-          onPress={() => navigation.navigate('Checkout')}
+          onPress={() => navigation.navigate('Checkout', { itemList })}
         >
           <Text style={styles.continueButtonText}>
             Continue

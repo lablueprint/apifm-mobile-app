@@ -121,6 +121,16 @@ function DrawerRoutes() {
           drawerIcon: contactIcon,
         }}
       />
+
+      <Drawer.Screen
+        name="CheckoutDrawer"
+        component={CheckoutScreen}
+        options={{
+          title: 'Checkout',
+          drawerIcon: profileIcon,
+        }}
+      />
+
     </Drawer.Navigator>
 
   );
@@ -139,11 +149,17 @@ export default function StackNavigation() {
         name="Cart"
         component={CartScreen}
         options={{
-          title: 'Cart',
+          // title: 'Cart',
           headerStyle: {
             backgroundColor: '#FFFFFA',
-            borderBottomWidth:0,
-            elevation:0,
+            elevation: 0,
+            borderBottomWidth: 0,
+          },
+          headerTitle: 'Cart',
+          headerTitleAlign: 'center',
+          headerTitleStyle: {
+            fontFamily: 'JosefinSans-SemiBold',
+            fontSize: 24,
           },
         }}
       />
