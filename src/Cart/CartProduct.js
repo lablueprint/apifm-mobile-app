@@ -48,12 +48,19 @@ const styles = StyleSheet.create({
     marginLeft: -5,
     marginTop: 10,
     marginRight: 8,
+    width: '25%',
   },
   container3: {
-    //    flex: 1,
-    //    flexDirection: 'column',
+    flex: 1,
+    //  flexDirection: 'column',
     marginLeft: 0,
     marginTop: 16,
+    display: 'flex',
+    // alignItems: 'stretch',
+    width: '100%',
+  },
+  container4: {
+    width: '100%',
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -67,7 +74,8 @@ const styles = StyleSheet.create({
     marginLeft: 15,
     marginTop: 0,
     marginBottom: 0,
-    color:'#34221D'
+    color: '#34221D',
+    width: '100%',
   },
   quantityBox: {
     borderWidth: 1,
@@ -104,7 +112,7 @@ const styles = StyleSheet.create({
     marginBottom: '0%',
     marginLeft: '45%',
     marginTop: 10,
-    color:'#34221D'
+    color: '#34221D',
   },
   itemPricePer: {
     fontFamily: 'JosefinSans-Light',
@@ -187,9 +195,11 @@ export default function CartProduct(props) {
     <View style={border ? styles.container : styles.containerNoBorder}>
       <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
-        <Text style={styles.itemName}>
-          {name}
-        </Text>
+        <View style={styles.container4}>
+          <Text style={styles.itemName}>
+            {name}
+          </Text>
+        </View>
         <Text style={styles.itemPricePer}>
           {`$${price} ${type}`}
         </Text>
