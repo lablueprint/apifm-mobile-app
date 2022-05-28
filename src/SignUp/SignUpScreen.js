@@ -31,7 +31,6 @@ const styles = StyleSheet.create({
     height: 844,
     width: '100%',
     padding: '8%',
-
   },
   button: {
     marginTop: 10,
@@ -41,7 +40,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D763C',
     borderRadius: 30,
     fontFamily: 'JosefinSans-SemiBold',
-
   },
   backArrow: {
     paddingLeft: 15,
@@ -116,7 +114,6 @@ const styles = StyleSheet.create({
   titleText: {
     marginLeft: 17,
     width: 330,
-    margin: 8.5,
     flexDirection: 'row',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
@@ -171,7 +168,9 @@ export default function SignUpScreen({ navigation }) {
 
   const [validEmail, setValidEmail] = useState(false);
 
+  // eslint-disable-next-line consistent-return
   const validateEmail = (text) => {
+    // eslint-disable-next-line no-useless-escape
     const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
       setEmail(text);
@@ -293,7 +292,7 @@ export default function SignUpScreen({ navigation }) {
         <View style={styles.container}>
           <View style={styles.text}>
 
-            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Terms'); }}>
               <ArrowIcon
                 style={styles.backArrow}
                 name="arrowleft"
@@ -423,7 +422,6 @@ export default function SignUpScreen({ navigation }) {
               placeholder="Confirm Password"
               returnKeyType="next"
               secureTextEntry={!!hidePassConf}
-            // onSubmitEditing={() => { numberInput.current.focus(); }}
               blurOnSubmit={false}
               ref={confirmPasswordInput}
               width={306}
@@ -463,7 +461,6 @@ export default function SignUpScreen({ navigation }) {
         <View style={styles.text}>
 
           <TouchableOpacity onPress={() => { setPage1(!page1); }}>
-            {/* <Image source={backArrow} /> */}
             <ArrowIcon
               style={styles.backArrow}
               name="arrowleft"
@@ -476,7 +473,6 @@ export default function SignUpScreen({ navigation }) {
         </View>
 
         <Title style={styles.titleText}>Sign Up</Title>
-
         <Title style={styles.header}>Delivery Address</Title>
 
         <View style={styles.inputs}>

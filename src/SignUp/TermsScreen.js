@@ -4,17 +4,7 @@ import {
   View, StyleSheet, Image, ImageBackground, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { Text, Button, Checkbox } from 'react-native-paper';
-import Config from 'react-native-config';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
-
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const backgroundImage = require('../assets/imgs/signupbackground.png');
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
@@ -31,18 +21,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: '5%',
+    marginTop: '1%',
     height: '100%',
     width: '100%',
-    // backgroundColor: 'red',
   },
   backArrow: {
-    // paddingLeft: 15,
     position: 'absolute',
     right: 0,
     marginLeft: '-100%',
     margin: 'auto',
-    // marginRight: 'auto',
   },
   headerImage: {
     marginTop: '7%',
@@ -50,7 +37,7 @@ const styles = StyleSheet.create({
     height: 50,
   },
   title: {
-    marginTop: '15%',
+    marginTop: '5%',
     fontSize: 28,
     fontFamily: 'JosefinSans-SemiBold',
     color: '#1D763C',
@@ -65,7 +52,6 @@ const styles = StyleSheet.create({
   },
   termsBox: {
     maxHeight: '55%',
-    marginBottom: '3%',
   },
   termsBoxText: {
     borderWidth: 1,
@@ -80,6 +66,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
+    marginTop: '-4%',
     marginBottom: '5%',
   },
   checkbox: {
@@ -97,12 +84,14 @@ const styles = StyleSheet.create({
   },
   signUpButtonUnchecked: {
     marginTop: 5,
+    marginBottom: '15%',
     borderRadius: 20,
     height: 50,
     backgroundColor: '#E5E5E5',
   },
   signUpButtonChecked: {
     marginTop: 5,
+    marginBottom: '15%',
     borderRadius: 20,
     height: 50,
     backgroundColor: '#1D763C',
@@ -114,9 +103,13 @@ const styles = StyleSheet.create({
   },
 });
 
-// eslint-disable-next-line no-unused-vars
 export default function TermsScreen({ navigation }) { // unused navigation
   const [checked, setChecked] = useState(false);
+  const handleSignUpButton = () => {
+    if (checked) {
+      navigation.navigate('Sign Up');
+    }
+  };
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
@@ -132,7 +125,11 @@ export default function TermsScreen({ navigation }) { // unused navigation
           </TouchableOpacity>
           <Image style={styles.headerImage} source={foodrootslogo} />
         </View>
-        <Text style={styles.title}> Sign up </Text>
+        <Text
+          style={styles.title}
+        >
+          Sign up
+        </Text>
         <Text style={styles.subTitle}> Terms and Conditions </Text>
         <ScrollView style={styles.termsBox}>
           <Text
@@ -159,7 +156,6 @@ export default function TermsScreen({ navigation }) { // unused navigation
             }}
             color="#1D763C"
             uncheckedColor="#1D763C"
-            // style={styles.checkbox}
           />
           <Text style={styles.bottomText}>
             I have read, understood, and agree with the Terms and Conditions.
@@ -167,6 +163,7 @@ export default function TermsScreen({ navigation }) { // unused navigation
         </View>
         <Button
           style={checked ? styles.signUpButtonChecked : styles.signUpButtonUnchecked}
+          onPress={handleSignUpButton}
         >
           <Text style={styles.signUpButtonText}>
             Sign up
