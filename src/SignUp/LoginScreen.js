@@ -89,6 +89,9 @@ export default function LoginScreen({ navigation }) {
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
+  const dummyGoToMarketplace = () => {
+    navigation.navigate('Marketplace');
+  };
 
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -144,7 +147,13 @@ export default function LoginScreen({ navigation }) {
           mode="contained"
           style={styles.button}
         >
-          <Text style={styles.buttonText}> Login </Text>
+          <Text
+            style={styles.buttonText}
+            // TODO: remove this function after redux/airlock done
+            onPress={() => dummyGoToMarketplace()}
+          >
+            Login
+          </Text>
         </TouchableOpacity>
 
         <Text style={styles.bottomTextFine}>

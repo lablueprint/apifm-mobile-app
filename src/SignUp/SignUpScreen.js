@@ -28,7 +28,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#FFFFFF',
     height: 844,
     width: '100%',
     padding: '8%',
@@ -50,7 +49,6 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     flexDirection: 'row',
-    // marginTop: 30,
     width: 350,
   },
   image: {
@@ -69,10 +67,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     height: 38,
     margin: 7.5,
-    // marginLeft: 30,
     flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignSelf: 'flex-start',
     alignItems: 'center',
     borderRadius: 15,
     borderColor: (134, 134, 134, 0.31),
@@ -123,15 +118,12 @@ const styles = StyleSheet.create({
     width: 330,
     margin: 8.5,
     flexDirection: 'row',
-    // alignItems: 'center',
-    // textAlignVertical: 'center',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
     color: '#1D763C',
   },
   buttonText: {
-    // marginTop: 6,
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
@@ -302,7 +294,6 @@ export default function SignUpScreen({ navigation }) {
           <View style={styles.text}>
 
             <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-              {/* <Image source={backArrow} /> */}
               <ArrowIcon
                 style={styles.backArrow}
                 name="arrowleft"

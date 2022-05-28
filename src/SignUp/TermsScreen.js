@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, ImageBackground, ScrollView,
+  View, StyleSheet, Image, ImageBackground, ScrollView, TouchableOpacity,
 } from 'react-native';
 import { Text, Button, Checkbox } from 'react-native-paper';
 import Config from 'react-native-config';
+import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
 const Airtable = require('airtable');
 
@@ -16,6 +17,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const backgroundImage = require('../assets/imgs/signupbackground.png');
+const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -24,22 +26,45 @@ const styles = StyleSheet.create({
     width: '88%',
     height: '100%',
   },
-  title: {
+  headerContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: '5%',
+    height: '100%',
+    width: '100%',
+    // backgroundColor: 'red',
+  },
+  backArrow: {
+    // paddingLeft: 15,
+    position: 'absolute',
+    right: 0,
+    marginLeft: '-100%',
+    margin: 'auto',
+    // marginRight: 'auto',
+  },
+  headerImage: {
+    marginTop: '7%',
+    width: '50%',
+    height: 50,
+  },
+  title: {
+    marginTop: '15%',
     fontSize: 28,
     fontFamily: 'JosefinSans-SemiBold',
     color: '#1D763C',
     alignSelf: 'center',
   },
   subTitle: {
-    marginTop: '8%',
+    marginTop: '9%',
     marginBottom: '3%',
     fontSize: 17,
     fontFamily: 'JosefinSans-Bold',
     color: '#1D763C',
   },
   termsBox: {
-    maxHeight: '58%',
+    maxHeight: '55%',
     marginBottom: '3%',
   },
   termsBoxText: {
@@ -47,7 +72,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     borderColor: 'grey',
     fontSize: 16,
-    padding: 15,
+    padding: 12,
     fontFamily: 'JosefinSans-Regular',
     color: '#5D5D5D',
     backgroundColor: '#FFFFFF',
@@ -96,6 +121,17 @@ export default function TermsScreen({ navigation }) { // unused navigation
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
       <View style={styles.container}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+            <ArrowIcon
+              style={styles.backArrow}
+              name="arrowleft"
+              size={34}
+              color="#FF9F00"
+            />
+          </TouchableOpacity>
+          <Image style={styles.headerImage} source={foodrootslogo} />
+        </View>
         <Text style={styles.title}> Sign up </Text>
         <Text style={styles.subTitle}> Terms and Conditions </Text>
         <ScrollView style={styles.termsBox}>
@@ -130,7 +166,6 @@ export default function TermsScreen({ navigation }) { // unused navigation
           </Text>
         </View>
         <Button
-          // onPress={sendEmailOnPress}
           style={checked ? styles.signUpButtonChecked : styles.signUpButtonUnchecked}
         >
           <Text style={styles.signUpButtonText}>
