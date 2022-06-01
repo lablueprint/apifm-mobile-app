@@ -53,6 +53,10 @@ const styles = StyleSheet.create({
 
 export default function SignUpConfirmation({ navigation }) {
   // const [fontsLoaded] = useFonts({ JosefinSans_600SemiBold });
+  const handleBrowse = () => {
+    navigation.navigate('Marketplace');
+  };
+
   return (
 
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
@@ -70,6 +74,7 @@ export default function SignUpConfirmation({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.button}
+          onPress={handleBrowse}
         >
           <Text style={styles.buttonText}>Start browsing!</Text>
         </TouchableOpacity>

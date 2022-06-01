@@ -92,7 +92,8 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleSignUp = () => {
-    navigation.navigate('Sign Up');
+    // temp to save time
+    navigation.navigate('Sign Up Billing');
   };
 
   const [username, setUserName] = useState('');

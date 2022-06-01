@@ -251,9 +251,6 @@ export default function SignUpScreen({ navigation }) {
     if (address === '') {
       Alert.alert('Please enter the Address to proceed');
     // eslint-disable-next-line no-restricted-globals
-    } else if (isNaN(apt)) {
-      Alert.alert('Please enter a numerical Apt # to proceed');
-    // eslint-disable-next-line no-restricted-globals
     } else if (zip === '' || isNaN(zip) || (zip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
     } else {
@@ -269,7 +266,7 @@ export default function SignUpScreen({ navigation }) {
             'business phone': busPhone,
             'delivery recipient': recipient,
             address,
-            'apartment number': parseInt(apt, 10),
+            'apartment number': apt,
             zipcode: parseInt(zip, 10),
             instructions: instr,
           },
@@ -291,7 +288,7 @@ export default function SignUpScreen({ navigation }) {
       setApt('');
       setZip('');
       setInstr('');
-      navigation.navigate('Sign Up Confirmation');
+      navigation.navigate('Sign Up Billing');
     }
   };
 
@@ -574,7 +571,7 @@ export default function SignUpScreen({ navigation }) {
           style={styles.button}
           onPress={() => { handleSignUp(); }}
         >
-          <Text style={styles.buttonText}> Sign Up </Text>
+          <Text style={styles.buttonText}> Continue </Text>
         </TouchableOpacity>
 
       </View>
