@@ -86,6 +86,11 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen({ navigation }) {
+  // temp so that individuals can see marketplace
+  const handleSignIn = () => {
+    navigation.navigate('Marketplace');
+  };
+
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
@@ -143,6 +148,7 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.button}
+          onPress={() => handleSignIn()}
         >
           <Text style={styles.buttonText}> Login </Text>
         </TouchableOpacity>
