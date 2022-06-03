@@ -11,6 +11,7 @@
     "generate-schema": "generate-airtable-schema"
   },
   "dependencies": {
+    "@expo-google-fonts/josefin-sans": "^0.2.2",
     "@mdi/font": "^6.5.95",
     "@mdi/js": "^6.5.95",
     "@react-native-community/masked-view": "^0.1.11",
@@ -40,6 +41,7 @@
   "devDependencies": {
     "@babel/core": "^7.16.7",
     "@babel/runtime": "^7.16.7",
+    "@iconify/react": "^3.2.1",
     "@react-native-community/eslint-config": "^3.0.1",
     "airtable-schema-generator": "^1.6.0",
     "babel-jest": "^27.4.5",
