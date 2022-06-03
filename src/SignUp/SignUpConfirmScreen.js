@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginBottom: 40,
     fontFamily: 'JosefinSans-SemiBold',
-
   },
   image: {
     flex: 1,
@@ -58,7 +57,6 @@ export default function SignUpConfirmation({ navigation }) {
   };
 
   return (
-
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
       <View style={styles.container}>
         <View style={styles.container}>
@@ -80,7 +78,6 @@ export default function SignUpConfirmation({ navigation }) {
         </TouchableOpacity>
       </View>
     </ImageBackground>
-
   );
 }
 

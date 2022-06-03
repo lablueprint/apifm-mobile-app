@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TextInput, Keyboard, Alert, Text, Image, TouchableOpacity, ImageBackground,
+  View, StyleSheet, ScrollView, TextInput, Keyboard, Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
-  Title,
+  Title, Checkbox,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
@@ -29,11 +29,9 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor: '#FFFFFF',
     height: 844,
     width: '100%',
     padding: '8%',
-
   },
   button: {
     marginTop: 10,
@@ -43,7 +41,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D763C',
     borderRadius: 30,
     fontFamily: 'JosefinSans-SemiBold',
-
   },
   backArrow: {
     paddingLeft: 15,
@@ -51,7 +48,6 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     flexDirection: 'row',
-    // marginTop: 30,
     width: 350,
   },
   image: {
@@ -70,10 +66,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     height: 38,
     margin: 7.5,
-    // marginLeft: 30,
     flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignSelf: 'flex-start',
     alignItems: 'center',
     borderRadius: 15,
     borderColor: (134, 134, 134, 0.31),
@@ -122,17 +115,13 @@ const styles = StyleSheet.create({
   titleText: {
     marginLeft: 17,
     width: 330,
-    margin: 8.5,
     flexDirection: 'row',
-    // alignItems: 'center',
-    // textAlignVertical: 'center',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
     color: '#1D763C',
   },
   buttonText: {
-    // marginTop: 6,
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
@@ -364,8 +353,7 @@ export default function SignUpScreen({ navigation }) {
         <View style={styles.container}>
           <View style={styles.text}>
 
-            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-              {/* <Image source={backArrow} /> */}
+            <TouchableOpacity onPress={() => { navigation.navigate('Terms'); }}>
               <ArrowIcon
                 style={styles.backArrow}
                 name="arrowleft"
@@ -808,23 +796,37 @@ export default function SignUpScreen({ navigation }) {
 
         <Text style={styles.titleText}>Sign Up</Text>
 
-        <Title style={styles.header}>Terms and Conditions</Title>
-        <Text>
-          I agree to submit the full invoice amount within 15 days of receipt of the produce.
-          (Failure to pay the full invoice amount within 15 days of receipt will result in a
-          10% late fee added each week beginning on the 3rd week and continuing until the 5th
-          week. Upon the 6th week of no payment the debt will be submitted to a debt collection
-          agency.)
-          I understand that I have the right to inspect and certify each produce item I receive
-          is in good condition. (Any requests for refunds or exchanges made after signed receipt
-          of the produce is at the full discretion of Food Roots. Approved requests for refunds
-          or exchanges requires, but is not limited to: photo evidence, a full description of what
-          is wrong with the produce and must be received within 24 hours of the initial delivery.)
-        </Text>
-        <TouchableOpacity onPress={() => { setAgree(!agree); }}>
-          <CheckboxIcon name={agree ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
-        </TouchableOpacity>
-        <Text>I have read, understood, and agree with the Terms and Conditions.</Text>
+        <Text style={styles.subTitle}> Terms and Conditions </Text>
+        <ScrollView style={styles.termsBox}>
+          <Text
+            style={styles.termsBoxText}
+          >
+            I agree to submit the full invoice amount within 15 days of receipt of the produce.
+            (Failure to pay the full invoice amount within 15 days of receipt will result in a
+            10% late fee added each week beginning on the 3rd week and continuing until the 5th
+            week. Upon the 6th week of no payment the debt will be submitted to a debt
+            collection agency.)
+            {'\n\n'}
+            I understand that I have the right to inspect and certify each produce item I receive
+            is in good condition. (Any requests for refunds or exchanges made after signed receipt
+            of the produce is at the full discretion of Food Roots. Approved requests for refunds or
+            exchanges requires, but is not limited to: photo evidence, a full description of what is
+            wrong with the produce and must be received within 24 hours of the initial delivery.)
+          </Text>
+        </ScrollView>
+        <View style={styles.iconContainer}>
+          <Checkbox
+            status={agree ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setAgree(!agree);
+            }}
+            color="#1D763C"
+            uncheckedColor="#1D763C"
+          />
+          <Text style={styles.bottomText}>
+            I have read, understood, and agree with the Terms and Conditions.
+          </Text>
+        </View>
         <TouchableOpacity
           mode="contained"
           style={styles.button}
