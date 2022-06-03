@@ -28,16 +28,17 @@ const styles = StyleSheet.create({
     marginLeft: 0,
     marginTop: 25,
     width: 100,
+
   },
 
   itemName: {
     fontFamily: 'JosefinSans-SemiBold',
-    fontSize: 17,
+    fontSize: 16,
     marginRight: 10,
     marginLeft: 13,
     marginTop: 0,
     marginBottom: 0,
-
+    width: 150,
   },
 
   itemQuantityType: {
@@ -49,7 +50,7 @@ const styles = StyleSheet.create({
   },
   itemTotalPrice: {
     fontFamily: 'JosefinSans-SemiBold',
-    fontSize: 18,
+    fontSize: 15,
     marginBottom: '0%',
     marginLeft: 100,
     marginTop: 10,
@@ -67,6 +68,7 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginTop: 20,
     marginBottom: 20,
+    borderRadius: 10,
   },
 });
 

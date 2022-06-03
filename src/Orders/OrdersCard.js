@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, TouchableOpacity,
+  View, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import { Text } from 'react-native-paper';
+
+const missingImage = require('../assets/imgs/square_logo.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -20,19 +22,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 100,
-    height: 116,
+    width: 136,
+    height: 136,
     alignSelf: 'flex-start',
-    backgroundColor: '#A1A1A1',
-    borderBottomLeftRadius: 15,
-    borderTopLeftRadius: 15,
+//    backgroundColor: '#A1A1A1',
+    borderBottomLeftRadius: 5,
+    borderTopLeftRadius: 5,
     resizeMode: 'contain',
-
+    aspectRatio: 1,
+    marginTop: -10,
   },
   name: {
     height: 25,
     fontSize: 17,
-    marginStart: -50,
+    marginStart: 10,
     marginTop: 7,
     fontFamily: 'JosefinSans-SemiBold',
   },
@@ -45,22 +48,24 @@ const styles = StyleSheet.create({
   },
   date: {
     alignSelf: 'flex-start',
-    marginStart: 120,
-    marginTop: -100,
+    marginStart: 150,
+    marginTop: -120,
     fontFamily: 'JosefinSans-Regular',
   },
   quantity: {
     alignSelf: 'flex-start',
-    marginStart: 120,
+    marginStart: 150,
     fontFamily: 'JosefinSans-Regular',
-    marginTop: 7,
+    marginTop: 5,
   },
 });
 
 function OrderCard({
-  navigation, orderId, items, itemsList,
+  navigation, orderId, items, itemsList, images,
 }) {
   const [itemList, setItemList] = useState(itemsList.get(new Date(items[0]).toString()));
+  const [image, setImage] = useState(images.get(new Date(items[0]).toString()));
+
   const dateObj = new Date(items[0]);
   const date = dateObj.toDateString();
 
@@ -73,12 +78,14 @@ function OrderCard({
 
   useEffect(() => {
     setItemList(itemsList.get(new Date(items[0]).toString()));
-  }, [items]);
+    setImage(images.get(new Date(items[0]).toString()));
 
+  }, [items]);
+  const imageurl = { uri: image };
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-        <View style={styles.image}/>
+          <Image resizeMode="cover" style={styles.image} source={image === '' ? missingImage : imageurl}/>
         <Text style={styles.date}>
           {`Delivered on ${date}`}
         </Text>
@@ -104,6 +111,7 @@ OrderCard.propTypes = {
     ])
   ),
   itemsList: PropTypes.instanceOf(Map).isRequired,
+  images: PropTypes.string.isRequired,
 };
 
 export default OrderCard;

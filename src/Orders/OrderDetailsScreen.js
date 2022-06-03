@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
 
   },
   background: {
-      backgroundColor: '#FFFFFA',
+    backgroundColor: '#FFFFFA',
 
   },
   title: {
@@ -88,20 +88,20 @@ const styles = StyleSheet.create({
     marginRight: '30%',
     marginBottom: '3%',
   },
-    button: {
-      borderRadius: 25,
-      height: 50,
-      width: 300,
-      marginBottom: 60,
-      backgroundColor: '#1D763C',
-    },
-    buttonText: {
-      color: '#FFFFFF',
-      fontFamily: 'JosefinSans-SemiBold',
-      fontSize: 24,
-      textAlign: 'center',
-      marginTop: -50,
-    },
+  button: {
+    borderRadius: 25,
+    height: 50,
+    width: 300,
+    marginBottom: 60,
+    backgroundColor: '#1D763C',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: -50,
+  },
 });
 
 const Airtable = require('airtable');
@@ -217,7 +217,7 @@ export default function OrderDetailsScreen({ route }) {
               type={prodItemIter.Unit}
               quantity={quantities[ind]}
               key={ind}
-              image={prodItemIter.Image[1].url}
+              image={prodItemIter.Image[0].url}
             />
           ));
           setProductList(products);
@@ -229,74 +229,74 @@ export default function OrderDetailsScreen({ route }) {
   return (
     <ScrollView styles={styles.centeredContainer}>
       <View style={styles.background}>
-      <View style={styles.shippingContainer}>
-        <View style={styles.header}>
-          <Title style={styles.titleText}>
-            {` Order ID #${orderId}`}
-          </Title>
-         <View style={{
-              flexDirection: "row",
-//              justifyContent: "space-between",
-              alignItems: "center"
-          }}>
-          <Icon size={15} color="black" name="time" />
-          <Text style={styles.details}>
-            {`Delivered on ${date} at ${time}`}
-          </Text>
-        </View>
-        </View>
-        <Text style={[styles.title, { marginLeft: '0%', marginBottom: '0%' }]}>
-          Shipping Address
-        </Text>
-        <View style={{
-          flexDirection: 'row', justifyContent: 'flex-start', marginBottom: '4%',
-        }}
-        >
-          <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
-            <Icon size={25} color="grey" name="location-sharp" />
+        <View style={styles.shippingContainer}>
+          <View style={styles.header}>
+            <Title style={styles.titleText}>
+              {` Order ID #${orderId}`}
+            </Title>
+            <View style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+            }}
+            >
+              <Icon size={15} color="black" name="time" />
+              <Text style={styles.details}>
+                {`Delivered on ${date} at ${time}`}
+              </Text>
+            </View>
           </View>
-          <View style={styles.shippingSubcontainer}>
-            <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-SemiBold' }]}>
-              {`${shippingAddress.address}, ${shippingAddress.apartmentLine}`}
-            </Text>
-            <Text style={styles.subdetails, { fontFamily: 'JosefinSans-Regular' }}>
-              {shippingAddress.zipcode}
-            </Text>
+          <Text style={[styles.title, { marginLeft: '0%', marginBottom: '0%' }]}>
+            Shipping Address
+          </Text>
+          <View style={{
+            flexDirection: 'row', justifyContent: 'flex-start', marginBottom: '4%',
+          }}
+          >
+            <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
+              <Icon size={25} color="grey" name="location-sharp" />
+            </View>
+            <View style={styles.shippingSubcontainer}>
+              <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-SemiBold' }]}>
+                {`${shippingAddress.address}, ${shippingAddress.apartmentLine}`}
+              </Text>
+              <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
+                {shippingAddress.zipcode}
+              </Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={[styles.subcontainer, { borderBottomColor: 'grey', borderBottomWidth: 1, marginBottom: '4%',}]}>
-      <Text style={[styles.title]}>
-        Review Items
-      </Text>
-        <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
-          Delivery Date: Mon, Sep 10, 2022
-        </Text>
-        <View>
-          {productList}
+        <View style={[styles.subcontainer, { borderBottomColor: 'grey', borderBottomWidth: 1, marginBottom: '4%' }]}>
+          <Text style={[styles.title]}>
+            Review Items
+          </Text>
+          <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
+            Delivery Date: Mon, Sep 10, 2022
+          </Text>
+          <View>
+            {productList}
+          </View>
         </View>
-      </View>
-      <View style={[styles.subcontainer]}>
-        <Text style={[styles.title]}>
-          Order Summary
-        </Text>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-            {`Items (${count})`}
+        <View style={[styles.subcontainer]}>
+          <Text style={[styles.title]}>
+            Order Summary
           </Text>
-          <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-            {`$ ${parseFloat(total).toFixed(2)}`}
-          </Text>
-        </View>
-        <View style={styles.deliveryFeeContainer}>
-          <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-            Delivery Fee:
-          </Text>
-          <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-            {`$ ${parseFloat(deliveryFee).toFixed(2)}`}
-          </Text>
-        </View>
-        {deliveryFee > 0
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+              {`Items (${count})`}
+            </Text>
+            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
+              {`$ ${parseFloat(total).toFixed(2)}`}
+            </Text>
+          </View>
+          <View style={styles.deliveryFeeContainer}>
+            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+              Delivery Fee:
+            </Text>
+            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
+              {`$ ${parseFloat(deliveryFee).toFixed(2)}`}
+            </Text>
+          </View>
+          {deliveryFee > 0
         && (
         <View style={styles.conditionalShippingFeeContainer}>
           <Text style={[styles.subdetails, {
@@ -308,33 +308,33 @@ export default function OrderDetailsScreen({ route }) {
           </Text>
         </View>
         )}
-        <View style={{
-          flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
-        }}
-        >
-          <Text style={[styles.title, { marginLeft: '0%' }]}>
-            Order Total
-          </Text>
-          <Text style={[styles.title, { marginRight: '0%' }]}>
-            {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.container, { marginBottom: '8%' }]}>
-        <Button
-          mode="contained"
-          style={styles.button}
-          uppercase={false}
-          onPress={() => {
-            orderAgain();
-            navigation.navigate('Cart');
+          <View style={{
+            flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
           }}
-        >
-        <Text style={styles.buttonText}>
-          Order Again
-        </Text>
-        </Button>
-      </View>
+          >
+            <Text style={[styles.title, { marginLeft: '0%' }]}>
+              Order Total
+            </Text>
+            <Text style={[styles.title, { marginRight: '0%' }]}>
+              {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
+            </Text>
+          </View>
+        </View>
+        <View style={[styles.container, { marginBottom: '8%' }]}>
+          <Button
+            mode="contained"
+            style={styles.button}
+            uppercase={false}
+            onPress={() => {
+              orderAgain();
+              navigation.navigate('Cart');
+            }}
+          >
+            <Text style={styles.buttonText}>
+              Order Again
+            </Text>
+          </Button>
+        </View>
       </View>
     </ScrollView>
   );

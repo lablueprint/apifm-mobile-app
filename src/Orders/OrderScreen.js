@@ -19,6 +19,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 const CONST_USER = 'helen@gmail.com';
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const styles = StyleSheet.create({
   container: {
@@ -35,11 +36,12 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
   },
   subtitleText: {
-    marginBottom: 20,
+    marginBottom: 10,
     fontSize: 20,
-    marginStart: 20,
+    marginStart: 27,
+    marginTop: 10,
     fontFamily: 'JosefinSans-SemiBold',
-    color: "#1D763C",
+    color: '#1D763C',
   },
   orderCardsContainer: {
     display: 'flex',
@@ -53,6 +55,9 @@ const styles = StyleSheet.create({
 export default function OrderScreen({ navigation }) {
   const [orderMap, setOrderMap] = useState(new Map());
   const [itemsList, setItemsList] = useState(new Map());
+  const [images, setImages] = useState(new Map());
+  const [totalItemsList, setTotalItemsList] = useState(new Map());
+
   const [cardList, setCardList] = useState([]);
   const [flag, setFlag] = useState(false);
 
@@ -60,10 +65,18 @@ export default function OrderScreen({ navigation }) {
     const condenseOrders = new Map();
     let itemsListVar = new Map();
     let itemsListCount = new Map();
+    let imagesVar = new Map();
+    // This should be a map pointing from "month_year" to an array of order cards for all the orders in that month
+    // Each order card should be a map pointing from month to
+    let monthCondenseOrders = new Map();
     base('Orders').select({ filterByFormula: `({user_id}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const order = record;
+        const currDateObj = new Date(order.fields['delivery date (temp)']);
+        const currDate = new Date(order.fields['delivery date (temp)']).toString();
+        const currMonthYear = new Date(currDateObj.getFullYear(), currDateObj.getMonth(), 1).toString();
         order.fields.orderId = order.id;
+
         if (!('delivery date (temp)' in record.fields)) {
           return;
         }
@@ -74,38 +87,41 @@ export default function OrderScreen({ navigation }) {
           base('Produce').find(record.fields.produce_id, ((err, prodRecord) => {
             if (err) { console.error(err); return; }
             order.fields.produceItem = prodRecord;
-            const currDate = (new Date(order.fields['delivery date (temp)'])).toString();
             if (!itemsListVar.has(currDate)) {
               itemsListVar.set(currDate, prodRecord.fields.Name);
-            } else if (itemsListVar.get(currDate).indexOf(",") == -1) {
+              imagesVar = imagesVar.set(currDate, prodRecord.fields.Image[0].url);
+            } else if (itemsListVar.get(currDate).indexOf(',') === -1) {
               itemsListVar.set(currDate, `${itemsListVar.get(currDate)}, ${prodRecord.fields.Name}`);
             } else {
-              let ind = itemsListVar.get(currDate).indexOf("+");
-              if (ind == -1) {
+              const ind = itemsListVar.get(currDate).indexOf('+');
+              if (ind === -1) {
                 itemsListVar = itemsListVar.set(currDate, `${itemsListVar.get(currDate)} + 1 more`);
                 itemsListCount = itemsListCount.set(currDate, 1);
               } else {
                 itemsListCount = itemsListCount.set(currDate, itemsListCount.get(currDate) + 1);
                 let newStr = itemsListVar.get(currDate);
-                newStr = newStr.substring(0, itemsListVar.get(currDate).indexOf("+") - 1);
+                newStr = newStr.substring(0, itemsListVar.get(currDate).indexOf('+') - 1);
                 newStr += ` + ${itemsListCount.get(currDate)} more`;
                 itemsListVar = itemsListVar.set(currDate, newStr);
               }
             }
             setItemsList(itemsListVar);
+            setImages(imagesVar);
             setFlag((f) => !f);
           }));
         } else {
           console.log('ERR: misssing produce id in orders record');
         }
-        const currDate = new Date(order.fields['delivery date (temp)']).toString();
-        if (!condenseOrders.has(currDate)) {
-          condenseOrders.set(currDate, [order.fields]);
+
+        if (!monthCondenseOrders.has(currMonthYear)) {
+          monthCondenseOrders.set(currMonthYear, new Map([[currDate, [order.fields]]]));
+        } else if(!monthCondenseOrders.get(currMonthYear).has(currDate)) {
+          monthCondenseOrders.get(currMonthYear).set(currDate, [order.fields]);
         } else {
-          condenseOrders.get(currDate).push(order.fields);
+          monthCondenseOrders.get(currMonthYear).get(currDate).push(order.fields);
         }
       });
-      setOrderMap(new Map([...condenseOrders].sort((a, b) => new Date(a[0]) - new Date(b[0]))));
+      setOrderMap(new Map([...monthCondenseOrders].sort((a, b) => new Date(a[0]) - new Date(b[0]))));
       fetchNextPage();
     }, (err) => {
       if (err) {
@@ -120,16 +136,30 @@ export default function OrderScreen({ navigation }) {
 
   useEffect(() => {
     let i = 0;
-    const OrderCards = (Array.from(orderMap)).map((items) => (
-      <OrderCard
-        style={styles.orderCard}
-        navigation={navigation}
-        orderId={(i++).toString()}
-        key={(i).toString()}
-        items={items}
-        itemsList={itemsList}
-      />
-    ));
+    const OrderCards = (Array.from(orderMap)).map((items) => {
+    return (
+      <>
+      <Title style={styles.subtitleText}> {MONTHS[new Date(items[0]).getMonth()]} Orders </Title>
+      <View style={styles.orderCardsContainer}>
+        {
+        (Array.from(new Map([...items[1]].sort((a, b) => new Date(a[0]) - new Date(b[0]))))).map((card) => {
+          return (
+          <OrderCard
+            style={styles.orderCard}
+            navigation={navigation}
+            orderId={(i++).toString()}
+            key={(i).toString()}
+            items={card}
+            itemsList={itemsList}
+            images={images}
+          />
+          )
+        })
+        }
+      </View>
+      </>
+      )
+    });
     setCardList(OrderCards);
   }, [itemsList, flag]);
 
@@ -137,7 +167,6 @@ export default function OrderScreen({ navigation }) {
     <ScrollView style={styles.container}>
       <View style={styles.centeredContainer}>
         <Title style={styles.titleText}> Past Orders </Title>
-        <Title style={styles.subtitleText}> September Orders </Title>
         <View style={styles.orderCardsContainer}>
           { cardList }
         </View>
