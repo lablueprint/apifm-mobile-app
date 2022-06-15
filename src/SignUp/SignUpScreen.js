@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, ScrollView, TextInput, Keyboard, Alert, Text, Image, TouchableOpacity, ImageBackground,
+  View, StyleSheet, ScrollView, TextInput, Keyboard,
+  Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
   Title, Checkbox,
@@ -10,7 +11,6 @@ import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
-import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Airtable = require('airtable');
 const backgroundImage = require('../assets/imgs/signin.png');
@@ -127,6 +127,64 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     marginTop: 3,
+  },
+  subTitle: {
+    marginTop: '9%',
+    marginBottom: '3%',
+    fontSize: 17,
+    fontFamily: 'JosefinSans-Bold',
+    color: '#1D763C',
+  },
+  termsBox: {
+    maxHeight: '55%',
+  },
+  termsBoxText: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'grey',
+    fontSize: 16,
+    padding: 12,
+    fontFamily: 'JosefinSans-Regular',
+    color: '#5D5D5D',
+    backgroundColor: '#FFFFFF',
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: '-4%',
+    marginBottom: '5%',
+  },
+  checkbox: {
+    margin: 16,
+    fontSize: 100,
+    color: '#1D763C',
+    backgroundColor: '#1D763C',
+    onTintColor: '#1D763C',
+    onCheckColor: '#1D763C',
+  },
+  bottomText: {
+    marginTop: '1%',
+    fontSize: 15,
+    fontFamily: 'JosefinSans-SemiBold',
+  },
+  signUpButtonUnchecked: {
+    marginTop: 5,
+    marginBottom: '15%',
+    borderRadius: 20,
+    height: 50,
+    backgroundColor: '#E5E5E5',
+  },
+  signUpButtonChecked: {
+    marginTop: 5,
+    marginBottom: '15%',
+    borderRadius: 20,
+    height: 50,
+    backgroundColor: '#1D763C',
+  },
+  signUpButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
   },
 });
 
@@ -353,7 +411,7 @@ export default function SignUpScreen({ navigation }) {
         <View style={styles.container}>
           <View style={styles.text}>
 
-            <TouchableOpacity onPress={() => { navigation.navigate('Terms'); }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
               <ArrowIcon
                 style={styles.backArrow}
                 name="arrowleft"
