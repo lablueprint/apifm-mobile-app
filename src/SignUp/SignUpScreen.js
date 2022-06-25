@@ -1,16 +1,16 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TextInput, Keyboard, Alert, Text, Image, TouchableOpacity, ImageBackground,
+  View, StyleSheet, ScrollView, TextInput, Keyboard,
+  Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
-  Title,
+  Title, Checkbox,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
-import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Airtable = require('airtable');
 const backgroundImage = require('../assets/imgs/signin.png');
@@ -70,10 +70,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     height: 38,
     margin: 7.5,
-    // marginLeft: 30,
     flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignSelf: 'flex-start',
     alignItems: 'center',
     borderRadius: 15,
     borderColor: (134, 134, 134, 0.31),
@@ -124,20 +121,108 @@ const styles = StyleSheet.create({
     width: 330,
     margin: 8.5,
     flexDirection: 'row',
-    // alignItems: 'center',
-    // textAlignVertical: 'center',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
     color: '#1D763C',
   },
   buttonText: {
-    // marginTop: 6,
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
     color: 'white',
     marginTop: 3,
+  },
+  termsContainer: {
+    marginLeft: '6%',
+    marginRight: '6%',
+    width: '88%',
+    height: '100%',
+  },
+  termsHeaderContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: '1%',
+    height: '100%',
+    width: '100%',
+  },
+  termsBackArrow: {
+    position: 'absolute',
+    right: 0,
+    marginLeft: '-100%',
+    margin: 'auto',
+  },
+  termsHeaderImage: {
+    marginTop: '7%',
+    width: '50%',
+    height: 50,
+  },
+  termsTitle: {
+    marginTop: '5%',
+    fontSize: 28,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#1D763C',
+    alignSelf: 'center',
+  },
+  termsSubTitle: {
+    marginTop: '9%',
+    marginBottom: '3%',
+    fontSize: 17,
+    fontFamily: 'JosefinSans-Bold',
+    color: '#1D763C',
+  },
+  termsBox: {
+    maxHeight: '55%',
+  },
+  termsBoxText: {
+    borderWidth: 1,
+    borderRadius: 10,
+    borderColor: 'grey',
+    fontSize: 16,
+    padding: 12,
+    fontFamily: 'JosefinSans-Regular',
+    color: '#5D5D5D',
+    backgroundColor: '#FFFFFF',
+  },
+  termsIconContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: '-4%',
+    marginBottom: '5%',
+  },
+  termsCheckbox: {
+    margin: 16,
+    fontSize: 100,
+    color: '#1D763C',
+    backgroundColor: '#1D763C',
+    onTintColor: '#1D763C',
+    onCheckColor: '#1D763C',
+  },
+  termsBottomText: {
+    marginTop: '1%',
+    fontSize: 15,
+    fontFamily: 'JosefinSans-SemiBold',
+  },
+  termsSignUpButtonUnchecked: {
+    marginTop: 5,
+    marginBottom: '15%',
+    borderRadius: 20,
+    height: 50,
+    backgroundColor: '#E5E5E5',
+  },
+  termsSignUpButtonChecked: {
+    marginTop: 5,
+    marginBottom: '15%',
+    borderRadius: 20,
+    height: 50,
+    backgroundColor: '#1D763C',
+  },
+  termsSignUpButtonText: {
+    color: 'white',
+    fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
   },
 });
 
@@ -789,11 +874,11 @@ export default function SignUpScreen({ navigation }) {
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-      <View style={styles.container}>
-        <View style={styles.text}>
+      <View style={styles.termsContainer}>
+        <View style={styles.termsText}>
           <TouchableOpacity onPress={() => { setPage(3); }}>
             <ArrowIcon
-              style={styles.backArrow}
+              style={styles.termsBackArrow}
               name="arrowleft"
               size={34}
               color="#FF9F00"
@@ -804,23 +889,37 @@ export default function SignUpScreen({ navigation }) {
 
         <Text style={styles.titleText}>Sign Up</Text>
 
-        <Title style={styles.header}>Terms and Conditions</Title>
-        <Text>
-          I agree to submit the full invoice amount within 15 days of receipt of the produce.
-          (Failure to pay the full invoice amount within 15 days of receipt will result in a
-          10% late fee added each week beginning on the 3rd week and continuing until the 5th
-          week. Upon the 6th week of no payment the debt will be submitted to a debt collection
-          agency.)
-          I understand that I have the right to inspect and certify each produce item I receive
-          is in good condition. (Any requests for refunds or exchanges made after signed receipt
-          of the produce is at the full discretion of Food Roots. Approved requests for refunds
-          or exchanges requires, but is not limited to: photo evidence, a full description of what
-          is wrong with the produce and must be received within 24 hours of the initial delivery.)
-        </Text>
-        <TouchableOpacity onPress={() => { setAgree(!agree); }}>
-          <CheckboxIcon name={agree ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
-        </TouchableOpacity>
-        <Text>I have read, understood, and agree with the Terms and Conditions.</Text>
+        <Text style={styles.subTitle}> Terms and Conditions </Text>
+        <ScrollView style={styles.termsBox}>
+          <Text
+            style={styles.termsBoxText}
+          >
+            I agree to submit the full invoice amount within 15 days of receipt of the produce.
+            (Failure to pay the full invoice amount within 15 days of receipt will result in a
+            10% late fee added each week beginning on the 3rd week and continuing until the 5th
+            week. Upon the 6th week of no payment the debt will be submitted to a debt
+            collection agency.)
+            {'\n\n'}
+            I understand that I have the right to inspect and certify each produce item I receive
+            is in good condition. (Any requests for refunds or exchanges made after signed receipt
+            of the produce is at the full discretion of Food Roots. Approved requests for refunds or
+            exchanges requires, but is not limited to: photo evidence, a full description of what is
+            wrong with the produce and must be received within 24 hours of the initial delivery.)
+          </Text>
+        </ScrollView>
+        <View style={styles.iconContainer}>
+          <Checkbox
+            status={agree ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setAgree(!agree);
+            }}
+            color="#1D763C"
+            uncheckedColor="#1D763C"
+          />
+          <Text style={styles.bottomText}>
+            I have read, understood, and agree with the Terms and Conditions.
+          </Text>
+        </View>
         <TouchableOpacity
           mode="contained"
           style={styles.button}
