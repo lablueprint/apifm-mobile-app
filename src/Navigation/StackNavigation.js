@@ -84,6 +84,7 @@ function DrawerRoutes() {
         drawerLabelStyle: {
           left: 10,
           bottom: 1,
+          fontSize: 17,
           fontFamily: 'JosefinSans-Medium',
         },
       }}
@@ -122,6 +123,8 @@ function DrawerRoutes() {
         options={{
           title: 'Contact us',
           drawerIcon: contactIcon,
+          headerTitle: '',
+          headerTransparent: true,
         }}
       />
     </Drawer.Navigator>
