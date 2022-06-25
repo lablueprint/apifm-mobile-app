@@ -4,7 +4,7 @@ import {
   Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
-  Title, Checkbox,
+  Title, Checkbox, Button,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
@@ -13,6 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
 const Airtable = require('airtable');
+const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
 const airtableConfig = {
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
     width: '88%',
     height: '100%',
   },
-  termsHeaderContainer: {
+  headerContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'center',
@@ -149,19 +150,19 @@ const styles = StyleSheet.create({
     marginLeft: '-100%',
     margin: 'auto',
   },
-  termsHeaderImage: {
+  headerImage: {
     marginTop: '7%',
     width: '50%',
     height: 50,
   },
-  termsTitle: {
+  title: {
     marginTop: '5%',
     fontSize: 28,
     fontFamily: 'JosefinSans-SemiBold',
     color: '#1D763C',
     alignSelf: 'center',
   },
-  termsSubTitle: {
+  subTitle: {
     marginTop: '9%',
     marginBottom: '3%',
     fontSize: 17,
@@ -181,13 +182,13 @@ const styles = StyleSheet.create({
     color: '#5D5D5D',
     backgroundColor: '#FFFFFF',
   },
-  termsIconContainer: {
+  iconContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     marginTop: '-4%',
     marginBottom: '5%',
   },
-  termsCheckbox: {
+  checkbox: {
     margin: 16,
     fontSize: 100,
     color: '#1D763C',
@@ -195,26 +196,26 @@ const styles = StyleSheet.create({
     onTintColor: '#1D763C',
     onCheckColor: '#1D763C',
   },
-  termsBottomText: {
+  bottomText: {
     marginTop: '1%',
     fontSize: 15,
     fontFamily: 'JosefinSans-SemiBold',
   },
-  termsSignUpButtonUnchecked: {
+  signUpButtonUnchecked: {
     marginTop: 5,
     marginBottom: '15%',
     borderRadius: 20,
     height: 50,
     backgroundColor: '#E5E5E5',
   },
-  termsSignUpButtonChecked: {
+  signUpButtonChecked: {
     marginTop: 5,
     marginBottom: '15%',
     borderRadius: 20,
     height: 50,
     backgroundColor: '#1D763C',
   },
-  termsSignUpButtonText: {
+  signUpButtonText: {
     color: 'white',
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
@@ -869,7 +870,7 @@ export default function SignUpScreen({ navigation }) {
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
       <View style={styles.termsContainer}>
-        <View style={styles.termsText}>
+        <View style={styles.headerContainer}>
           <TouchableOpacity onPress={() => { setPage(3); }}>
             <ArrowIcon
               style={styles.termsBackArrow}
@@ -878,11 +879,13 @@ export default function SignUpScreen({ navigation }) {
               color="#FF9F00"
             />
           </TouchableOpacity>
-          <Image style={styles.image} source={headerImage} />
+          <Image style={styles.headerImage} source={foodrootslogo} />
         </View>
-
-        <Text style={styles.titleText}>Sign Up</Text>
-
+        <Text
+          style={styles.title}
+        >
+          Sign up
+        </Text>
         <Text style={styles.subTitle}> Terms and Conditions </Text>
         <ScrollView style={styles.termsBox}>
           <Text
@@ -914,13 +917,14 @@ export default function SignUpScreen({ navigation }) {
             I have read, understood, and agree with the Terms and Conditions.
           </Text>
         </View>
-        <TouchableOpacity
-          mode="contained"
-          style={styles.button}
-          onPress={() => { handleSignUp(); }}
+        <Button
+          style={agree ? styles.signUpButtonChecked : styles.signUpButtonUnchecked}
+          onPress={handleSignUp}
         >
-          <Text style={styles.buttonText}> Sign Up </Text>
-        </TouchableOpacity>
+          <Text style={styles.signUpButtonText}>
+            Sign up
+          </Text>
+        </Button>
       </View>
     </ImageBackground>
   );

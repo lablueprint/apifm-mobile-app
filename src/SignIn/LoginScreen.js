@@ -85,13 +85,12 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen({ navigation }) {
-  // temp so that individuals can see marketplace
   const handleSignIn = () => {
     navigation.navigate('Marketplace');
   };
 
   const handleSignUp = () => {
-    navigation.navigate('Terms');
+    navigation.navigate('Sign Up');
   };
 
   const [username, setUserName] = useState('');
