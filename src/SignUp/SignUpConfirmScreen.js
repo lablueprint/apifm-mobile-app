@@ -52,7 +52,6 @@ const styles = StyleSheet.create({
 });
 
 export default function SignUpConfirmation({ navigation }) {
-  // const [fontsLoaded] = useFonts({ JosefinSans_600SemiBold });
   const handleBrowse = () => {
     navigation.navigate('Marketplace');
   };

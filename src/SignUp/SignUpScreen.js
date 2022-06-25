@@ -191,7 +191,7 @@ export default function SignUpScreen({ navigation }) {
   const billAddrInput = useRef();
   const billAptInput = useRef();
   const billZipInput = useRef();
-
+  const accNameInput = useRef();
   const accEmailInput = useRef();
   const accNumberInput = useRef();
 
@@ -247,6 +247,8 @@ export default function SignUpScreen({ navigation }) {
       Alert.alert('Please enter the First Name to proceed');
     } else if (lastName === '') {
       Alert.alert('Please enter the Last Name to proceed');
+    } else if (organization === '') {
+      Alert.alert('Please enter the Organization to proceed');
     } else if (email === '') {
       Alert.alert('Please enter an Email to proceed');
     } else if (!validateEmail(email)) {
@@ -289,9 +291,11 @@ export default function SignUpScreen({ navigation }) {
     // eslint-disable-next-line no-restricted-globals
     } else if (billZip === '' || isNaN(billZip) || (billZip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
-    } else if (accEmail !== '' && !validateEmail(accEmail)) {
+    } else if (accFullName === '') {
+      Alert.alert('Please enter a valid accounting First and Last name to proceed');
+    } else if (accEmail === '' || !validateEmail(accEmail)) {
       Alert.alert('Please enter a valid Email to proceed');
-    } else if (accNumber !== '' && !onTextChange('accNum', accNumber)) {
+    } else if (accNumber === '' || !onTextChange('accNum', accNumber)) {
       Alert.alert('Please enter a valid Phone Number to proceed');
     } else {
       return true;
@@ -304,14 +308,6 @@ export default function SignUpScreen({ navigation }) {
     if (!agree) {
       Alert.alert('Please read and agree with the Terms and Conditions to proceed');
     } else {
-      let accName = `${firstName} ${lastName}`;
-      let accEmailAd = email;
-      let accNum = number;
-      if (accFullName !== '' && accEmail !== '' && accNumber !== '') {
-        accName = accFullName;
-        accEmailAd = accEmail;
-        accNum = accNumber;
-      }
       base('Users').create([
         {
           fields: {
@@ -331,9 +327,9 @@ export default function SignUpScreen({ navigation }) {
             'billing address': billAddress,
             'billing apartment number': billApt,
             'billing zipcode': billZip,
-            'accounting name': accName,
-            'accounting email': accEmailAd,
-            'accounting phone': accNum,
+            'accounting name': accFullName,
+            'accounting email': accEmail,
+            'accounting phone': accNumber,
           },
         },
       ], (error) => {
@@ -410,7 +406,7 @@ export default function SignUpScreen({ navigation }) {
               style={styles.textInput}
               value={organization}
               onChangeText={setOrganization}
-              placeholder="Organization (optional)"
+              placeholder="Organization"
               returnKeyType="next"
               onSubmitEditing={() => { emailInput.current.focus(); }}
               blurOnSubmit={false}
@@ -719,8 +715,8 @@ export default function SignUpScreen({ navigation }) {
               value={billZip}
               onChangeText={setBillZip}
               placeholder="Zip code"
-              returnKeyType="done"
-              onSubmitEditing={() => { Keyboard.dismiss(); }}
+              returnKeyType="next"
+              onSubmitEditing={() => { accNameInput.current.focus(); }}
               textAlign="left"
               blurOnSubmit={false}
               ref={billZipInput}
@@ -736,7 +732,7 @@ export default function SignUpScreen({ navigation }) {
               style={styles.textInput}
               value={accFullName}
               onChangeText={setAccFullName}
-              placeholder="First and last name (optional)"
+              placeholder="First and last name"
               returnKeyType="next"
               onSubmitEditing={() => { accEmailInput.current.focus(); }}
               blurOnSubmit={false}
@@ -749,7 +745,7 @@ export default function SignUpScreen({ navigation }) {
               style={styles.textInput}
               value={accEmail}
               onChangeText={setAccEmail}
-              placeholder="Email address (optional)"
+              placeholder="Email address"
               keyboardType="email-address"
               returnKeyType="next"
               onSubmitEditing={() => { accNumberInput.current.focus(); }}
@@ -764,7 +760,7 @@ export default function SignUpScreen({ navigation }) {
               style={styles.textInput}
               value={accNumber}
               onChangeText={(text) => onTextChange('accNum', text)}
-              placeholder="Phone number (optional)"
+              placeholder="Phone number"
               keyboardType="numeric"
               returnKeyType="done"
               onSubmitEditing={() => { Keyboard.dismiss(); }}
