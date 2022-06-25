@@ -16,6 +16,7 @@ import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
+import TermsScreen from '../SignUp/TermsScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -97,6 +98,16 @@ function DrawerRoutes() {
         }}
       />
       <Drawer.Screen
+        name="TermDrawer"
+        component={TermsScreen}
+        options={{
+          title: 'Terms',
+          drawerIcon: profileIcon,
+          headerTitle: '',
+          headerTransparent: true,
+        }}
+      />
+      <Drawer.Screen
         name="Back"
         component={MarketplaceScreen}
         options={{
@@ -131,12 +142,14 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Log In">
+    <stackNavig.Navigator initialRouteName="Terms">
+      {/* CHANGE BACK TO LOG IN , remove terms */}
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
+      <stackNavig.Screen name="Terms" component={TermsScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Cart" component={CartScreen} />
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />

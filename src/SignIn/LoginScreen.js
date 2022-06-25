@@ -3,7 +3,6 @@ import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
 
@@ -92,7 +91,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   const handleSignUp = () => {
-    navigation.navigate('Sign Up');
+    navigation.navigate('Terms');
   };
 
   const [username, setUserName] = useState('');
@@ -150,15 +149,22 @@ export default function LoginScreen({ navigation }) {
           style={styles.button}
           onPress={() => handleSignIn()}
         >
-          <Text style={styles.buttonText}> Login </Text>
+          <Text
+            style={styles.buttonText}
+          >
+            Login
+          </Text>
         </TouchableOpacity>
-
         <Text style={styles.bottomTextFine}>
           Don&apos;t have an account?
-          <Text style={styles.bottomTextBold} onPress={() => handleSignUp()}> Sign Up</Text>
+          <Text
+            style={styles.bottomTextBold}
+            onPress={() => handleSignUp()}
+          >
+            Sign Up
+          </Text>
         </Text>
       </View>
-
     </ImageBackground>
   );
 }
