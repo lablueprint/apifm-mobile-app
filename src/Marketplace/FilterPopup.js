@@ -4,7 +4,6 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import { initialWindowMetrics } from 'react-native-safe-area-context';
 
 const styles = StyleSheet.create({
   popupContainer: {

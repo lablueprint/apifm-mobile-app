@@ -226,8 +226,6 @@ function ProduceDetailsScreen({ route }) {
 
   const onAddToCart = async () => {
     try {
-      // figure out how updates should work: if a user wants
-      // to update delivery day? how are restrictions in place
       let deliveryDate = 'Friday';
       if (mondayDelivery) {
         deliveryDate = 'Monday';
