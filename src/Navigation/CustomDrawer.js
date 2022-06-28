@@ -34,14 +34,14 @@ const styles = StyleSheet.create({
 
   title: {
     color: '#34221D',
-    fontSize: 24,
+    fontSize: 25,
     marginBottom: 2,
     fontFamily: 'JosefinSans-SemiBold',
   },
 
   subtitle: {
     color: '#34221D',
-    fontSize: 14,
+    fontSize: 16,
     fontFamily: 'JosefinSans-Regular',
   },
 
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   },
 
   footerDrawer: {
-    fontSize: 14,
+    fontSize: 17,
     paddingLeft: 17,
     width: '100%',
     color: '#34221D',
