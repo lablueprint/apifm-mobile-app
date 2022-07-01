@@ -141,7 +141,7 @@ function ProduceCard({
       <TouchableOpacity onPress={onPressCard}>
         <View style={styles.cardContainer}>
           <Image style={styles.image} source={image === '' ? missingImage : imageurl} />
-          <Text style={styles.name}>{name}</Text>
+          <Text numberOfLines={1} style={styles.name}>{name}</Text>
           <View style={styles.bottom}>
             <Text style={styles.price}>
               {`$${price}`}
