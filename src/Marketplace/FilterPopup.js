@@ -8,8 +8,63 @@ import CheckboxIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 const styles = StyleSheet.create({
   popupContainer: {
     width: 330,
-    height: 470,
     backgroundColor: '#FFFFFF',
+    borderRadius: 30,
+    paddingTop: 20,
+    paddingBottom: 20,
+  },
+
+  headingContainer: {
+    flexDirection: 'row',
+  },
+
+  title: {
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 22,
+    color: '#34221D',
+    marginLeft: 'auto',
+    left: 20,
+  },
+
+  closeButton: {
+    marginLeft: 'auto',
+    marginRight: 25,
+    marginTop: 8,
+  },
+
+  subtitle: {
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 18,
+    color: '#34221D',
+    marginBottom: 12,
+    marginLeft: 25,
+  },
+
+  checkboxContainer: {
+    flexDirection: 'row',
+    marginBottom: 6,
+  },
+
+  text: {
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#34221D',
+    fontSize: 14,
+    marginLeft: 50,
+  },
+
+  checkbox: {
+    display: 'flex',
+    marginLeft: 'auto',
+    marginRight: 25,
+  },
+
+  divider: {
+    borderStyle: 'solid',
+    borderBottomWidth: 1,
+    borderColor: '#C4C4C4',
+    width: '100%',
+    marginTop: 15,
+    marginBottom: 15,
   },
 });
 
@@ -30,52 +85,60 @@ function FilterPopup({
 
   return (
     <View style={styles.popupContainer}>
-      <View>
-        <Text>Filter & Sort</Text>
-        <TouchableOpacity onPress={() => { setVisibility(false); }}>
-          <CheckboxIcon name="close" />
+      <View style={styles.headingContainer}>
+        <Text style={styles.title}>Filter & Sort</Text>
+        <TouchableOpacity style={styles.closeButton} onPress={() => { setVisibility(false); }}>
+          <CheckboxIcon size={20} color="#34221D" name="close" />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>A to Z (Alphabetical)</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { chooseSortOption(aZ, setAZ, [setZA, setLowHigh, setHighLow]); }} name={aZ ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+
+      <View style={styles.divider} />
+
+      <Text style={styles.subtitle}>Sort</Text>
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>A to Z (Alphabetical)</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { chooseSortOption(aZ, setAZ, [setZA, setLowHigh, setHighLow]); }} name={aZ ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>Z to A (Alphabetical)</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { chooseSortOption(zA, setZA, [setAZ, setLowHigh, setHighLow]); }} name={zA ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>Z to A (Alphabetical)</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { chooseSortOption(zA, setZA, [setAZ, setLowHigh, setHighLow]); }} name={zA ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>Price Low to High</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { chooseSortOption(lowHigh, setLowHigh, [setAZ, setZA, setHighLow]); }} name={lowHigh ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>Price Low to High</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { chooseSortOption(lowHigh, setLowHigh, [setAZ, setZA, setHighLow]); }} name={lowHigh ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>Price High to Low</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { chooseSortOption(highLow, setHighLow, [setAZ, setZA, setLowHigh]); }} name={highLow ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>Price High to Low</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { chooseSortOption(highLow, setHighLow, [setAZ, setZA, setLowHigh]); }} name={highLow ? 'radiobox-marked' : 'radiobox-blank'} size={20} />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>Seasonal</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setSeasonal(!seasonal); }} name={seasonal ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
+
+      <View style={styles.divider} />
+
+      <Text style={styles.subtitle}>Filters</Text>
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>Seasonal</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { setSeasonal(!seasonal); }} name={seasonal ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>Vegetables</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setVegetables(!vegetables); }} name={vegetables ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>Vegetables</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { setVegetables(!vegetables); }} name={vegetables ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
         </TouchableOpacity>
       </View>
-      <View>
-        <Text>Fruits</Text>
-        <TouchableOpacity>
-          <CheckboxIcon onPress={() => { setFruits(!fruits); }} name={fruits ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
+      <View style={styles.checkboxContainer}>
+        <Text style={styles.text}>Fruits</Text>
+        <TouchableOpacity style={styles.checkbox}>
+          <CheckboxIcon color="#34221D" onPress={() => { setFruits(!fruits); }} name={fruits ? 'close-box-outline' : 'checkbox-blank-outline'} size={20} />
         </TouchableOpacity>
       </View>
     </View>

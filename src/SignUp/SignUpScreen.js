@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D763C',
     borderRadius: 30,
     fontFamily: 'JosefinSans-SemiBold',
-
   },
   backArrow: {
     paddingLeft: 15,
@@ -69,10 +68,14 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     height: 38,
     margin: 7.5,
+<<<<<<< HEAD
     // marginLeft: 30,
     flexDirection: 'row',
     // justifyContent: 'center',
     // alignSelf: 'flex-start',
+=======
+    flexDirection: 'row',
+>>>>>>> 9e24985ac3cd135e0ff41d167ba259ffadf33820
     alignItems: 'center',
     borderRadius: 15,
     borderColor: (134, 134, 134, 0.31),
@@ -201,8 +204,10 @@ export default function SignUpScreen({ navigation }) {
         Alert.alert('Please enter a 10-digit phone number');
       } else if (val === 'number') {
         setNumber(num.toString());
-      } else {
+      } else if (val === 'busPhone') {
         setBusPhone(num.toString());
+      } else {
+        setAccNumber(num.toString());
       }
       return (true);
     }
@@ -211,25 +216,29 @@ export default function SignUpScreen({ navigation }) {
       Alert.alert('Please enter a valid phone number');
     } else if (val === 'number') {
       setNumber(text.toString());
-    } else {
+    } else if (val === 'busPhone') {
       setBusPhone(text.toString());
+    } else {
+      setAccNumber(text.toString());
     }
 
-    if ((val === 'busPhone') && (text.length === 0)) {
+    if (((val === 'busPhone') && (text.length === 0)) || (val === 'accNum' && text.length === 0)) {
       return (true);
     }
 
     return (false);
   };
 
-  const checkInputs = () => {
+  const checkAccountInputs = () => {
     if (firstName === '') {
       Alert.alert('Please enter the First Name to proceed');
     } else if (lastName === '') {
       Alert.alert('Please enter the Last Name to proceed');
+    } else if (organization === '') {
+      Alert.alert('Please enter the Organization to proceed');
     } else if (email === '') {
       Alert.alert('Please enter an Email to proceed');
-    } else if (!validEmail) {
+    } else if (!validateEmail(email)) {
       Alert.alert('Please enter a valid Email to proceed');
     } else if (password === '') {
       Alert.alert('Please enter the Password to proceed');
@@ -247,15 +256,44 @@ export default function SignUpScreen({ navigation }) {
     return false;
   };
 
-  const handleSignUp = () => {
-    if (address === '') {
+  const checkDeliveryInputs = () => {
+    if (recipient === '') {
+      Alert.alert('Please enter the Delivery Recepient to proceed');
+    } else if (address === '') {
       Alert.alert('Please enter the Address to proceed');
-    // eslint-disable-next-line no-restricted-globals
-    } else if (isNaN(apt)) {
-      Alert.alert('Please enter a numerical Apt # to proceed');
     // eslint-disable-next-line no-restricted-globals
     } else if (zip === '' || isNaN(zip) || (zip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
+    } else {
+      return true;
+    }
+    return false;
+  };
+
+  const checkBillingInputs = () => {
+    if (fullName === '') {
+      Alert.alert('Please enter the First and Last name to proceed');
+    } else if (billAddress === '') {
+      Alert.alert('Please enter the Street Address to proceed');
+    // eslint-disable-next-line no-restricted-globals
+    } else if (billZip === '' || isNaN(billZip) || (billZip.length !== 5)) {
+      Alert.alert('Please enter a valid Zipcode to proceed');
+    } else if (accFullName === '') {
+      Alert.alert('Please enter a valid accounting First and Last name to proceed');
+    } else if (accEmail === '' || !validateEmail(accEmail)) {
+      Alert.alert('Please enter a valid Email to proceed');
+    } else if (accNumber === '' || !onTextChange('accNum', accNumber)) {
+      Alert.alert('Please enter a valid Phone Number to proceed');
+    } else {
+      return true;
+    }
+    return false;
+  };
+
+  // add the new inputs
+  const handleSignUp = () => {
+    if (!agree) {
+      Alert.alert('Please read and agree with the Terms and Conditions to proceed');
     } else {
       base('Users').create([
         {
@@ -269,9 +307,16 @@ export default function SignUpScreen({ navigation }) {
             'business phone': busPhone,
             'delivery recipient': recipient,
             address,
-            'apartment number': parseInt(apt, 10),
-            zipcode: parseInt(zip, 10),
+            'apartment number': apt,
+            zipcode: zip,
             instructions: instr,
+            'billing name': fullName,
+            'billing address': billAddress,
+            'billing apartment number': billApt,
+            'billing zipcode': billZip,
+            'accounting name': accFullName,
+            'accounting email': accEmail,
+            'accounting phone': accNumber,
           },
         },
       ], (error) => {
@@ -291,18 +336,18 @@ export default function SignUpScreen({ navigation }) {
       setApt('');
       setZip('');
       setInstr('');
+      // might need to set the new inputs to empty strings but likely not?
       navigation.navigate('Sign Up Confirmation');
     }
   };
 
-  if (page1) {
+  if (page === 1) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
         <View style={styles.container}>
           <View style={styles.text}>
 
-            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-              {/* <Image source={backArrow} /> */}
+            <TouchableOpacity onPress={() => { navigation.navigate('Terms'); }}>
               <ArrowIcon
                 style={styles.backArrow}
                 name="arrowleft"
@@ -347,7 +392,7 @@ export default function SignUpScreen({ navigation }) {
               style={styles.textInput}
               value={organization}
               onChangeText={setOrganization}
-              placeholder="Organization (optional)"
+              placeholder="Organization"
               returnKeyType="next"
               onSubmitEditing={() => { emailInput.current.focus(); }}
               blurOnSubmit={false}
@@ -360,7 +405,7 @@ export default function SignUpScreen({ navigation }) {
             <TextInput
               style={styles.textInput}
               value={email}
-              onChangeText={(text) => validateEmail(text)}
+              onChangeText={setEmail}
               placeholder="Email address"
               keyboardType="email-address"
               returnKeyType="next"
@@ -430,9 +475,9 @@ export default function SignUpScreen({ navigation }) {
               value={confirmPassword}
               onChangeText={setConfirmPassword}
               placeholder="Confirm Password"
-              returnKeyType="next"
+              returnKeyType="done"
               secureTextEntry={!!hidePassConf}
-            // onSubmitEditing={() => { numberInput.current.focus(); }}
+              onSubmitEditing={() => { Keyboard.dismiss(); }}
               blurOnSubmit={false}
               ref={confirmPasswordInput}
               width={306}
@@ -450,8 +495,9 @@ export default function SignUpScreen({ navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              if (checkInputs()) {
-                setPage1(!page1);
+              if (checkAccountInputs()) {
+                Keyboard.dismiss();
+                setPage(2);
               }
             }}
           >
@@ -465,118 +511,326 @@ export default function SignUpScreen({ navigation }) {
   }
 
   // second page:
+  if (page === 2) {
+    return (
+      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+        <View style={styles.container}>
+
+          <View style={styles.text}>
+
+            <TouchableOpacity onPress={() => { setPage(1); }}>
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
+            </TouchableOpacity>
+
+            <Image style={styles.image} source={headerImage} />
+          </View>
+
+          <Title style={styles.titleText}>Sign Up</Title>
+
+          <Title style={styles.header}>Delivery Address</Title>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={recipient}
+              onChangeText={setRecipient}
+              placeholder="Delivery recepient (first and last name)"
+              returnKeyType="next"
+              onSubmitEditing={() => { addrInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={address}
+              onChangeText={setAddress}
+              placeholder="Street address"
+              returnKeyType="next"
+              onSubmitEditing={() => { aptInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={addrInput}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={apt}
+              onChangeText={setApt}
+              textContentType="postalCode"
+              placeholder="Apt # (optional)"
+              returnKeyType="next"
+              onSubmitEditing={() => { zipInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={aptInput}
+              width={330}
+            />
+          </View>
+
+          <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
+            <TextInput
+              style={styles.textInput}
+              value={zip}
+              onChangeText={setZip}
+              placeholder="Zip code"
+              returnKeyType="next"
+              textAlign="left"
+              onSubmitEditing={() => { instrInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={zipInput}
+              width={121}
+            />
+          </View>
+
+          <View>
+            <TextInput
+              style={styles.multiline}
+              value={instr}
+              onChangeText={setInstr}
+              placeholder="  Instructions for delivery (optional)"
+              returnKeyType="done"
+              onSubmitEditing={() => { Keyboard.dismiss(); }}
+              blurOnSubmit={false}
+              ref={instrInput}
+              height={112}
+              multiline
+              numberOfLines={5}
+              width={340}
+            />
+
+          </View>
+
+          <View>
+            <Text style={styles.descriptext}>
+              The address will be used for delivery and to
+              calculate the order minimum for delivery.
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              if (checkDeliveryInputs()) {
+                Keyboard.dismiss();
+                setPage(3);
+              }
+            }}
+          >
+            <Text style={styles.buttonText}> Continue </Text>
+          </TouchableOpacity>
+
+        </View>
+      </ImageBackground>
+    );
+  }
+
+  if (page === 3) {
+    return (
+      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+        <View style={styles.container}>
+          <View style={styles.text}>
+            <TouchableOpacity onPress={() => { setPage(2); }}>
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
+            </TouchableOpacity>
+            <Image style={styles.image} source={headerImage} />
+          </View>
+
+          <Text style={styles.titleText}>Sign Up</Text>
+
+          <Title style={styles.header}>Billing Address</Title>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={fullName}
+              onChangeText={setFullName}
+              placeholder="First and last name"
+              returnKeyType="next"
+              onSubmitEditing={() => { billAddrInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={billAddress}
+              onChangeText={setBillAddress}
+              placeholder="Street address"
+              returnKeyType="next"
+              onSubmitEditing={() => { billAptInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={billAddrInput}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={billApt}
+              onChangeText={setBillApt}
+              textContentType="postalCode"
+              placeholder="Apt # (optional)"
+              returnKeyType="next"
+              onSubmitEditing={() => { billZipInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={billAptInput}
+              width={330}
+            />
+          </View>
+
+          <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
+            <TextInput
+              style={styles.textInput}
+              value={billZip}
+              onChangeText={setBillZip}
+              placeholder="Zip code"
+              returnKeyType="next"
+              onSubmitEditing={() => { accNameInput.current.focus(); }}
+              textAlign="left"
+              blurOnSubmit={false}
+              ref={billZipInput}
+              width={121}
+            />
+          </View>
+
+          <Title style={styles.header}>Accounting Contact</Title>
+          <Text>If different from account information</Text>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={accFullName}
+              onChangeText={setAccFullName}
+              placeholder="First and last name"
+              returnKeyType="next"
+              onSubmitEditing={() => { accEmailInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={accEmail}
+              onChangeText={setAccEmail}
+              placeholder="Email address"
+              keyboardType="email-address"
+              returnKeyType="next"
+              onSubmitEditing={() => { accNumberInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={accEmailInput}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={accNumber}
+              onChangeText={(text) => onTextChange('accNum', text)}
+              placeholder="Phone number"
+              keyboardType="numeric"
+              returnKeyType="done"
+              onSubmitEditing={() => { Keyboard.dismiss(); }}
+              blurOnSubmit={false}
+              ref={accNumberInput}
+              width={330}
+            />
+          </View>
+
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              if (checkBillingInputs()) {
+                setPage(4);
+              }
+            }}
+          >
+            <Text style={styles.buttonText}> Continue </Text>
+          </TouchableOpacity>
+
+        </View>
+      </ImageBackground>
+    );
+  }
+
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-      <View style={styles.container}>
-
-        <View style={styles.text}>
-
-          <TouchableOpacity onPress={() => { setPage1(!page1); }}>
-            {/* <Image source={backArrow} /> */}
+      <View style={styles.termsContainer}>
+        <View style={styles.headerContainer}>
+          <TouchableOpacity onPress={() => { setPage(3); }}>
             <ArrowIcon
-              style={styles.backArrow}
+              style={styles.termsBackArrow}
               name="arrowleft"
               size={34}
               color="#FF9F00"
             />
           </TouchableOpacity>
-
-          <Image style={styles.image} source={headerImage} />
+          <Image style={styles.headerImage} source={foodrootslogo} />
         </View>
-
-        <Title style={styles.titleText}>Sign Up</Title>
-
-        <Title style={styles.header}>Delivery Address</Title>
-
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={recipient}
-            onChangeText={setRecipient}
-            placeholder="Organization name (optional)"
-            returnKeyType="next"
-            onSubmitEditing={() => { addrInput.current.focus(); }}
-            blurOnSubmit={false}
-            width={330}
+        <Text
+          style={styles.title}
+        >
+          Sign up
+        </Text>
+        <Text style={styles.subTitle}> Terms and Conditions </Text>
+        <ScrollView style={styles.termsBox}>
+          <Text
+            style={styles.termsBoxText}
+          >
+            I agree to submit the full invoice amount within 15 days of receipt of the produce.
+            (Failure to pay the full invoice amount within 15 days of receipt will result in a
+            10% late fee added each week beginning on the 3rd week and continuing until the 5th
+            week. Upon the 6th week of no payment the debt will be submitted to a debt
+            collection agency.)
+            {'\n\n'}
+            I understand that I have the right to inspect and certify each produce item I receive
+            is in good condition. (Any requests for refunds or exchanges made after signed receipt
+            of the produce is at the full discretion of Food Roots. Approved requests for refunds or
+            exchanges requires, but is not limited to: photo evidence, a full description of what is
+            wrong with the produce and must be received within 24 hours of the initial delivery.)
+          </Text>
+        </ScrollView>
+        <View style={styles.iconContainer}>
+          <Checkbox
+            status={agree ? 'checked' : 'unchecked'}
+            onPress={() => {
+              setAgree(!agree);
+            }}
+            color="#1D763C"
+            uncheckedColor="#1D763C"
           />
-        </View>
-
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={address}
-            onChangeText={setAddress}
-            placeholder="Street address"
-            returnKeyType="next"
-            onSubmitEditing={() => { aptInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={addrInput}
-            width={330}
-          />
-        </View>
-
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={apt}
-            onChangeText={setApt}
-            textContentType="postalCode"
-            placeholder="Apt # (optional)"
-            returnKeyType="next"
-            onSubmitEditing={() => { zipInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={aptInput}
-            width={330}
-          />
-        </View>
-
-        <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
-          <TextInput
-            style={styles.textInput}
-            value={zip}
-            onChangeText={setZip}
-            placeholder="Zip code"
-            returnKeyType="next"
-            textAlign="left"
-            onSubmitEditing={() => { instrInput.current.focus(); }}
-            blurOnSubmit={false}
-            ref={zipInput}
-            width={121}
-          />
-        </View>
-
-        <View>
-          <TextInput
-            style={styles.multiline}
-            value={instr}
-            onChangeText={setInstr}
-            placeholder="  Instructions for delivery (optional)"
-            returnKeyType="next"
-            blurOnSubmit={false}
-            ref={instrInput}
-            height={112}
-            multiline
-            numberOfLines={5}
-            width={340}
-          />
-
-        </View>
-
-        <View>
-          <Text style={styles.descriptext}>
-            The address will be used for delivery and to
-            calculate the order minimum for delivery.
+          <Text style={styles.bottomText}>
+            I have read, understood, and agree with the Terms and Conditions.
           </Text>
         </View>
-
-        <TouchableOpacity
-          mode="contained"
-          style={styles.button}
-          onPress={() => { handleSignUp(); }}
+        <Button
+          style={agree ? styles.signUpButtonChecked : styles.signUpButtonUnchecked}
+          onPress={handleSignUp}
         >
-          <Text style={styles.buttonText}> Sign Up </Text>
-        </TouchableOpacity>
-
+          <Text style={styles.signUpButtonText}>
+            Sign up
+          </Text>
+        </Button>
       </View>
     </ImageBackground>
   );
