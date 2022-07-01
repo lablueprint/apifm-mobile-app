@@ -43,7 +43,6 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     marginBottom: 40,
     fontFamily: 'JosefinSans-SemiBold',
-
   },
   image: {
     flex: 1,
@@ -52,9 +51,11 @@ const styles = StyleSheet.create({
 });
 
 export default function SignUpConfirmation({ navigation }) {
-  // const [fontsLoaded] = useFonts({ JosefinSans_600SemiBold });
-  return (
+  const handleBrowse = () => {
+    navigation.navigate('Marketplace');
+  };
 
+  return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.image}>
       <View style={styles.container}>
         <View style={styles.container}>
@@ -70,12 +71,12 @@ export default function SignUpConfirmation({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.button}
+          onPress={handleBrowse}
         >
           <Text style={styles.buttonText}>Start browsing!</Text>
         </TouchableOpacity>
       </View>
     </ImageBackground>
-
   );
 }
 

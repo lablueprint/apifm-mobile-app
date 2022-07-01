@@ -107,11 +107,11 @@ function CustomDrawer(props) {
             size={26}
             name="logout-variant"
             color="#34221D"
-            onPress={() => { navigation.navigate('SignIn'); }} // TODO: change to signed out screen once it is implemented
+            onPress={() => { navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
           />
           <Text
             style={styles.footerDrawer}
-            onPress={() => { navigation.navigate('SignIn'); }} // TODO: change to signed out screen once it is implemented
+            onPress={() => { navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
           >
             Log out
           </Text>
