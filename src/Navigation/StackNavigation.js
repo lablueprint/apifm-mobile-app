@@ -103,6 +103,10 @@ function DrawerRoutes() {
         options={{
           title: 'Marketplace',
           drawerIcon: marketplaceIcon,
+          headerShown: false,
+          headerStyle: {
+            height: 0,
+          },
         }}
       />
       <Drawer.Screen

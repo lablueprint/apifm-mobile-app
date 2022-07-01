@@ -56,7 +56,7 @@ const styles = StyleSheet.create({
   tagContainer: {
     backgroundColor: '#C1DDA9',
     borderRadius: 4,
-    width: 60,
+    width: 70,
     height: 30,
     alignItems: 'center',
     marginLeft: 8,
@@ -157,6 +157,7 @@ function ProduceDetailsScreen({ route }) {
   const {
     userId, produceId, favorite, setFavorite,
     image, name, tags, price, unit, seller, maxQuantity, minQuantity,
+    mondayDelivery,
   } = route.params;
 
   const produceTags = tags.map((tag) => (
@@ -225,6 +226,10 @@ function ProduceDetailsScreen({ route }) {
 
   const onAddToCart = async () => {
     try {
+      let deliveryDate = 'Friday';
+      if (mondayDelivery) {
+        deliveryDate = 'Monday';
+      }
       setVisible(true);
       const quantityToUpdate = [];
       await base('CART V3').select({
@@ -248,6 +253,7 @@ function ProduceDetailsScreen({ route }) {
             id: quantityToUpdate[0].id,
             fields: {
               quantity: newQuantity,
+              'Delivery Date': deliveryDate,
             },
           },
         ], (err) => {
@@ -262,6 +268,7 @@ function ProduceDetailsScreen({ route }) {
               Produce: [produceId],
               quantity: Number(orderQuantity),
               shopper: [userId],
+              'Delivery Date': deliveryDate,
             },
           },
         ], (err) => {
@@ -378,6 +385,7 @@ ProduceDetailsScreen.propTypes = {
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
       minQuantity: PropTypes.number.isRequired,
+      mondayDelivery: PropTypes.bool.isRequired,
     }),
   }).isRequired,
 };
