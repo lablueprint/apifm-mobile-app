@@ -193,6 +193,8 @@ export default function MarketplaceScreen({ navigation }) {
   || (today.getDay() === 5 && today.getHours() >= 15)
   || today.getDay() === 6 || today.getDay() === 0;
 
+  // const closedMarket = false;
+
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
   const [produceList, setProduceList] = useState([]);

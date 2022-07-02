@@ -1,10 +1,9 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, ScrollView, TextInput, Keyboard,
-  Alert, Text, Image, TouchableOpacity, ImageBackground,
+  View, StyleSheet, TextInput, Alert, Text, Image, TouchableOpacity, ImageBackground,
 } from 'react-native';
 import {
-  Title, Checkbox, Button,
+  Title,
 } from 'react-native-paper';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
@@ -13,7 +12,6 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
 const Airtable = require('airtable');
-const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
 const airtableConfig = {
@@ -30,9 +28,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    // backgroundColor: '#FFFFFF',
     height: 844,
     width: '100%',
     padding: '8%',
+
   },
   button: {
     marginTop: 10,
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   text: {
     flex: 1,
     flexDirection: 'row',
+    // marginTop: 30,
     width: 350,
   },
   image: {
@@ -116,115 +117,26 @@ const styles = StyleSheet.create({
   titleText: {
     marginLeft: 17,
     width: 330,
+    margin: 8.5,
     flexDirection: 'row',
+    // alignItems: 'center',
+    // textAlignVertical: 'center',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
     color: '#1D763C',
   },
   buttonText: {
+    // marginTop: 6,
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
     color: 'white',
     marginTop: 3,
   },
-  termsContainer: {
-    marginLeft: '6%',
-    marginRight: '6%',
-    width: '88%',
-    height: '100%',
-  },
-  headerContainer: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: '1%',
-    height: '100%',
-    width: '100%',
-  },
-  termsBackArrow: {
-    position: 'absolute',
-    right: 0,
-    marginLeft: '-100%',
-    margin: 'auto',
-  },
-  headerImage: {
-    marginTop: '7%',
-    width: '50%',
-    height: 50,
-  },
-  title: {
-    marginTop: '5%',
-    fontSize: 28,
-    fontFamily: 'JosefinSans-SemiBold',
-    color: '#1D763C',
-    alignSelf: 'center',
-  },
-  subTitle: {
-    marginTop: '9%',
-    marginBottom: '3%',
-    fontSize: 17,
-    fontFamily: 'JosefinSans-Bold',
-    color: '#1D763C',
-  },
-  termsBox: {
-    maxHeight: '55%',
-  },
-  termsBoxText: {
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: 'grey',
-    fontSize: 16,
-    padding: 12,
-    fontFamily: 'JosefinSans-Regular',
-    color: '#5D5D5D',
-    backgroundColor: '#FFFFFF',
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginTop: '-4%',
-    marginBottom: '5%',
-  },
-  checkbox: {
-    margin: 16,
-    fontSize: 100,
-    color: '#1D763C',
-    backgroundColor: '#1D763C',
-    onTintColor: '#1D763C',
-    onCheckColor: '#1D763C',
-  },
-  bottomText: {
-    marginTop: '1%',
-    fontSize: 15,
-    fontFamily: 'JosefinSans-SemiBold',
-  },
-  signUpButtonUnchecked: {
-    marginTop: 5,
-    marginBottom: '15%',
-    borderRadius: 20,
-    height: 50,
-    backgroundColor: '#E5E5E5',
-  },
-  signUpButtonChecked: {
-    marginTop: 5,
-    marginBottom: '15%',
-    borderRadius: 20,
-    height: 50,
-    backgroundColor: '#1D763C',
-  },
-  signUpButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontFamily: 'JosefinSans-SemiBold',
-  },
 });
 
 export default function SignUpScreen({ navigation }) {
-  const [page, setPage] = useState(1);
-
   // first page states:
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -259,33 +171,20 @@ export default function SignUpScreen({ navigation }) {
   const zipInput = useRef();
   const instrInput = useRef();
 
-  // third page states:
-  const [fullName, setFullName] = useState('');
-  const [billAddress, setBillAddress] = useState('');
-  const [billApt, setBillApt] = useState('');
-  const [billZip, setBillZip] = useState('');
+  const [page1, setPage1] = useState(true);
 
-  const [accFullName, setAccFullName] = useState('');
-  const [accEmail, setAccEmail] = useState('');
-  const [accNumber, setAccNumber] = useState('');
+  const [validEmail, setValidEmail] = useState(false);
 
-  const billAddrInput = useRef();
-  const billAptInput = useRef();
-  const billZipInput = useRef();
-  const accNameInput = useRef();
-  const accEmailInput = useRef();
-  const accNumberInput = useRef();
-
-  // fourth page states:
-  const [agree, setAgree] = useState(false);
-
-  // submission checking and creating
   const validateEmail = (text) => {
-    const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w\w+)+$/;
+    const reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
     if (reg.test(text) === false) {
+      setEmail(text);
+      setValidEmail(false);
       return false;
     }
-    return true;
+
+    setEmail(text);
+    setValidEmail(true);
   };
 
   const onTextChange = (val, text) => {
