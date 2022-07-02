@@ -68,14 +68,7 @@ const styles = StyleSheet.create({
     borderWidth: 0.25,
     height: 38,
     margin: 7.5,
-<<<<<<< HEAD
-    // marginLeft: 30,
     flexDirection: 'row',
-    // justifyContent: 'center',
-    // alignSelf: 'flex-start',
-=======
-    flexDirection: 'row',
->>>>>>> 9e24985ac3cd135e0ff41d167ba259ffadf33820
     alignItems: 'center',
     borderRadius: 15,
     borderColor: (134, 134, 134, 0.31),
