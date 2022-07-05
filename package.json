@@ -10,6 +10,10 @@
     "lint": "eslint .",
     "generate-schema": "generate-airtable-schema"
   },
+  "airtable-schema-generator": {
+    "mode": "auto-headless",
+    "output": "./src/lib/"
+  },
   "dependencies": {
     "@expo-google-fonts/josefin-sans": "^0.2.2",
     "@mdi/font": "^6.5.95",
