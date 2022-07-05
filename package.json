@@ -7,7 +7,12 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "generate-schema": "generate-airtable-schema"
+  },
+  "airtable-schema-generator": {
+    "mode": "auto-headless",
+    "output": "./src/lib/"
   },
   "dependencies": {
     "@expo-google-fonts/josefin-sans": "^0.2.2",
@@ -41,6 +46,7 @@
     "@babel/runtime": "^7.16.7",
     "@iconify/react": "^3.2.1",
     "@react-native-community/eslint-config": "^3.0.1",
+    "airtable-schema-generator": "^1.6.0",
     "babel-jest": "^27.4.5",
     "eslint": "^8.6.0",
     "eslint-config-airbnb": "^19.0.4",
