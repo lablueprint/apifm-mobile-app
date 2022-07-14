@@ -1,17 +1,24 @@
-import React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
+import React, { useState } from 'react';
 import {
-  Title,
-  Text,
-  Button,
-  TextInput, Subheading,
+  View, StyleSheet, Image, Alert,
+} from 'react-native';
+import {
+  Title, Text, Button, TextInput, Subheading,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Config from 'react-native-config';
 import { mdiSourcePull } from '@mdi/js';
 
+const Airtable = require('airtable');
 const profilePicture = require('../assets/imgs/profilepic.png');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey }).base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   // container: {
@@ -34,76 +41,103 @@ const styles = StyleSheet.create({
 });
 
 export default function ProfileScreen({ navigation }) {
-  const Airtable = require('airtable');
+  // attempt :
+  const DUMMY_USER_ID = 'recmv4QJMaIkf11rR';
+  const DUMMY_NAME = 'Sunflower Moo';
 
-  const airtableConfig = {
-    apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-    baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+  const [email, setEmail] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [address, setAddress] = useState('');
+
+  // save changes made to field
+  const handleSaveChanges = () => {
+    if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
+      Alert.alert('Your changes have been saved.');
+      // Airtable call to update fields
+      base('Users').update([
+        {
+          id: DUMMY_USER_ID,
+          fields: {
+            email,
+            address,
+            'personal phone': phoneNum,
+          },
+        },
+      ], (err) => {
+        if (err) {
+          Alert.alert(err.error, err.message);
+        }
+      });
+    } else {
+      Alert.alert('Please fill out all fields');
+    }
   };
 
-  const base = new Airtable({ apiKey: airtableConfig.apiKey }).base(airtableConfig.baseKey);
-
-  base('Users').find('recIpBFqr2EXNbS7d', (err, record) => {
-    if (err) { console.error(err); return; }
-    console.log('Retrieved', record.id);
-    const recordID = record.id;
-  });
+  // base('Users').find('recIpBFqr2EXNbS7d', (err, record) => {
+  //   if (err) { console.error(err); return; }
+  //   console.log('Retrieved', record.id);
+  //   const recordID = record.id;
+  // });
 
   return (
     <View style={styles.container}>
-      {/* <Avatar.Icon size={100} icon={profile} /> */}
-      <Image
-        source={profilePicture}
-      />
+      <Image source={profilePicture} />
       <Title style={styles.titleText}>
-
-        {/* <Icon
-          style={
-                        { fontSize: 50 }
-                    }
-          name="account-circle"
-        /> */}
-        Joe Bruin
+        {' '}
+        {DUMMY_NAME}
+        {' '}
       </Title>
-      <Subheading>Organization </Subheading>
+      <Subheading>Organization Name</Subheading>
 
-      {/* <Text style={styles.bodyText}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.TextInput}
+          value={email}
+          onChangeText={setEmail}
+          placeholder="Email"
+          keyboardType="email-address"
+          returnKeyType="next"
+          mode="transparent"
+          label="Email"
+          width={330}
+        />
+      </View>
 
-        This is my account page.I am a happy farmer.
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.TextInput}
+          value={phoneNum}
+          onChangeText={setPhoneNum}
+          placeholder="phone Number"
+          keyboardType="numeric"
+          returnKeyType="next"
+          mode="transparent"
+          label="Phone Number"
+          width={330}
+        />
+      </View>
 
-      </Text> */}
-
-      <TextInput
-        mode="transparent"
-        label="Email"
-        placeholder="Email"
-        // need to pull from airtable for this
-        value={recordID}
-      />
-
-      <TextInput
-        mode="transparent"
-        label="Phone Number"
-        placeholder="Phone Number"
-        // need to pull from airtable for this
-        value="(123)456-7890"
-      />
-      <TextInput
-        mode="transparent"
-        label="Address"
-        placeholder="Address"
-        // need to pull from airtable for this
-        value="330 De Neve Dr., Los Angeles"
-      />
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.TextInput}
+          value={address}
+          onChangeText={setAddress}
+          placeholder="Address"
+          returnKeyType="next"
+          mode="transparent"
+          label="Address"
+          width={330}
+        />
+      </View>
 
       <Button
         mode="contained"
         style={styles.button}
-        onPress={
-                    () => navigation.navigate('Marketplace')
-                }
+        onPress={() => navigation.navigate('Marketplace')}
+        onPress={handleSaveChanges}
       >
         MARKETPLACE
+        <Text styles={styles.buttonText}> save changes </Text>
       </Button>
     </View>
   );
