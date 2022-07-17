@@ -5,7 +5,6 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-import { mdiFlaskEmpty } from '@mdi/js';
 import CustomDrawer from './CustomDrawer';
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignUpScreen from '../SignUp/SignUpScreen';
@@ -151,7 +150,6 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
-      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
       <stackNavig.Screen
         name="EditAvatar"

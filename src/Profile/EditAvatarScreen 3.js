@@ -1,9 +1,13 @@
 /* eslint-disable global-require */
+import Base from 'airtable/lib/base';
 import React, { useState, useEffect } from 'react';
 import {
   Text, View, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
+import { initialWindowMetrics } from 'react-native-safe-area-context';
+
 import Config from 'react-native-config';
+import { withRepeat } from 'react-native-reanimated';
 
 const styles = StyleSheet.create({
   master: {
@@ -67,12 +71,14 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 export default function EditAvatarScreen({ navigation }) {
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
   const [avatarNum, setAvatarNum] = useState(0);
+  // const avatarFruits = ['placeholder', 'pipa', 'eggplant', 'mango', 'dragonfruit', 'lychee', 'bokchoy'];
 
   useEffect(() => {
     const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
+      console.log(record[0].fields.avatarNum);
       switch (record[0].fields.avatarNum) {
         case 1: setAvatar(require('../assets/imgs/pipa.png'));
           break;
@@ -88,9 +94,15 @@ export default function EditAvatarScreen({ navigation }) {
           break;
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
+      // const url = `../assets/imgs/${avatarFruits[avatarNum]}.png`;
+      // // eslint-disable-next-line import/no-dynamic-require
+      // setAvatar(require(url));
     });
   }, []);
 
+  // const updateAvatar = () => {
+
+  // }
   const sendUpdate = async () => {
     const user = 'recIpBFqr2EXNbS7d';
     await base('Users').update([
@@ -108,11 +120,45 @@ export default function EditAvatarScreen({ navigation }) {
     const user = 'recIpBFqr2EXNbS7d';
     await base('Users').find(user, (err, record) => {
       if (err) {
+        console.log(err);
         return;
       }
+
+      console.log('record');
+      console.log(record);
+
       sendUpdate();
     });
+    console.log('success!');
   };
+
+  // const saveAvatar = async () => {
+  //   // const useremail = 'helen@gmail.com';
+  //   // const helenrecord = await base('Users').select({
+  //   //   filterByFormula: `({email}='${useremail}')`,
+  //   // });
+  //   base('Users').update([
+  //     {
+  //       id: ['reclpBFqr2EXNbS7d'],
+  //       fields: {
+  //         avatarNum: 2,
+  //       },
+  //     },
+  //   ]);
+  //   console.log('temporary save button');
+  //   // base('Users').update([
+  //   //   { //TODO change hardcoded email
+  //   //     email: 'helen@gmail.com',
+  //   //     fields: {
+  //   //       avatar: avatar,
+  //   //     },
+  //   //   },
+  //   // ], (err) => {
+  //   //   if (err) {
+  //   //     console.error(err);
+  //   //   }
+  //   // });
+  // };
 
   return (
     <View style={styles.master}>
