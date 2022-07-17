@@ -6,6 +6,8 @@ import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { logout } from '../redux/sliceAuth';
 
 const styles = StyleSheet.create({
   main: {
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
 
 function CustomDrawer(props) {
   const { navigation } = props;
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.main}>
@@ -107,7 +110,7 @@ function CustomDrawer(props) {
             size={26}
             name="logout-variant"
             color="#34221D"
-            onPress={() => { navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
+            onPress={() => { dispatch(logout()); navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
           />
           <Text
             style={styles.footerDrawer}

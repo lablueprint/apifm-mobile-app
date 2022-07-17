@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector } from 'react-redux';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
@@ -180,6 +181,13 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  const { user } = useSelector((state) => state.auth);
+  const currentUser = JSON.parse(user._W);
+
+  if (!currentUser) {
+    navigation.navigate('Login');
+  }
+
   const today = new Date();
   const tempToday = new Date();
   const thisFriday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 5)));
@@ -450,7 +458,14 @@ export default function MarketplaceScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>Hello YOUR NAME,</Text>
+            <Text style={styles.welcomeText}>
+              Hello
+              {' '}
+              {currentUser.firstName}
+              {' '}
+              {currentUser.lastName}
+              ,
+            </Text>
             <Text style={styles.welcomeText}>Order your produce here!</Text>
           </View>
 
