@@ -91,15 +91,11 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const passwordInput = useRef();
   const dispatch = useDispatch();
-  const { isLoggedIn } = useSelector((state) => state.auth);
+  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const handleSignIn = () => {
-    const user = {
-      username,
-      password,
-    };
-    dispatch(login(user)).unwrap().then(() => {
-      // navigation.navigate('Marketplace');
+    dispatch(login(username, password)).then(() => {
+      navigation.navigate('Marketplace');
     });
   };
 
