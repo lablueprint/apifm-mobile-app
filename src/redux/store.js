@@ -1,10 +1,10 @@
-import { applyMiddleware } from 'redux';
 import { configureStore } from '@reduxjs/toolkit';
-import thunk from 'redux-thunk';
+import reducer from './sliceAuth';
 
-import authReducer from './reducers/auth';
-
-const middleware = [thunk];
-const store = configureStore(authReducer, applyMiddleware(...middleware));
+const store = configureStore({
+  reducer: {
+    auth: reducer,
+  },
+});
 
 export default store;
