@@ -1,5 +1,5 @@
 /* eslint-disable global-require */
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Text, View, Image, StyleSheet,
 } from 'react-native';
@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
     margin: 10,
   },
 });
+
+const avatarFruits = ['placeholder', 'pipa', 'eggplant', 'mango', 'dragonfruit', 'lychee', 'bokchoy'];
 
 export default function EditAvatarScreen() {
   return (

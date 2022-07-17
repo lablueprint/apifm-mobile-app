@@ -137,7 +137,7 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Marketplace">
+    <stackNavig.Navigator initialRouteName="Profile">
       <stackNavig.Screen name="Landing Page" component={LandingPage} options={{ headerShown: false }} />
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
