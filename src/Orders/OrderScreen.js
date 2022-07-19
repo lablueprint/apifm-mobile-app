@@ -56,18 +56,16 @@ export default function OrderScreen({ navigation }) {
   const [orderMap, setOrderMap] = useState(new Map());
   const [itemsList, setItemsList] = useState(new Map());
   const [images, setImages] = useState(new Map());
-  const [totalItemsList, setTotalItemsList] = useState(new Map());
 
   const [cardList, setCardList] = useState([]);
   const [flag, setFlag] = useState(false);
 
   const getOrders = () => {
-    const condenseOrders = new Map();
     let itemsListVar = new Map();
     let itemsListCount = new Map();
     let imagesVar = new Map();
     // This should be a map pointing from "month_year" to an array of order cards for all the orders in that month
-    // Each order card should be a map pointing from month to
+    // Each order card should be a map pointing from month to the dates of the orders in that month to the actual order cards
     let monthCondenseOrders = new Map();
     base('Orders').select({ filterByFormula: `({user_id}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
@@ -134,6 +132,8 @@ export default function OrderScreen({ navigation }) {
     getOrders();
   }, []);
 
+  // This useEffect is supposed to update the ordercards once all the produce
+  // items are fully downloaded from the airtable api call
   useEffect(() => {
     let i = 0;
     const OrderCards = (Array.from(orderMap)).map((items) => {

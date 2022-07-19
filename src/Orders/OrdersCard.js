@@ -25,7 +25,6 @@ const styles = StyleSheet.create({
     width: 136,
     height: 136,
     alignSelf: 'flex-start',
-//    backgroundColor: '#A1A1A1',
     borderBottomLeftRadius: 5,
     borderTopLeftRadius: 5,
     resizeMode: 'contain',
