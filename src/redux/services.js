@@ -1,26 +1,18 @@
-import Config from 'react-native-config';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import store from './store';
+import { login } from './sliceAuth';
 
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
-
-export const serviceLogin = (username, password) => base('Users').find('rec8yzLkLY6VrCKOX', (err, record) => {
-  if (err) { console.error(err); return; }
+export const serviceLogin = async (username, password) => {
   const userData = {
-    id: record.id,
-    email: record.fields.email,
-    firstName: record.fields['first name'],
-    lastName: record.fields['last name'],
+    id: 'test',
+    email: 'test@gmail.com',
+    firstName: 'James',
+    lastName: 'He',
   };
   AsyncStorage.setItem('user', JSON.stringify(userData));
-  return userData;
-});
+  store.dispatch(login(userData));
+  return true;
+};
 
 export const serviceLogout = () => {
   AsyncStorage.removeItem('user');

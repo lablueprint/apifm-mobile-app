@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
+import store from '../redux/store';
 
 const Airtable = require('airtable');
 
@@ -181,12 +181,8 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
-  const { user } = useSelector((state) => state.auth);
-  const currentUser = JSON.parse(user._W);
-
-  if (!currentUser) {
-    navigation.navigate('Login');
-  }
+  const currentUser = store.getState().auth.user;
+  // TODO: check if user data is here
 
   const today = new Date();
   const tempToday = new Date();
