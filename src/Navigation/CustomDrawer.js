@@ -110,6 +110,7 @@ function CustomDrawer(props) {
             size={26}
             name="logout-variant"
             color="#34221D"
+            // TODO: fix dispatch here
             onPress={() => { dispatch(logout()); navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
           />
           <Text

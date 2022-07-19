@@ -2,11 +2,10 @@ import React, { useState, useRef } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
 } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
-import { login } from '../redux/sliceAuth';
+import { serviceLogin } from '../redux/services';
 
 const backgroundImage = require('../assets/imgs/login.png');
 
@@ -90,13 +89,11 @@ export default function LoginScreen({ navigation }) {
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const passwordInput = useRef();
-  const dispatch = useDispatch();
-  const { isLoggedIn, user } = useSelector((state) => state.auth);
 
   const handleSignIn = () => {
-    dispatch(login(username, password)).then(() => {
+    if (serviceLogin(username, password)) {
       navigation.navigate('Marketplace');
-    });
+    }
   };
 
   const handleSignUp = () => {
