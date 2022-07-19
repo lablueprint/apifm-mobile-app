@@ -3,6 +3,7 @@ import {
   View, StyleSheet, Text, ImageBackground, TouchableOpacity,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { serviceLogin } from '../redux/services';
 
 const backgroundImage = require('../assets/imgs/confirmation.png');
 
@@ -50,9 +51,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function SignUpConfirmation({ navigation }) {
+export default function SignUpConfirmation({ navigation, route }) {
+  const { username, password } = route.params;
   const handleBrowse = () => {
-    navigation.navigate('Marketplace');
+    if (serviceLogin(username, password)) {
+      navigation.navigate('Marketplace');
+    }
   };
 
   return (
@@ -82,4 +86,10 @@ export default function SignUpConfirmation({ navigation }) {
 
 SignUpConfirmation.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+      password: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import store from './store';
-import { login } from './sliceAuth';
+import { login, logout } from './sliceAuth';
 
 export const serviceLogin = async (username, password) => {
   const userData = {
@@ -16,4 +16,5 @@ export const serviceLogin = async (username, password) => {
 
 export const serviceLogout = () => {
   AsyncStorage.removeItem('user');
+  store.dispatch(logout());
 };
