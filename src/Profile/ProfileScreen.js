@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert, View, StyleSheet, TextInput, Image, TouchableOpacity,
 } from 'react-native';
@@ -7,16 +7,6 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {
@@ -90,6 +80,16 @@ const styles = StyleSheet.create({
   },
 });
 
+const Airtable = require('airtable');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
+
 // eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
   // TODO: remove when sign-in is implemented
@@ -99,6 +99,37 @@ export default function ProfileScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
   const [address, setAddress] = useState('');
+
+  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
+  // const [avatarNum, setAvatarNum] = useState(0);
+  // const avatarFruits = ['placeholder', 'pipa', 'eggplant', 'mango', 'dragonfruit', 'lychee', 'bokchoy'];
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      console.log(record[0].fields.avatarNum);
+      switch (record[0].fields.avatarNum) {
+        case 1: setAvatar(require('../assets/imgs/pipa.png'));
+          break;
+        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
+          break;
+        case 3: setAvatar(require('../assets/imgs/mango.png'));
+          break;
+        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
+          break;
+        case 5: setAvatar(require('../assets/imgs/lychee.png'));
+          break;
+        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
+          break;
+        default: setAvatar(require('../assets/imgs/placeholder.png'));
+      }
+      // const url = `../assets/imgs/${avatarFruits[avatarNum]}.png`;
+      // // eslint-disable-next-line import/no-dynamic-require
+      // setAvatar(require(url));
+    });
+  }, []);
 
   // When save changes is clicked, fields belonging to this user will be updated
   const handleSaveChanges = () => {
@@ -132,9 +163,9 @@ export default function ProfileScreen({ navigation }) {
         <Text style={styles.mainTitle}>Profile</Text>
         <Image
           style={styles.image}
-          source={require('../assets/imgs/placeholder.png')}
+          source={avatar}
         />
-        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+        <TouchableOpacity onPress={() => { console.log('working?'); navigation.navigate('EditAvatar'); }}>
           <Image
             style={styles.edit}
             source={require('../assets/imgs/edit.png')}
