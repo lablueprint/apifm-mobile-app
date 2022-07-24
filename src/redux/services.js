@@ -8,6 +8,7 @@ export const serviceLogin = async (username, password) => {
     email: 'test@gmail.com',
     firstName: 'James',
     lastName: 'He',
+    organization: 'Pog University',
   };
   AsyncStorage.setItem('user', JSON.stringify(userData));
   store.dispatch(login(userData));
