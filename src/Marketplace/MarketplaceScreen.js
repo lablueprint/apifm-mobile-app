@@ -27,9 +27,6 @@ const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
 
-// constant user id to test for all features
-const userId = 'rec8yzLkLY6VrCKOX';
-
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -295,7 +292,7 @@ export default function MarketplaceScreen({ navigation }) {
       setWednesdayAlert(true);
     }
     const fridayState = false;
-    await base('Users').find(userId, (err, record) => {
+    await base('Users').find(currentUser.id, (err, record) => {
       if (err) {
         Alert.alert(err.error, err.message);
         return;
@@ -423,7 +420,7 @@ export default function MarketplaceScreen({ navigation }) {
   const filterFavorites = () => {
     const showFavorites = !favoritesFilter;
     setFavoritesFilter(showFavorites);
-    base('Users').find(userId, (err, record) => {
+    base('Users').find(currentUser.id, (err, record) => {
       if (err) {
         Alert.alert(err.error, err.message);
         return;
@@ -770,8 +767,8 @@ export default function MarketplaceScreen({ navigation }) {
             : (
               <ProduceGrid
                 navigation={navigation}
-                userId={userId}
-                showProduce={showProduce}
+                userId={currentUser.id}
+                showAlert={selectDayAlert}
                 produceList={produceList}
                 favorites={favoritesFilter}
                 mondayDelivery={mondayDelivery}
