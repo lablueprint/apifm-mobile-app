@@ -418,20 +418,10 @@ export default function SignUpScreen({ navigation }) {
           Alert.alert('Error!', error.message);
         }
       });
-      setFirstName('');
-      setLastName('');
-      setOrganization('');
-      setEmail('');
-      setConfirmPassword('');
-      setPassword('');
-      setNumber('');
-      setBusPhone('');
-      setAddress('');
-      setApt('');
-      setZip('');
-      setInstr('');
-      // might need to set the new inputs to empty strings but likely not?
-      navigation.navigate('Sign Up Confirmation');
+      navigation.navigate('Sign Up Confirmation', {
+        username: email,
+        password,
+      });
     }
   };
 

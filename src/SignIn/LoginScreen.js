@@ -5,6 +5,7 @@ import {
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
+import { serviceLogin } from '../redux/services';
 
 const backgroundImage = require('../assets/imgs/login.png');
 
@@ -85,18 +86,23 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen({ navigation }) {
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const passwordInput = useRef();
+
   const handleSignIn = () => {
-    navigation.navigate('Marketplace');
+    if (serviceLogin(username, password)) {
+      navigation.navigate('Marketplace');
+    }
   };
 
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
 
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-
-  const passwordInput = useRef();
+  // if (isLoggedIn) {
+  //   navigation.navigate('Marketplace');
+  // }
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
