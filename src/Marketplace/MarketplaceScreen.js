@@ -196,7 +196,7 @@ export default function MarketplaceScreen({ navigation }) {
   // || today.getDay() === 3
   // || (today.getDay() === 4 && today.getHours <= 15));
   const closedMarket = false;
-  const restrictedMarket = true;
+  const restrictedMarket = false;
 
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
@@ -507,7 +507,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={calendarVisibility && !closedMarket}
+              visible={calendarVisibility && !closedMarket && !restrictedMarket}
               onDismiss={() => {
                 setCalendarVisibility(true);
               }}
