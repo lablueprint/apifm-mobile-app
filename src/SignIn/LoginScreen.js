@@ -5,9 +5,23 @@ import {
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
+import Airtable from '@calblueprint/airlock';
+import Config from 'react-native-config';
 import { serviceLogin } from '../redux/services';
 
 const backgroundImage = require('../assets/imgs/login.png');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+Airtable.configure({
+  apiKey: 'airlock',
+  endpointUrl: 'http://localhost:4000',
+});
+
+const base = Airtable.base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   containerInputs: {
@@ -91,9 +105,13 @@ export default function LoginScreen({ navigation }) {
   const passwordInput = useRef();
 
   const handleSignIn = () => {
-    if (serviceLogin(username, password)) {
-      navigation.navigate('Marketplace');
-    }
+    base.login({
+      email: 'jameshe@ucla.edu',
+      password: 'password',
+    }).then(console.log);
+    // if (serviceLogin(username, password)) {
+    //   navigation.navigate('Marketplace');
+    // }
   };
 
   const handleSignUp = () => {
