@@ -189,9 +189,14 @@ export default function MarketplaceScreen({ navigation }) {
   const nextMonday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 8)));
   const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
 
-  const closedMarket = (today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3
-  || (today.getDay() === 5 && today.getHours() >= 15)
-  || today.getDay() === 6 || today.getDay() === 0;
+  // const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
+  // || today.getDay() === 6 || today.getDay() === 0
+  // || (today.getDay() === 1 && today.getHours() <= 14));
+  // const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
+  // || today.getDay() === 3
+  // || (today.getDay() === 4 && today.getHours <= 15));
+  const closedMarket = false;
+  const restrictedMarket = true;
 
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
@@ -218,7 +223,7 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   const selectDayAlert = () => {
-    if (!closedMarket && !mondayDelivery && !fridayDelivery) {
+    if (!closedMarket || restrictedMarket || (!mondayDelivery && !fridayDelivery)) {
       return true;
     }
     return false;
@@ -227,7 +232,7 @@ export default function MarketplaceScreen({ navigation }) {
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
-    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3) {
+    if (restrictedMarket) {
       mondayState = true;
       setMondayDelivery(true);
       setWednesdayAlert(true);
@@ -439,7 +444,7 @@ export default function MarketplaceScreen({ navigation }) {
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
-            {!mondayDelivery && !fridayDelivery && !closedMarket
+            {!mondayDelivery && !fridayDelivery && !closedMarket && !restrictedMarket
               && <View style={styles.circle} />}
 
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
@@ -524,7 +529,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={filterVisibility}
+              visible={filterVisibility && !closedMarket}
               onDismiss={() => {
                 setFilterVisibility(false);
               }}
@@ -596,7 +601,7 @@ export default function MarketplaceScreen({ navigation }) {
         {((mondayDelivery || fridayDelivery) && !closedMarket)
           && (
             <TouchableOpacity onPress={() => {
-              if (!closedMarket) {
+              if (!closedMarket && !restrictedMarket) {
                 const newCalVis = !calendarVisibility;
                 setCalendarVisibility(newCalVis);
               }
