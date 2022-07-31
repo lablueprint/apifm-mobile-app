@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
 });
 
 function ProduceCard({
-  navigation, userId, showAlert, produceId, favorited,
+  navigation, userId, showProduce, produceId, favorited,
   image, name, tags, price, unit, seller, maxQuantity, minQuantity,
   mondayDelivery,
 }) {
@@ -114,7 +114,7 @@ function ProduceCard({
   };
 
   const onPressCard = () => {
-    const display = showAlert();
+    const display = showProduce();
     if (!display) {
       navigation.navigate('ProduceDetails', {
         produceId,
@@ -162,7 +162,7 @@ function ProduceCard({
 ProduceCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   userId: PropTypes.string.isRequired,
-  showAlert: PropTypes.func.isRequired,
+  showProduce: PropTypes.func.isRequired,
   produceId: PropTypes.string.isRequired,
   favorited: PropTypes.bool.isRequired,
   image: PropTypes.string.isRequired,

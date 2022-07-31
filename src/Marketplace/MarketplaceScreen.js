@@ -20,6 +20,7 @@ const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
+const unapprovedError = require('../assets/unapprovedalert.png');
 const wednesdayError = require('../assets/wednesdayalert.png');
 const errorbackground = require('../assets/errormessage.png');
 const sadDurian = require('../assets/saddurian.png');
@@ -180,6 +181,11 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  // temporary for approved users, will be replaced by 'redux' branch merge
+  const currentUser = {
+    approved: false,
+  };
+
   const today = new Date();
   const tempToday = new Date();
   const thisFriday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 5)));
@@ -206,6 +212,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [favoritesFilter, setFavoritesFilter] = useState(false);
 
+  const [unapprovedAlert, setUnapprovedAlert] = useState(false);
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -222,8 +229,10 @@ export default function MarketplaceScreen({ navigation }) {
     return deliveryList;
   };
 
-  const selectDayAlert = () => {
-    if (!closedMarket || restrictedMarket || (!mondayDelivery && !fridayDelivery)) {
+  const showProduce = () => {
+    if (!currentUser.approved
+      || !closedMarket || restrictedMarket
+      || (!mondayDelivery && !fridayDelivery)) {
       return true;
     }
     return false;
@@ -232,6 +241,9 @@ export default function MarketplaceScreen({ navigation }) {
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
+    if (!currentUser.approved) {
+      setUnapprovedAlert(true);
+    }
     if (restrictedMarket) {
       mondayState = true;
       setMondayDelivery(true);
@@ -444,7 +456,8 @@ export default function MarketplaceScreen({ navigation }) {
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
-            {!mondayDelivery && !fridayDelivery && !closedMarket && !restrictedMarket
+            {currentUser.approved
+            && !mondayDelivery && !fridayDelivery && !closedMarket && !restrictedMarket
               && <View style={styles.circle} />}
 
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
@@ -558,7 +571,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={showAlert}
+              visible={showAlert && currentUser.approved}
               contentContainerStyle={styles.calendarErrorMessage}
               onDismiss={() => {
                 setShowAlert(false);
@@ -590,6 +603,28 @@ export default function MarketplaceScreen({ navigation }) {
               </TouchableOpacity>
               <Image
                 source={wednesdayError}
+                style={{
+                  width: 260, height: 260, alignSelf: 'center', marginTop: 20,
+                }}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={unapprovedAlert}
+              onDismiss={() => {
+                setUnapprovedAlert(false);
+              }}
+              theme={{
+                colors: {
+                  backdrop: 'transparent',
+                },
+              }}
+            >
+              <Image
+                source={unapprovedError}
                 style={{
                   width: 260, height: 260, alignSelf: 'center', marginTop: 20,
                 }}
@@ -645,7 +680,7 @@ export default function MarketplaceScreen({ navigation }) {
               <ProduceGrid
                 navigation={navigation}
                 userId={userId}
-                showAlert={selectDayAlert}
+                showProduce={showProduce}
                 produceList={produceList}
                 favorites={favoritesFilter}
                 mondayDelivery={mondayDelivery}
