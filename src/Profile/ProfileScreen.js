@@ -7,6 +7,7 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { mdiSourcePull } from '@mdi/js';
 
 const styles = StyleSheet.create({
   container: {
@@ -93,7 +94,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 // eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
   // TODO: remove when sign-in is implemented
-  const DUMMY_USER_ID = 'recPExZT2DNDYUKCz';
+  const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
   const DUMMY_NAME = 'Joe Bruin';
 
   const [email, setEmail] = useState('');
@@ -198,7 +199,7 @@ export default function ProfileScreen({ navigation }) {
           style={styles.textInput}
           value={phoneNum}
           onChangeText={setPhoneNum}
-          placeholder="(123) 456 - 7890"
+          placeholder="(123)456-7890"
           placeholderTextColor="#34221D"
           keyboardType="numeric"
           returnKeyType="next"
