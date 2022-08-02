@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: 20,
-    borderRadius: 30,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
   },
 
@@ -29,14 +29,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'JosefinSans-SemiBold',
     marginTop: 10,
-    marginBottom: 30,
   },
 
   midContainer: {
     display: 'flex',
     flexDirection: 'row',
     width: 240,
-    height: 65,
+    height: 100,
     alignSelf: 'center',
   },
 
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
     color: '#34221D',
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
 
   dateTextPressed: {
@@ -122,6 +121,8 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 
   buttonPressed: {
@@ -132,6 +133,8 @@ const styles = StyleSheet.create({
     width: 90,
     height: 28,
     textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 
   largeButtonUnpressed: {
@@ -159,6 +162,22 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+
+  descriptionText: {
+    color: '#5D5D5D',
+    fontFamily: 'JosefinSans-LightItalic',
+    textAlign: 'center',
+    width: '75%',
+  },
+
+  dateContainer: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '100%',
+    position: 'absolute',
+    marginTop: 50,
+  },
+
 });
 
 function CalendarPopup({
@@ -193,7 +212,7 @@ function CalendarPopup({
         ? (
           <View style={styles.midContainer}>
             <View>
-              <Text>
+              <Text style={styles.descriptionText}>
                 The order deadline for Friday delivery has passed.
               </Text>
             </View>

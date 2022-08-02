@@ -20,9 +20,8 @@ const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
-const unapprovedError = require('../assets/unapprovedalert.png');
-const wednesdayError = require('../assets/wednesdayalert.png');
-const errorbackground = require('../assets/errormessage.png');
+const sadDurianBG = require('../assets/saddurianbg.png');
+const exclamation = require('../assets/exclamation.png');
 const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
@@ -104,18 +103,60 @@ const styles = StyleSheet.create({
   },
   calendarErrorMessage: {
     position: 'absolute',
-    borderRadius: 15,
-    width: 400,
-    height: 70,
-    top: '-4%',
-    left: '14.5%',
+    borderRadius: 10,
+    width: 300,
+    height: 50,
+    top: '5%',
+    left: '20%',
     alignItems: 'center',
+    backgroundColor: '#FF5353',
   },
-  wednesdayAlertContainer: {
+  calendarErrorFlag: {
+    width: 20,
+    height: 20,
+    position: 'absolute',
+    top: '-10%',
+    right: '12.5%',
+    backgroundColor: '#FF5353',
+    transform: [{ rotate: '45deg' }],
+  },
+  calendarErrorText: {
+    fontFamily: 'JosefinSans-Medium',
+    fontSize: 13,
+    color: '#FCF7F0',
+    position: 'absolute',
+    left: '14%',
+    width: '85%',
+  },
+  exclamation: {
+    left: '5%',
+    position: 'absolute',
+  },
+  alertContainer: {
     width: 360,
     height: 335,
     backgroundColor: '#FFFFFA',
     alignSelf: 'center',
+    borderRadius: 20,
+  },
+  alertTitle: {
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 18,
+    color: '#34221D',
+    width: '75%',
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  alertSubtitle: {
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 14,
+    color: '#5D5D5D',
+    width: '75%',
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 5,
   },
   filterPopup: {
     width: 330,
@@ -582,10 +623,15 @@ export default function MarketplaceScreen({ navigation }) {
                 },
               }}
             >
+              <View style={styles.calendarErrorFlag} />
               <Image
-                source={errorbackground}
-                style={styles.errorBackground}
+                source={exclamation}
+                style={styles.exclamation}
               />
+              <Text style={styles.calendarErrorText}>
+                Looks like you don't have a delivery date
+                yet. Click here to select a delivery date!
+              </Text>
             </Modal>
           </Portal>
         </View>
@@ -593,18 +639,33 @@ export default function MarketplaceScreen({ navigation }) {
           <Portal>
             <Modal
               visible={wednesdayAlert}
-              contentContainerStyle={styles.wednesdayAlertContainer}
+              contentContainerStyle={styles.alertContainer}
               onDismiss={() => {
                 setWednesdayAlert(false);
               }}
             >
               <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setWednesdayAlert(false); }}>
-                <Icon name="close" size={22} />
+                <Icon
+                  name="close"
+                  size={22}
+                  color="#000"
+                  style={{
+                    marginBottom: 20,
+                  }}
+                />
               </TouchableOpacity>
+              <Text style={styles.alertTitle}>
+                Sorry! We're currently updating the produce list.
+              </Text>
+              <Text style={styles.alertSubtitle}>
+                You can currently preview produce for Monday deliveries,
+                but you cannot place an order.
+                Please come back on Thursday to place an order!
+              </Text>
               <Image
-                source={wednesdayError}
+                source={sadDurianBG}
                 style={{
-                  width: 260, height: 260, alignSelf: 'center', marginTop: 20,
+                  width: 150, height: 150, alignSelf: 'center',
                 }}
               />
             </Modal>
@@ -614,6 +675,7 @@ export default function MarketplaceScreen({ navigation }) {
           <Portal>
             <Modal
               visible={unapprovedAlert}
+              contentContainerStyle={styles.alertContainer}
               onDismiss={() => {
                 setUnapprovedAlert(false);
               }}
@@ -623,10 +685,28 @@ export default function MarketplaceScreen({ navigation }) {
                 },
               }}
             >
+              <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setUnapprovedAlert(false); }}>
+                <Icon
+                  name="close"
+                  size={22}
+                  color="#000"
+                  style={{
+                    marginBottom: 20,
+                  }}
+                />
+              </TouchableOpacity>
+              <Text style={styles.alertTitle}>
+                Sorry! Your account has not been approved yet.
+              </Text>
+              <Text style={styles.alertSubtitle}>
+                You won't be able to place any orders yet,
+                but feel free to browse the marketplace
+                while our staff reveiws your information.
+              </Text>
               <Image
-                source={unapprovedError}
+                source={sadDurianBG}
                 style={{
-                  width: 260, height: 260, alignSelf: 'center', marginTop: 20,
+                  width: 150, height: 150, alignSelf: 'center', marginTop: 20,
                 }}
               />
             </Modal>
