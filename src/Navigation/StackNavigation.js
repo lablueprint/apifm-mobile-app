@@ -8,8 +8,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import CustomDrawer from './CustomDrawer';
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignUpScreen from '../SignUp/SignUpScreen';
-import SignUpConfirmation from '../SignUp/SignUpScreen2';
-import LoginScreen from '../SignUp/LoginScreen';
+import SignUpConfirmation from '../SignUp/SignUpConfirmScreen';
+import LoginScreen from '../SignIn/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
@@ -86,6 +86,7 @@ function DrawerRoutes() {
         drawerLabelStyle: {
           left: 10,
           bottom: 1,
+          fontSize: 17,
           fontFamily: 'JosefinSans-Medium',
         },
       }}
@@ -104,6 +105,10 @@ function DrawerRoutes() {
         options={{
           title: 'Marketplace',
           drawerIcon: marketplaceIcon,
+          headerShown: false,
+          headerStyle: {
+            height: 0,
+          },
         }}
       />
       <Drawer.Screen
@@ -120,6 +125,8 @@ function DrawerRoutes() {
         options={{
           title: 'Contact us',
           drawerIcon: contactIcon,
+          headerTitle: '',
+          headerTransparent: true,
         }}
       />
     </Drawer.Navigator>
@@ -139,6 +146,7 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
       <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
     </stackNavig.Navigator>

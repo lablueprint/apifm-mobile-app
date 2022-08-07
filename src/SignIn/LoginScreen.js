@@ -3,7 +3,6 @@ import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
 } from 'react-native';
 import PropTypes from 'prop-types';
-
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
 
@@ -86,6 +85,10 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen({ navigation }) {
+  const handleSignIn = () => {
+    navigation.navigate('Marketplace');
+  };
+
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
@@ -143,16 +146,24 @@ export default function LoginScreen({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.button}
+          onPress={() => handleSignIn()}
         >
-          <Text style={styles.buttonText}> Login </Text>
+          <Text
+            style={styles.buttonText}
+          >
+            Login
+          </Text>
         </TouchableOpacity>
-
         <Text style={styles.bottomTextFine}>
           Don&apos;t have an account?
-          <Text style={styles.bottomTextBold} onPress={() => handleSignUp()}> Sign Up</Text>
+          <Text
+            style={styles.bottomTextBold}
+            onPress={() => handleSignUp()}
+          >
+            Sign Up
+          </Text>
         </Text>
       </View>
-
     </ImageBackground>
   );
 }
