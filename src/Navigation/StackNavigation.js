@@ -16,6 +16,8 @@ import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
+import OrderScreen from '../Orders/OrderScreen';
+import OrderDetailsScreen from '../Orders/OrderDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -111,7 +113,7 @@ function DrawerRoutes() {
       />
       <Drawer.Screen
         name="Orders"
-        component={ProfileScreen} // TODO: change to past orders screen once it is implemented
+        component={OrderScreen}
         options={{
           title: 'Past orders',
           drawerIcon: cartIcon,
@@ -145,6 +147,8 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
+      <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
     </stackNavig.Navigator>
   );
 }
