@@ -8,10 +8,9 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { mdiFlaskEmpty } from '@mdi/js';
 import CustomDrawer from './CustomDrawer';
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
-import SignUpScreen from '../SignUp/SignInScreen';
-import SignUpConfirmation from '../SignUp/SignInScreen2';
-import LandingPage from '../SignUp/LandingPage';
-import LoginScreen from '../SignUp/LoginScreen';
+import SignUpScreen from '../SignUp/SignUpScreen';
+import SignUpConfirmation from '../SignUp/SignUpConfirmScreen';
+import LoginScreen from '../SignIn/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
@@ -19,6 +18,8 @@ import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
 import EditAvatarScreen from '../Profile/EditAvatarScreen';
 import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
+import OrderScreen from '../Orders/OrderScreen';
+import OrderDetailsScreen from '../Orders/OrderDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -87,6 +88,7 @@ function DrawerRoutes() {
         drawerLabelStyle: {
           left: 10,
           bottom: 1,
+          fontSize: 17,
           fontFamily: 'JosefinSans-Medium',
         },
       }}
@@ -116,7 +118,7 @@ function DrawerRoutes() {
       />
       <Drawer.Screen
         name="Orders"
-        component={ProfileScreen} // TODO: change to past orders screen once it is implemented
+        component={OrderScreen}
         options={{
           title: 'Past orders',
           drawerIcon: cartIcon,
@@ -128,6 +130,8 @@ function DrawerRoutes() {
         options={{
           title: 'Contact us',
           drawerIcon: contactIcon,
+          headerTitle: '',
+          headerTransparent: true,
         }}
       />
     </Drawer.Navigator>
@@ -137,8 +141,7 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Profile">
-      <stackNavig.Screen name="Landing Page" component={LandingPage} options={{ headerShown: false }} />
+    <stackNavig.Navigator initialRouteName="Log In">
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
@@ -148,6 +151,7 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
       <stackNavig.Screen
         name="EditAvatar"
@@ -156,6 +160,7 @@ export default function StackNavigation() {
           headerTitle: '', headerTransparent: true, headerShadowVisible: false,
         }}
       />
+      <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
     </stackNavig.Navigator>
   );
 }
