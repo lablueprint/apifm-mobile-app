@@ -15,7 +15,7 @@
     "output": "./src/lib/"
   },
   "dependencies": {
-    "@calblueprint/airlock": "^0.7.3",
+    "@calblueprint/airlock": "git://github.com/calblueprint/airlock.git",
     "@expo-google-fonts/josefin-sans": "^0.2.2",
     "@mdi/font": "^6.5.95",
     "@mdi/js": "^6.5.95",
