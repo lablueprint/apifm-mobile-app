@@ -7,6 +7,7 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import store from '../redux/store';
 
 const Airtable = require('airtable');
 const placeholder = require('../assets/imgs/placeholder.png');
@@ -99,9 +100,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function ProfileScreen({ navigation }) {
-  // TODO: remove when sign-in is implemented
-  const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
-  const DUMMY_NAME = 'Joe Bruin';
+  const currentUser = store.getState().auth.user;
 
   const [email, setEmail] = useState('');
   const [phoneNum, setPhoneNum] = useState('');
@@ -110,7 +109,7 @@ export default function ProfileScreen({ navigation }) {
   const [avatar, setAvatar] = useState(placeholder);
 
   useEffect(() => {
-    const useremail = 'helen@gmail.com';
+    const useremail = currentUser.email;
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
@@ -140,7 +139,7 @@ export default function ProfileScreen({ navigation }) {
       // Airtable call to update fields
       base('Users').update([
         {
-          id: DUMMY_USER_ID,
+          id: currentUser.id,
           fields: {
             email,
             address,
@@ -174,7 +173,9 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
 
         <Text style={styles.titleText}>
-          {DUMMY_NAME}
+          {currentUser.firstName}
+          {' '}
+          {currentUser.lastName}
         </Text>
         <Text style={styles.subtitleText}> Organization Name </Text>
       </View>
@@ -185,7 +186,7 @@ export default function ProfileScreen({ navigation }) {
           style={styles.textInput}
           value={email}
           onChangeText={setEmail}
-          placeholder="joebruin@gmail.com"
+          placeholder={currentUser.email}
           placeholderTextColor="#34221D"
           keyboardType="email-address"
           returnKeyType="next"
@@ -199,7 +200,7 @@ export default function ProfileScreen({ navigation }) {
           style={styles.textInput}
           value={phoneNum}
           onChangeText={setPhoneNum}
-          placeholder="(123)456-7890"
+          placeholder={currentUser.address}
           placeholderTextColor="#34221D"
           keyboardType="numeric"
           returnKeyType="next"
@@ -213,7 +214,7 @@ export default function ProfileScreen({ navigation }) {
           style={styles.textInput}
           value={address}
           onChangeText={setAddress}
-          placeholder="330 De Neve Dr., Los Angeles"
+          placeholder={currentUser.phoneNumber}
           placeholderTextColor="#34221D"
           returnKeyType="next"
           blurOnSubmit={false}

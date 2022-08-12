@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView,
+  View, StyleSheet, ScrollView, Alert,
 } from 'react-native';
 import {
   Text, Button, Title,
@@ -151,6 +151,7 @@ export default function OrderDetailsScreen({ route }) {
   };
 
   // Helper function to wait for [ms] milliseconds
+  // eslint-disable-next-line no-promise-executor-return
   function timer(ms) { return new Promise((res) => setTimeout(res, ms)); }
 
   // Batch function to serialize airtable calls (since api is rate limited at
@@ -158,7 +159,7 @@ export default function OrderDetailsScreen({ route }) {
   const cartBatch = async (cartObj) => { // 3
     base('CART V3').create(cartObj, (err) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err);
       }
     });
     await timer(1000);
@@ -187,6 +188,7 @@ export default function OrderDetailsScreen({ route }) {
     }
 
     for (let i = 0; i < cartBatches.length; i += 1) {
+      // eslint-disable-next-line no-await-in-loop
       await cartBatch(cartBatches[i]);
     }
   };
@@ -203,7 +205,7 @@ export default function OrderDetailsScreen({ route }) {
 
     items[1].forEach((item) => {
       base('Produce').find(item.produce_id, ((err, prodRecord) => {
-        if (err) { console.error(err); return; }
+        if (err) { Alert.alert(err); return; }
         const prodItem = prodRecord;
         regItemList.push(prodItem.fields);
         quantities.push(String(item.Quantity));
@@ -216,6 +218,7 @@ export default function OrderDetailsScreen({ route }) {
               price={prodItemIter.Price}
               type={prodItemIter.Unit}
               quantity={quantities[ind]}
+              // eslint-disable-next-line react/no-array-index-key
               key={ind}
               image={prodItemIter.Image[0].url}
             />

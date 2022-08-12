@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, Image, StyleSheet, TouchableOpacity,
+  Text, View, Image, StyleSheet, TouchableOpacity, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import store from '../redux/store';
 
 const Airtable = require('airtable');
 const placeholder = require('../assets/imgs/placeholder.png');
@@ -72,11 +73,13 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function EditAvatarScreen({ navigation }) {
+  const currentUser = store.getState().auth.user;
+
   const [avatar, setAvatar] = useState(placeholder);
   const [avatarNum, setAvatarNum] = useState(0);
 
   useEffect(() => {
-    const useremail = 'helen@gmail.com';
+    const useremail = currentUser.email;
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
@@ -99,7 +102,7 @@ export default function EditAvatarScreen({ navigation }) {
   }, []);
 
   const sendUpdate = async () => {
-    const user = 'recIpBFqr2EXNbS7d';
+    const user = currentUser.id;
     await base('Users').update([
       {
         id: user,
@@ -112,10 +115,10 @@ export default function EditAvatarScreen({ navigation }) {
   };
 
   const saveAvatar = async () => {
-    const user = 'recIpBFqr2EXNbS7d';
+    const user = currentUser.id;
     await base('Users').find(user, (err) => {
       if (err) {
-        console.log(err);
+        Alert.alert(err);
         return;
       }
       sendUpdate();

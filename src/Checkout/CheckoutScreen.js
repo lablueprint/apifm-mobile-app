@@ -170,11 +170,10 @@ export default function CheckoutScreen({ route, navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err, deletedRecords) => {
+    base('CART V3').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
       }
-      console.log(deletedRecords);
     });
   };
   return (
