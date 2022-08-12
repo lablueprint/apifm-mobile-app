@@ -5,6 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import { mdiFlaskEmpty } from '@mdi/js';
 import CustomDrawer from './CustomDrawer';
 import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignUpScreen from '../SignUp/SignUpScreen';
@@ -15,7 +16,10 @@ import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
+import EditAvatarScreen from '../Profile/EditAvatarScreen';
 import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
+import OrderScreen from '../Orders/OrderScreen';
+import OrderDetailsScreen from '../Orders/OrderDetailsScreen';
 
 const stackNavig = createNativeStackNavigator();
 
@@ -95,6 +99,9 @@ function DrawerRoutes() {
         options={{
           title: 'Profile',
           drawerIcon: profileIcon,
+          headerTitle: '',
+          headerTransparent: true,
+          headerShadowVisible: false,
         }}
       />
       <Drawer.Screen
@@ -111,7 +118,7 @@ function DrawerRoutes() {
       />
       <Drawer.Screen
         name="Orders"
-        component={ProfileScreen} // TODO: change to past orders screen once it is implemented
+        component={OrderScreen}
         options={{
           title: 'Past orders',
           drawerIcon: cartIcon,
@@ -145,6 +152,15 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} />
+      <stackNavig.Screen
+        name="EditAvatar"
+        component={EditAvatarScreen}
+        options={{
+          headerTitle: '', headerTransparent: true, headerShadowVisible: false,
+        }}
+      />
+      <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
     </stackNavig.Navigator>
   );
 }
