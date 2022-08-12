@@ -111,6 +111,8 @@ const styles = StyleSheet.create({
     borderColor: '#C4C4C4',
     marginLeft: 'auto',
     marginRight: 'auto',
+    height: 60,
+    marginTop: 25,
   },
 
   buttonUnpressed: {
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
   },
 
   largeButtonUnpressed: {
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 20,
     color: '#34221D',
     backgroundColor: '#E5E5E5',
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   largeButtonPressed: {
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 20,
     color: '#34221D',
     backgroundColor: '#1D763C',
@@ -165,17 +167,22 @@ const styles = StyleSheet.create({
 
   descriptionText: {
     color: '#5D5D5D',
-    fontFamily: 'JosefinSans-LightItalic',
+    fontFamily: 'JosefinSans-Regular',
     textAlign: 'center',
     width: '75%',
   },
 
-  dateContainer: {
+  oneDateContainer: {
     marginLeft: 'auto',
     marginRight: 'auto',
     width: '100%',
     position: 'absolute',
     marginTop: 50,
+  },
+
+  twoDateContainer: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
   },
 
 });
@@ -199,7 +206,7 @@ function CalendarPopup({
 
   const today = new Date();
   // const mondayOnly = (today.getDay() === 4 || today.getDay() === 5);
-  const mondayOnly = true;
+  const mondayOnly = false;
 
   return (
     <View style={styles.popupContainer}>
@@ -216,7 +223,7 @@ function CalendarPopup({
                 The order deadline for Friday delivery has passed.
               </Text>
             </View>
-            <View style={styles.dateContainer}>
+            <View style={styles.oneDateContainer}>
               <Text style={styles.midText}>{displayMonday}</Text>
               <TouchableOpacity
                 style={monday ? styles.buttonPressed : styles.buttonUnpressed}
@@ -238,7 +245,7 @@ function CalendarPopup({
         )
         : (
           <View style={styles.midContainer}>
-            <View style={styles.dateContainer}>
+            <View style={styles.twoDateContainer}>
               <Text style={styles.midText}>{displayFriday}</Text>
               <TouchableOpacity
                 style={friday ? styles.buttonPressed : styles.buttonUnpressed}
@@ -259,7 +266,7 @@ function CalendarPopup({
 
             <View style={styles.divider} />
 
-            <View style={styles.dateContainer}>
+            <View style={styles.twoDateContainer}>
               <Text style={styles.midText}>{displayMonday}</Text>
               <TouchableOpacity
                 style={monday ? styles.buttonPressed : styles.buttonUnpressed}

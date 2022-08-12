@@ -106,10 +106,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     width: 300,
     height: 50,
-    top: '5%',
-    left: '20%',
-    alignItems: 'center',
     backgroundColor: '#FF5353',
+    alignSelf: 'flex-end',
+    top: '5%',
+    right: '3.5%',
   },
   calendarErrorFlag: {
     width: 20,
@@ -224,7 +224,7 @@ const styles = StyleSheet.create({
 export default function MarketplaceScreen({ navigation }) {
   // temporary for approved users, will be replaced by 'redux' branch merge
   const currentUser = {
-    approved: false,
+    approved: true,
   };
 
   const today = new Date();
