@@ -7,21 +7,16 @@ import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
 import Airtable from '@calblueprint/airlock';
 import Config from 'react-native-config';
-import { serviceLogin } from '../redux/services';
 
 const backgroundImage = require('../assets/imgs/login.png');
 
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
 Airtable.configure({
   apiKey: 'airlock',
+  // TODO: replace when server is deployed
   endpointUrl: 'http://localhost:4000',
 });
 
-const base = Airtable.base(airtableConfig.baseKey);
+const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
 
 const styles = StyleSheet.create({
   containerInputs: {
@@ -106,21 +101,14 @@ export default function LoginScreen({ navigation }) {
 
   const handleSignIn = () => {
     base.login({
-      email: 'jameshe@ucla.edu',
+      username: 'jameshe@ucla.edu',
       password: 'password',
     }).then(console.log);
-    // if (serviceLogin(username, password)) {
-    //   navigation.navigate('Marketplace');
-    // }
   };
 
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
-
-  // if (isLoggedIn) {
-  //   navigation.navigate('Marketplace');
-  // }
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
