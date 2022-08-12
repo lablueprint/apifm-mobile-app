@@ -3,11 +3,20 @@ import {
   Alert, View, StyleSheet, TextInput, Image, TouchableOpacity,
 } from 'react-native';
 import {
-  Text, Button,
+  Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { mdiSourcePull } from '@mdi/js';
+
+const Airtable = require('airtable');
+const placeholder = require('../assets/imgs/placeholder.png');
+const pipa = require('../assets/imgs/pipa.png');
+const eggplant = require('../assets/imgs/eggplant.png');
+const mango = require('../assets/imgs/mango.png');
+const dragonfruit = require('../assets/imgs/dragonfruit.png');
+const lychee = require('../assets/imgs/lychee.png');
+const bokchoy = require('../assets/imgs/bokchoy.png');
+const edit = require('../assets/imgs/edit.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -81,8 +90,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const Airtable = require('airtable');
-
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -91,7 +98,6 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-// eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
   // TODO: remove when sign-in is implemented
   const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
@@ -101,34 +107,28 @@ export default function ProfileScreen({ navigation }) {
   const [phoneNum, setPhoneNum] = useState('');
   const [address, setAddress] = useState('');
 
-  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
-  // const [avatarNum, setAvatarNum] = useState(0);
-  // const avatarFruits = ['placeholder', 'pipa', 'eggplant', 'mango', 'dragonfruit', 'lychee', 'bokchoy'];
+  const [avatar, setAvatar] = useState(placeholder);
 
   useEffect(() => {
     const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
-      console.log(record[0].fields.avatarNum);
       switch (record[0].fields.avatarNum) {
-        case 1: setAvatar(require('../assets/imgs/pipa.png'));
+        case 1: setAvatar(pipa);
           break;
-        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
+        case 2: setAvatar(eggplant);
           break;
-        case 3: setAvatar(require('../assets/imgs/mango.png'));
+        case 3: setAvatar(mango);
           break;
-        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
+        case 4: setAvatar(dragonfruit);
           break;
-        case 5: setAvatar(require('../assets/imgs/lychee.png'));
+        case 5: setAvatar(lychee);
           break;
-        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
+        case 6: setAvatar(bokchoy);
           break;
-        default: setAvatar(require('../assets/imgs/placeholder.png'));
+        default: setAvatar(placeholder);
       }
-      // const url = `../assets/imgs/${avatarFruits[avatarNum]}.png`;
-      // // eslint-disable-next-line import/no-dynamic-require
-      // setAvatar(require(url));
     });
   }, []);
 
@@ -166,10 +166,10 @@ export default function ProfileScreen({ navigation }) {
           style={styles.image}
           source={avatar}
         />
-        <TouchableOpacity onPress={() => { console.log('working?'); navigation.navigate('EditAvatar'); }}>
+        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
           <Image
             style={styles.edit}
-            source={require('../assets/imgs/edit.png')}
+            source={edit}
           />
         </TouchableOpacity>
 
@@ -220,7 +220,6 @@ export default function ProfileScreen({ navigation }) {
           width={330}
         />
       </View>
-      {/* End of text input region for email, phone, address */}
     </View>
   );
 }
