@@ -236,14 +236,12 @@ export default function MarketplaceScreen({ navigation }) {
   const nextMonday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 8)));
   const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
 
-  // const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
-  // || today.getDay() === 6 || today.getDay() === 0
-  // || (today.getDay() === 1 && today.getHours() <= 14));
-  // const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
-  // || today.getDay() === 3
-  // || (today.getDay() === 4 && today.getHours <= 15));
-  const closedMarket = false;
-  const restrictedMarket = false;
+  const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
+  || today.getDay() === 6 || today.getDay() === 0
+  || (today.getDay() === 1 && today.getHours() <= 14));
+  const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
+  || today.getDay() === 3
+  || (today.getDay() === 4 && today.getHours <= 15));
 
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
@@ -272,11 +270,11 @@ export default function MarketplaceScreen({ navigation }) {
 
   const showProduce = () => {
     if (!currentUser.approved
-      || !closedMarket || restrictedMarket
+      || closedMarket || restrictedMarket
       || (!mondayDelivery && !fridayDelivery)) {
-      return true;
+      return false;
     }
-    return false;
+    return true;
   };
 
   const getProduce = async () => {
@@ -629,7 +627,7 @@ export default function MarketplaceScreen({ navigation }) {
                 style={styles.exclamation}
               />
               <Text style={styles.calendarErrorText}>
-                Looks like you don't have a delivery date
+                Looks like you don&apos;t have a delivery date
                 yet. Click here to select a delivery date!
               </Text>
             </Modal>
@@ -655,7 +653,7 @@ export default function MarketplaceScreen({ navigation }) {
                 />
               </TouchableOpacity>
               <Text style={styles.alertTitle}>
-                Sorry! We're currently updating the produce list.
+                Sorry! We&apos;re currently updating the produce list.
               </Text>
               <Text style={styles.alertSubtitle}>
                 You can currently preview produce for Monday deliveries,
@@ -699,7 +697,7 @@ export default function MarketplaceScreen({ navigation }) {
                 Sorry! Your account has not been approved yet.
               </Text>
               <Text style={styles.alertSubtitle}>
-                You won't be able to place any orders yet,
+                You won&apos;t be able to place any orders yet,
                 but feel free to browse the marketplace
                 while our staff reveiws your information.
               </Text>

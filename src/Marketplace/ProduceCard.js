@@ -115,7 +115,7 @@ function ProduceCard({
 
   const onPressCard = () => {
     const display = showProduce();
-    if (!display) {
+    if (display) {
       navigation.navigate('ProduceDetails', {
         produceId,
         userId,

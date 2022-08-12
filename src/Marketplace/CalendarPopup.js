@@ -205,8 +205,7 @@ function CalendarPopup({
   };
 
   const today = new Date();
-  // const mondayOnly = (today.getDay() === 4 || today.getDay() === 5);
-  const mondayOnly = false;
+  const mondayOnly = (today.getDay() === 4 || today.getDay() === 5);
 
   return (
     <View style={styles.popupContainer}>
