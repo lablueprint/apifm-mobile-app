@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     padding: 20,
-    borderRadius: 30,
+    borderRadius: 20,
     backgroundColor: '#FFFFFF',
   },
 
@@ -29,14 +29,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'JosefinSans-SemiBold',
     marginTop: 10,
-    marginBottom: 30,
   },
 
   midContainer: {
     display: 'flex',
     flexDirection: 'row',
     width: 240,
-    height: 65,
+    height: 100,
     alignSelf: 'center',
   },
 
@@ -44,7 +43,7 @@ const styles = StyleSheet.create({
     color: '#34221D',
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
-    marginBottom: 8,
+    marginBottom: 4,
   },
 
   dateTextPressed: {
@@ -112,6 +111,8 @@ const styles = StyleSheet.create({
     borderColor: '#C4C4C4',
     marginLeft: 'auto',
     marginRight: 'auto',
+    height: 60,
+    marginTop: 25,
   },
 
   buttonUnpressed: {
@@ -122,6 +123,8 @@ const styles = StyleSheet.create({
     height: 28,
     borderRadius: 14,
     textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 
   buttonPressed: {
@@ -132,10 +135,12 @@ const styles = StyleSheet.create({
     width: 90,
     height: 28,
     textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
 
   largeButtonUnpressed: {
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 20,
     color: '#34221D',
     backgroundColor: '#E5E5E5',
@@ -148,7 +153,7 @@ const styles = StyleSheet.create({
   },
 
   largeButtonPressed: {
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 20,
     color: '#34221D',
     backgroundColor: '#1D763C',
@@ -159,6 +164,27 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
   },
+
+  descriptionText: {
+    color: '#5D5D5D',
+    fontFamily: 'JosefinSans-Regular',
+    textAlign: 'center',
+    width: '75%',
+  },
+
+  oneDateContainer: {
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    width: '100%',
+    position: 'absolute',
+    marginTop: 50,
+  },
+
+  twoDateContainer: {
+    marginTop: 'auto',
+    marginBottom: 'auto',
+  },
+
 });
 
 function CalendarPopup({
@@ -173,10 +199,13 @@ function CalendarPopup({
     setMondayDelivery(monday);
     setFridayDelivery(friday);
     if (monday || friday) {
-      setShowAlert(true); setShowAlert(true);
+      setShowAlert(true);
     }
     setVisibility(false);
   };
+
+  const today = new Date();
+  const mondayOnly = (today.getDay() === 4 || today.getDay() === 5);
 
   return (
     <View style={styles.popupContainer}>
@@ -184,47 +213,78 @@ function CalendarPopup({
         <CheckboxIcon size={20} color="#34221D" name="close" />
       </TouchableOpacity>
       <Text style={styles.titleText}>Choose your delivery date</Text>
-      <View style={styles.midContainer}>
-        <View style={styles.dateContainer}>
-          <Text style={styles.midText}>{displayFriday}</Text>
-          <TouchableOpacity
-            style={friday ? styles.buttonPressed : styles.buttonUnpressed}
-            activeOpacity={1}
-            onPress={() => {
-              const newState = !friday;
-              if (newState) {
-                setMonday(false);
-              }
-              setFriday(newState);
-            }}
-          >
-            <Text style={friday ? styles.dateTextPressed : styles.dateTextUnpressed}>
-              Friday
-            </Text>
-          </TouchableOpacity>
-        </View>
 
-        <View style={styles.divider} />
+      {mondayOnly
+        ? (
+          <View style={styles.midContainer}>
+            <View>
+              <Text style={styles.descriptionText}>
+                The order deadline for Friday delivery has passed.
+              </Text>
+            </View>
+            <View style={styles.oneDateContainer}>
+              <Text style={styles.midText}>{displayMonday}</Text>
+              <TouchableOpacity
+                style={monday ? styles.buttonPressed : styles.buttonUnpressed}
+                activeOpacity={1}
+                onPress={() => {
+                  const newState = !monday;
+                  if (newState) {
+                    setFriday(false);
+                  }
+                  setMonday(newState);
+                }}
+              >
+                <Text style={monday ? styles.dateTextPressed : styles.dateTextUnpressed}>
+                  Monday
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )
+        : (
+          <View style={styles.midContainer}>
+            <View style={styles.twoDateContainer}>
+              <Text style={styles.midText}>{displayFriday}</Text>
+              <TouchableOpacity
+                style={friday ? styles.buttonPressed : styles.buttonUnpressed}
+                activeOpacity={1}
+                onPress={() => {
+                  const newState = !friday;
+                  if (newState) {
+                    setMonday(false);
+                  }
+                  setFriday(newState);
+                }}
+              >
+                <Text style={friday ? styles.dateTextPressed : styles.dateTextUnpressed}>
+                  Friday
+                </Text>
+              </TouchableOpacity>
+            </View>
 
-        <View style={styles.dateContainer}>
-          <Text style={styles.midText}>{displayMonday}</Text>
-          <TouchableOpacity
-            style={monday ? styles.buttonPressed : styles.buttonUnpressed}
-            activeOpacity={1}
-            onPress={() => {
-              const newState = !monday;
-              if (newState) {
-                setFriday(false);
-              }
-              setMonday(newState);
-            }}
-          >
-            <Text style={monday ? styles.dateTextPressed : styles.dateTextUnpressed}>
-              Monday
-            </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            <View style={styles.divider} />
+
+            <View style={styles.twoDateContainer}>
+              <Text style={styles.midText}>{displayMonday}</Text>
+              <TouchableOpacity
+                style={monday ? styles.buttonPressed : styles.buttonUnpressed}
+                activeOpacity={1}
+                onPress={() => {
+                  const newState = !monday;
+                  if (newState) {
+                    setFriday(false);
+                  }
+                  setMonday(newState);
+                }}
+              >
+                <Text style={monday ? styles.dateTextPressed : styles.dateTextUnpressed}>
+                  Monday
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        )}
 
       <Button
         style={friday ? styles.largeButtonPressed
