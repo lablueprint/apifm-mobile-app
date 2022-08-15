@@ -9,6 +9,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector } from 'react-redux';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';

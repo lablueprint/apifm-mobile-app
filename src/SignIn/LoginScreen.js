@@ -106,10 +106,10 @@ export default function LoginScreen({ navigation }) {
         password,
       });
       console.log(result.body.user);
+      navigation.navigate('Marketplace');
     } catch (err) {
       Alert.alert(err.message);
     }
-    // navigation.navigate('Marketplace');
   };
 
   const handleSignUp = () => {
