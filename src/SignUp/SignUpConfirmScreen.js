@@ -1,9 +1,9 @@
 import React from 'react';
 import {
-  View, StyleSheet, Text, ImageBackground, TouchableOpacity,
+  View, StyleSheet, Text, ImageBackground, TouchableOpacity, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
-import { serviceLogin } from '../redux/services';
+import { loginUser } from '../lib/airlock/airlock';
 
 const backgroundImage = require('../assets/imgs/confirmation.png');
 
@@ -53,9 +53,14 @@ const styles = StyleSheet.create({
 
 export default function SignUpConfirmation({ navigation, route }) {
   const { username, password } = route.params;
-  const handleBrowse = () => {
-    if (serviceLogin(username, password)) {
-      navigation.navigate('Marketplace');
+  const handleBrowse = async () => {
+    try {
+      const result = loginUser(username, password);
+      if (result) {
+        navigation.navigate('Marketplace');
+      }
+    } catch (err) {
+      Alert.alert(err.error, err.message);
     }
   };
 

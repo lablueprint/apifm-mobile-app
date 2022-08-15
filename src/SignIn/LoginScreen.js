@@ -5,18 +5,9 @@ import {
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
-import Airtable from '@calblueprint/airlock';
-import Config from 'react-native-config';
+import { loginUser } from '../lib/airlock/airlock';
 
 const backgroundImage = require('../assets/imgs/login.png');
-
-Airtable.configure({
-  apiKey: 'airlock',
-  // this must be updated by the tester
-  endpointUrl: 'https://857a-64-30-75-107.ngrok.io',
-});
-
-const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
 
 const styles = StyleSheet.create({
   containerInputs: {
@@ -101,14 +92,12 @@ export default function LoginScreen({ navigation }) {
 
   const handleSignIn = async () => {
     try {
-      const result = await base.login({
-        username,
-        password,
-      });
-      console.log(result.body.user);
-      navigation.navigate('Marketplace');
+      const result = await loginUser(username, password);
+      if (result) {
+        navigation.navigate('Marketplace');
+      }
     } catch (err) {
-      Alert.alert(err.message);
+      Alert.alert(err.error, err.message);
     }
   };
 

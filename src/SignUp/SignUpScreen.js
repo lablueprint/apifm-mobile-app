@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
+import { registerUser } from '../lib/airlock/airlock';
 
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
@@ -21,8 +22,6 @@ Airtable.configure({
   // this must be updated by the tester
   endpointUrl: Config.ENDPOINT_URL,
 });
-
-const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
 
 const headerImage = require('../assets/imgs/header.png');
 
@@ -391,37 +390,37 @@ export default function SignUpScreen({ navigation }) {
       Alert.alert('Please read and agree with the Terms and Conditions to proceed');
     } else {
       try {
-        await base.register({
-          username: email,
+        const userData = {
+          email,
           password,
-          fields: {
-            'password copy': password,
-            'first name': firstName,
-            'last name': lastName,
-            organization,
-            'personal phone': number,
-            'business phone': busPhone,
-            'delivery recipient': recipient,
-            address,
-            'apartment number': apt,
-            zipcode: zip,
-            instructions: instr,
-            'billing name': fullName,
-            'billing address': billAddress,
-            'billing apartment number': billApt,
-            'billing zipcode': billZip,
-            'accounting name': accFullName,
-            'accounting email': accEmail,
-            'accounting phone': accNumber,
-          },
-        });
+          firstName,
+          lastName,
+          organization,
+          number,
+          busPhone,
+          recipient,
+          address,
+          apt,
+          zip,
+          instr,
+          fullName,
+          billAddress,
+          billApt,
+          billZip,
+          accFullName,
+          accEmail,
+          accNumber,
+        };
+        const result = await registerUser(userData);
+        if (result) {
+          navigation.navigate('Sign Up Confirmation', {
+            username: email,
+            password,
+          });
+        }
       } catch (err) {
         Alert.alert(err.error, err.message);
       }
-      navigation.navigate('Sign Up Confirmation', {
-        username: email,
-        password,
-      });
     }
   };
 

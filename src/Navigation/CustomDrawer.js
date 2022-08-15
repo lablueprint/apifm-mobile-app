@@ -6,8 +6,8 @@ import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
-import store from '../redux/store';
-import { serviceLogout } from '../redux/services';
+import store from '../lib/redux/store';
+import { logoutUser } from '../lib/airlock/airlock';
 
 const styles = StyleSheet.create({
   main: {
@@ -105,23 +105,24 @@ function CustomDrawer(props) {
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View>
-        <TouchableOpacity />
-        <View style={styles.footer}>
-          <Icon
-            size={26}
-            name="logout-variant"
-            color="#34221D"
-            onPress={() => { serviceLogout(); navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
-          />
-          <Text
-            style={styles.footerDrawer}
-            onPress={() => { navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
-          >
-            Log out
-          </Text>
-        </View>
-      </View>
+      <TouchableOpacity
+        style={styles.footer}
+        onPress={() => {
+          logoutUser();
+          navigation.navigate('Log In');
+        }}
+      >
+        <Icon
+          size={26}
+          name="logout-variant"
+          color="#34221D"
+        />
+        <Text
+          style={styles.footerDrawer}
+        >
+          Log out
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

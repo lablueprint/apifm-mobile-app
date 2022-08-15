@@ -7,7 +7,7 @@ import {
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import store from '../redux/store';
+import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 const placeholder = require('../assets/imgs/placeholder.png');
