@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
+  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
@@ -12,8 +12,8 @@ const backgroundImage = require('../assets/imgs/login.png');
 
 Airtable.configure({
   apiKey: 'airlock',
-  // TODO: replace when server is deployed
-  endpointUrl: 'http://localhost:4000',
+  // this must be updated by the tester
+  endpointUrl: Config.ENDPOINT_URL,
 });
 
 const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
@@ -99,11 +99,17 @@ export default function LoginScreen({ navigation }) {
   const [password, setPassword] = useState('');
   const passwordInput = useRef();
 
-  const handleSignIn = () => {
-    base.login({
-      username: 'jameshe@ucla.edu',
-      password: 'password',
-    }).then(console.log);
+  const handleSignIn = async () => {
+    try {
+      const result = await base.login({
+        username,
+        password,
+      });
+      console.log(result.body.user);
+    } catch (err) {
+      Alert.alert(err);
+    }
+    // navigation.navigate('Marketplace');
   };
 
   const handleSignUp = () => {

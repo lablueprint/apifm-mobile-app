@@ -6,22 +6,23 @@ import {
 import {
   Title, Checkbox, Button,
 } from 'react-native-paper';
+import Airtable from '@calblueprint/airlock';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
-const Airtable = require('airtable');
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
+Airtable.configure({
+  apiKey: 'airlock',
+  // this must be updated by the tester
+  endpointUrl: Config.ENDPOINT_URL,
+});
+
+const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
 
 const headerImage = require('../assets/imgs/header.png');
 
@@ -385,15 +386,16 @@ export default function SignUpScreen({ navigation }) {
   };
 
   // add the new inputs
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!agree) {
       Alert.alert('Please read and agree with the Terms and Conditions to proceed');
     } else {
-      base('Users').create([
-        {
+      try {
+        await base.register({
+          username: email,
+          password,
           fields: {
-            email,
-            password,
+            'password copy': password,
             'first name': firstName,
             'last name': lastName,
             organization,
@@ -412,12 +414,10 @@ export default function SignUpScreen({ navigation }) {
             'accounting email': accEmail,
             'accounting phone': accNumber,
           },
-        },
-      ], (error) => {
-        if (error) {
-          Alert.alert('Error!', error.message);
-        }
-      });
+        });
+      } catch (err) {
+        Alert.alert(err);
+      }
       navigation.navigate('Sign Up Confirmation', {
         username: email,
         password,
