@@ -159,7 +159,7 @@ export default function OrderDetailsScreen({ route }) {
   const cartBatch = async (cartObj) => { // 3
     base('CART V3').create(cartObj, (err) => {
       if (err) {
-        Alert.alert(err);
+        Alert.alert(err.error, err.message);
       }
     });
     await timer(1000);

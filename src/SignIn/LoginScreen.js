@@ -13,7 +13,7 @@ const backgroundImage = require('../assets/imgs/login.png');
 Airtable.configure({
   apiKey: 'airlock',
   // this must be updated by the tester
-  endpointUrl: Config.ENDPOINT_URL,
+  endpointUrl: 'https://857a-64-30-75-107.ngrok.io',
 });
 
 const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
@@ -107,7 +107,7 @@ export default function LoginScreen({ navigation }) {
       });
       console.log(result.body.user);
     } catch (err) {
-      Alert.alert(err);
+      Alert.alert(err.message);
     }
     // navigation.navigate('Marketplace');
   };

@@ -416,7 +416,7 @@ export default function SignUpScreen({ navigation }) {
           },
         });
       } catch (err) {
-        Alert.alert(err);
+        Alert.alert(err.error, err.message);
       }
       navigation.navigate('Sign Up Confirmation', {
         username: email,

@@ -118,7 +118,7 @@ export default function EditAvatarScreen({ navigation }) {
     const user = currentUser.id;
     await base('Users').find(user, (err) => {
       if (err) {
-        Alert.alert(err);
+        Alert.alert(err.error, err.message);
         return;
       }
       sendUpdate();
