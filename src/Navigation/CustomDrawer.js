@@ -1,11 +1,13 @@
+/* eslint-disable global-require */
 import 'react-native-gesture-handler';
 import {
   View, Text, Image, TouchableOpacity, StyleSheet,
 } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 
 const styles = StyleSheet.create({
   main: {
@@ -68,8 +70,55 @@ const styles = StyleSheet.create({
   },
 });
 
+const Airtable = require('airtable');
+
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
+
 function CustomDrawer(props) {
   const { navigation } = props;
+
+  // TODO: remove when sign-in is implemented
+  const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
+  const DUMMY_NAME = 'Joe Bruin';
+
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [orgName, setOrgName] = useState('');
+
+  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      setFirstName(record[0].fields.firstName);
+      setLastName(record[0].fields.lastName);
+      setOrgName(record[0].fields.organization);
+
+      switch (record[0].fields.avatarNum) {
+        case 1: setAvatar(require('../assets/imgs/pipa.png'));
+          break;
+        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
+          break;
+        case 3: setAvatar(require('../assets/imgs/mango.png'));
+          break;
+        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
+          break;
+        case 5: setAvatar(require('../assets/imgs/lychee.png'));
+          break;
+        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
+          break;
+        default: setAvatar(require('../assets/imgs/placeholder.png'));
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.main}>
@@ -86,14 +135,16 @@ function CustomDrawer(props) {
         <View style={styles.header}>
           <Image
             // eslint-disable-next-line global-require
-            source={require('../assets/imgs/placeholder.png')}
+            source={avatar}
             style={styles.photo}
           />
           <Text style={styles.title}>
-            Joe Bruin
+            {firstName}
+            {' '}
+            {lastName}
           </Text>
           <Text style={styles.subtitle}>
-            Organization Name
+            {orgName}
           </Text>
         </View>
         <View style={styles.drawers}>

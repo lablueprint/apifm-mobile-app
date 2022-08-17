@@ -1,13 +1,13 @@
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
   Alert, View, StyleSheet, TextInput, Image, TouchableOpacity,
 } from 'react-native';
 import {
-  Text, Button,
+  Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { mdiSourcePull } from '@mdi/js';
 
 const styles = StyleSheet.create({
   container: {
@@ -101,16 +101,20 @@ export default function ProfileScreen({ navigation }) {
   const [phoneNum, setPhoneNum] = useState('');
   const [address, setAddress] = useState('');
 
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [orgName, setOrgName] = useState('');
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
-  // const [avatarNum, setAvatarNum] = useState(0);
-  // const avatarFruits = ['placeholder', 'pipa', 'eggplant', 'mango', 'dragonfruit', 'lychee', 'bokchoy'];
 
   useEffect(() => {
     const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
-      console.log(record[0].fields.avatarNum);
+      setFirstName(record[0].fields.firstName);
+      setLastName(record[0].fields.lastName);
+      setOrgName(record[0].fields.organization);
+
       switch (record[0].fields.avatarNum) {
         case 1: setAvatar(require('../assets/imgs/pipa.png'));
           break;
@@ -126,9 +130,6 @@ export default function ProfileScreen({ navigation }) {
           break;
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
-      // const url = `../assets/imgs/${avatarFruits[avatarNum]}.png`;
-      // // eslint-disable-next-line import/no-dynamic-require
-      // setAvatar(require(url));
     });
   }, []);
 
@@ -166,7 +167,7 @@ export default function ProfileScreen({ navigation }) {
           style={styles.image}
           source={avatar}
         />
-        <TouchableOpacity onPress={() => { console.log('working?'); navigation.navigate('EditAvatar'); }}>
+        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
           <Image
             style={styles.edit}
             source={require('../assets/imgs/edit.png')}
@@ -174,9 +175,13 @@ export default function ProfileScreen({ navigation }) {
         </TouchableOpacity>
 
         <Text style={styles.titleText}>
-          {DUMMY_NAME}
+          {firstName}
+          {' '}
+          {lastName}
         </Text>
-        <Text style={styles.subtitleText}> Organization Name </Text>
+        <Text style={styles.subtitleText}>
+          {orgName}
+        </Text>
       </View>
       {/* Start of text input region */}
       <View style={styles.inputContainer}>

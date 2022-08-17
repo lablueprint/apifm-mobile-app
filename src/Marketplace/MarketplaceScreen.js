@@ -477,6 +477,17 @@ export default function MarketplaceScreen({ navigation }) {
     setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
 
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      setFirstName(record[0].fields.firstName);
+    });
+  }, []);
+
   return (
     <Provider>
       <View style={styles.container}>
@@ -507,7 +518,12 @@ export default function MarketplaceScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>Hello YOUR NAME,</Text>
+            <Text style={styles.welcomeText}>
+              Hello
+              {' '}
+              {firstName}
+              ,
+            </Text>
             <Text style={styles.welcomeText}>Order your produce here!</Text>
           </View>
 
