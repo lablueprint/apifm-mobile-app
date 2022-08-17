@@ -7,6 +7,7 @@ import { Title } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import OrderCard from './OrdersCard';
+import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 
@@ -18,7 +19,8 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-const CONST_USER = 'helen@gmail.com';
+const currentUser = store.getState().auth.user;
+const CONST_USER = currentUser.email;
 const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const styles = StyleSheet.create({
@@ -89,7 +91,7 @@ export default function OrderScreen({ navigation }) {
         }
         if (('produce_id' in record.fields)) {
           base('Produce').find(record.fields.produce_id, ((err, prodRecord) => {
-            if (err) { console.error(err); return; }
+            if (err) { Alert.alert(err); return; }
             order.fields.produceItem = prodRecord;
             if (!itemsListVar.has(currDate)) {
               itemsListVar.set(currDate, prodRecord.fields.Name);

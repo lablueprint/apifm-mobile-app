@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Image,
+  View, StyleSheet, Image, Alert,
 } from 'react-native';
 import {
   Text, Button, TextInput,
@@ -130,7 +130,7 @@ export default function CartProduct(props) {
       },
     ], (err) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err);
       }
     });
     setRefresh(refresh + 1);
@@ -143,7 +143,7 @@ export default function CartProduct(props) {
   const deleteItem = () => {
     base('CART V3').destroy([itemID], (err) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err);
       }
     });
     setRefresh(refresh + 1);

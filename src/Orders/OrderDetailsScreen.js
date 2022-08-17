@@ -8,6 +8,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
+import store from '../lib/redux/store';
 
 import OrderItem from './OrderItem';
 // TODO: Delivery date in css is hardcoded rn
@@ -114,13 +115,14 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-const CONST_USER = 'helen@gmail.com';
-const CONST_USER_ID = 'recIpBFqr2EXNbS7d';
-
 export default function OrderDetailsScreen({ route }) {
   const {
     navigation, orderId, date, time, items,
   } = route.params;
+
+  const currentUser = store.getState().auth.user;
+  const CONST_USER = currentUser.email;
+  const CONST_USER_ID = currentUser.id;
 
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);

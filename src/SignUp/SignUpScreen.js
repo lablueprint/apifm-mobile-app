@@ -580,7 +580,7 @@ export default function SignUpScreen({ navigation }) {
             onPress={() => {
               if (checkAccountInputs()) {
                 Keyboard.dismiss();
-                setPage(2);
+                setPage(4);
               }
             }}
           >
