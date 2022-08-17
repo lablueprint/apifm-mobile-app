@@ -109,7 +109,7 @@ export default function CheckoutScreen({ route, navigation }) {
     setCount(c);
   };
 
-  const setOrderDetails = (useremail) => {
+  const retrieveUserDetails = (useremail) => {
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
@@ -141,14 +141,24 @@ export default function CheckoutScreen({ route, navigation }) {
     />
   ));
 
+  const retrieveOrderDetails = (useremail) => {
+    base('Cart V3').select({
+      filterByFormula: `({shopper}='${useremail}')`,
+    }).firstPage()
+      .then((records) => {
+        setDeliveryDate(records[0].fields['Delivery Date']);
+      });
+  };
+
   useEffect(() => {
     // TODO: replace hardcoded email with logged in user info
-    setOrderDetails('helen@gmail.com');
+    retrieveUserDetails('helen@gmail.com');
+    retrieveOrderDetails('helen@gmail.com');
     calcTotal();
 
+    // scheduled sent the email to apifm, waiting on response
     setDeliveryFee(10);
     setFreeFee(20);
-    setDeliveryDate('January 2023!');
   }, []);
 
   const pushToOrderTable = async (useremail) => {
