@@ -421,6 +421,17 @@ export default function MarketplaceScreen({ navigation }) {
     setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
 
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      setFirstName(record[0].fields.firstName);
+    });
+  }, []);
+
   return (
     <Provider>
       <View style={styles.container}>
@@ -450,7 +461,12 @@ export default function MarketplaceScreen({ navigation }) {
             </TouchableOpacity>
           </View>
           <View style={styles.welcomeContainer}>
-            <Text style={styles.welcomeText}>Hello YOUR NAME,</Text>
+            <Text style={styles.welcomeText}>
+              Hello
+              {' '}
+              {firstName}
+              ,
+            </Text>
             <Text style={styles.welcomeText}>Order your produce here!</Text>
           </View>
 
@@ -553,7 +569,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={showAlert}
+              visible={showAlert && currentUser.approved}
               contentContainerStyle={styles.calendarErrorMessage}
               onDismiss={() => {
                 setShowAlert(false);
@@ -581,10 +597,66 @@ export default function MarketplaceScreen({ navigation }) {
               }}
             >
               <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setWednesdayAlert(false); }}>
-                <Icon name="close" size={22} />
+                <Icon
+                  name="close"
+                  size={22}
+                  color="#000"
+                  style={{
+                    marginBottom: 20,
+                  }}
+                />
               </TouchableOpacity>
+              <Text style={styles.alertTitle}>
+                Sorry! We're currently updating the produce list.
+              </Text>
+              <Text style={styles.alertSubtitle}>
+                You can currently preview produce for Monday deliveries,
+                but you cannot place an order.
+                Please come back on Thursday to place an order!
+              </Text>
               <Image
-                source={wednesdayError}
+                source={sadDurianBG}
+                style={{
+                  width: 150, height: 150, alignSelf: 'center',
+                }}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={unapprovedAlert}
+              contentContainerStyle={styles.alertContainer}
+              onDismiss={() => {
+                setUnapprovedAlert(false);
+              }}
+              theme={{
+                colors: {
+                  backdrop: 'transparent',
+                },
+              }}
+            >
+              <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setUnapprovedAlert(false); }}>
+                <Icon
+                  name="close"
+                  size={22}
+                  color="#000"
+                  style={{
+                    marginBottom: 20,
+                  }}
+                />
+              </TouchableOpacity>
+              <Text style={styles.alertTitle}>
+                Sorry! Your account has not been approved yet.
+              </Text>
+              <Text style={styles.alertSubtitle}>
+                You won't be able to place any orders yet,
+                but feel free to browse the marketplace
+                while our staff reveiws your information.
+              </Text>
+              <Image
+                source={sadDurianBG}
                 style={{
                   width: 260, height: 260, alignSelf: 'center', marginTop: 20,
                 }}
