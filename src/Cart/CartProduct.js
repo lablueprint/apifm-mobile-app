@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View, StyleSheet, Image, Alert,
 } from 'react-native';
@@ -52,11 +52,9 @@ const styles = StyleSheet.create({
   },
   container3: {
     flex: 1,
-    //  flexDirection: 'column',
     marginLeft: 0,
     marginTop: 16,
     display: 'flex',
-    // alignItems: 'stretch',
     width: '100%',
   },
   container4: {
@@ -139,53 +137,61 @@ const styles = StyleSheet.create({
 export default function CartProduct(props) {
   const {
     itemID,
-    refresh,
-    setRefresh,
+    itemRefresh,
+    setItemRefresh,
+    calcRefresh,
+    setCalcRefresh,
     name,
     price,
     type,
-    initialQuantity,
     image,
     border,
+    // eslint-disable-next-line react/prop-types
     quantities,
+    // eslint-disable-next-line react/prop-types
     setQuantities,
   } = props;
 
-  const [quantity, setQuantity] = useState(String(initialQuantity));
   const imageurl = { uri: image };
 
-  const handleQuantityChange = (newQuantity) => {
-    setQuantity(newQuantity);
-    quantities[name] = newQuantity;
-    console.log(quantities);
-    base('CART V3').update([
-      {
-        id: String(itemID),
-        fields: {
-          quantity: Number(newQuantity),
+  const handleQuantityChange = async (newQuantity) => {
+    if (newQuantity === '') {
+      setQuantities(() => ({
+        ...quantities,
+        [name]: newQuantity,
+      }));
+    } else {
+      setQuantities(() => ({
+        ...quantities,
+        [name]: Number(newQuantity),
+      }));
+      await base('CART V3').update([
+        {
+          id: String(itemID),
+          fields: {
+            quantity: Number(newQuantity),
+          },
         },
-      },
-    ], (err) => {
-      if (err) {
-        Alert.alert(err.error, err.message);
-      }
-    });
-    setRefresh(refresh + 1);
+      ], (err) => {
+        if (err) {
+          Alert.alert(err.error, err.message);
+        }
+      });
+      setCalcRefresh(calcRefresh + 1);
+    }
   };
 
-  useEffect(() => {
-
-  }, []);
-
   const deleteItem = () => {
+    setQuantities(() => ({
+      ...quantities,
+      [name]: undefined,
+    }));
     base('CART V3').destroy([itemID], (err) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err);
       }
     });
-    delete quantities[name];
-    console.log(quantities);
-    setRefresh(refresh - 1);
+    setItemRefresh(itemRefresh + 1);
   };
 
   return (
@@ -204,7 +210,7 @@ export default function CartProduct(props) {
           <TextInput
             style={styles.quantityBox}
             keyboardType="numeric"
-            value={quantity}
+            value={String(quantities[name])}
             onChangeText={handleQuantityChange}
           />
           <Text style={styles.itemQuantityType}>
@@ -214,7 +220,7 @@ export default function CartProduct(props) {
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          {`$${parseFloat((price) * quantity).toFixed(2)}`}
+          {`$${parseFloat((price) * quantities[name]).toFixed(2)}`}
         </Text>
         <Button
           style={styles.removeItemButton}
@@ -230,12 +236,13 @@ export default function CartProduct(props) {
 
 CartProduct.propTypes = {
   itemID: PropTypes.string.isRequired,
-  refresh: PropTypes.number.isRequired,
-  setRefresh: PropTypes.func.isRequired,
+  itemRefresh: PropTypes.number.isRequired,
+  setItemRefresh: PropTypes.func.isRequired,
+  calcRefresh: PropTypes.number.isRequired,
+  setCalcRefresh: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
-  initialQuantity: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   border: PropTypes.bool.isRequired,
 };

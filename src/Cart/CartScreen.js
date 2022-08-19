@@ -96,76 +96,55 @@ const styles = StyleSheet.create({
 
 export default function CartScreen({ navigation }) {
   const [itemList, setItemList] = useState([]);
-  const [refresh, setRefresh] = useState(0);
+  const [itemRefresh, setItemRefresh] = useState(0);
+  const [calcRefresh, setCalcRefresh] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
-
   const [quantities, setQuantities] = useState({});
 
-  const getItems = (useremail) => {
-    const list = [];
-    // comments: trying to calculate in getItems function 
-    // let subtotal = 0;
-    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
-      records.forEach((record) => {
-        const item = record;
-        quantities[item.fields.name] = item.fields.quantity;
-        // subtotal += item.fields.quantity * item.fields.price;
-        list.push(item.fields);
+  const calcTotal = (quantitiesList) => {
+    let total = 0;
+    if (quantitiesList) {
+      const names = Object.keys(quantitiesList);
+      names.pop();
+      names.forEach((produce) => {
+        total += quantitiesList[produce] * quantitiesList.prices[produce];
       });
-      setItemList(list);
-      // setSubtotal(subtotal);
-      fetchNextPage();
-    });
+    }
+
+    return total;
   };
 
-  // old function: kept up with updating quantities beautifully, didn't 
-  // show when screen opened tho 
-
-  // const calcTotal = () => {
-  //   let sum = 0;
-  //   itemList.forEach((item) => {
-  //     sum += quantities[item.name] * item.price;
-  //   });
-  //   setSubtotal(sum);
-  // };
-
-  // even older function: pulling from airtable to calculate total 
-  // const calcTotal = (useremail) => {
-  //   base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
-  //     .then((items) => {
-  //       let sum = 0;
-  //       items.forEach((item) => {
-  //         const price = item.get('price');
-  //         sum += quantities[item.name] * price;
-  //       });
-  //       setSubtotal(sum);
-  //     });
-  // };
-
-  const calcTotal = (itemList) => {
-    let sum = 0;
-    // throwing error that there is no forEach function for itemlist
-    // itemList.forEach((item) => {
-    //   sum += quantities[item.name] * item.price;
-    // });
-
-    // still not updating correctly or displaying upon first screen
-    // for (let i = 0; i < itemList.length; i++) {
-    //   sum+= itemList[i].price * itemList[i].quantity; 
-    // }
-    // setSubtotal(sum);
+  const getItems = async (useremail) => {
+    const list = [];
+    const allQuantities = {};
+    const allPrices = {};
+    await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
+      records.forEach((record) => {
+        const item = record.fields;
+        allQuantities[item.name] = item.quantity;
+        const price = item.price[0];
+        allPrices[item.name] = price;
+        list.push(item);
+      });
+      fetchNextPage();
+    });
+    allQuantities.prices = allPrices;
+    setItemList(list);
+    setSubtotal(calcTotal(allQuantities));
+    setQuantities(allQuantities);
   };
 
   const products = itemList.map((item) => (
     <CartProduct
       itemID={item.item_id}
       key={item.item_id}
-      setRefresh={setRefresh}
-      refresh={refresh}
+      itemRefresh={itemRefresh}
+      setItemRefresh={setItemRefresh}
+      calcRefresh={calcRefresh}
+      setCalcRefresh={setCalcRefresh}
       name={item.name[0]}
       price={item.price[0]}
       type={item.unit[0]}
-      initialQuantity={String(item.quantity)}
       image={item.image[0].url}
       quantities={quantities}
       setQuantities={setQuantities}
@@ -174,10 +153,11 @@ export default function CartScreen({ navigation }) {
   ));
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged-in user data
     getItems('jameshe@ucla.edu');
-    calcTotal(itemList);
-  }, [refresh]);
+  }, [itemRefresh]);
+  useEffect(() => {
+    setSubtotal(calcTotal(quantities));
+  }, [calcRefresh]);
 
   return (
     <View style={styles.entireScreen}>
