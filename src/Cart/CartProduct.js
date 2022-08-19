@@ -52,11 +52,9 @@ const styles = StyleSheet.create({
   },
   container3: {
     flex: 1,
-    //  flexDirection: 'column',
     marginLeft: 0,
     marginTop: 16,
     display: 'flex',
-    // alignItems: 'stretch',
     width: '100%',
   },
   container4: {
@@ -147,17 +145,22 @@ export default function CartProduct(props) {
     initialQuantity,
     image,
     border,
-    quantities,
-    setQuantities,
   } = props;
 
   const [quantity, setQuantity] = useState(String(initialQuantity));
+
+  const getItem = () => {
+    base('CART V3').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
+      .then((records) => {
+        const newItem = records[0].fields;
+        setQuantity(String(newItem.quantity));
+      });
+  };
+
   const imageurl = { uri: image };
 
   const handleQuantityChange = (newQuantity) => {
     setQuantity(newQuantity);
-    quantities[name] = newQuantity;
-    console.log(quantities);
     base('CART V3').update([
       {
         id: String(itemID),
@@ -174,7 +177,7 @@ export default function CartProduct(props) {
   };
 
   useEffect(() => {
-
+    getItem();
   }, []);
 
   const deleteItem = () => {
@@ -183,9 +186,7 @@ export default function CartProduct(props) {
         console.error(err);
       }
     });
-    delete quantities[name];
-    console.log(quantities);
-    setRefresh(refresh - 1);
+    setRefresh(refresh + 1);
   };
 
   return (

@@ -99,61 +99,28 @@ export default function CartScreen({ navigation }) {
   const [refresh, setRefresh] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
 
-  const [quantities, setQuantities] = useState({});
-
   const getItems = (useremail) => {
     const list = [];
-    // comments: trying to calculate in getItems function 
-    // let subtotal = 0;
     base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const item = record;
-        quantities[item.fields.name] = item.fields.quantity;
-        // subtotal += item.fields.quantity * item.fields.price;
         list.push(item.fields);
       });
       setItemList(list);
-      // setSubtotal(subtotal);
       fetchNextPage();
     });
   };
 
-  // old function: kept up with updating quantities beautifully, didn't 
-  // show when screen opened tho 
-
-  // const calcTotal = () => {
-  //   let sum = 0;
-  //   itemList.forEach((item) => {
-  //     sum += quantities[item.name] * item.price;
-  //   });
-  //   setSubtotal(sum);
-  // };
-
-  // even older function: pulling from airtable to calculate total 
-  // const calcTotal = (useremail) => {
-  //   base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
-  //     .then((items) => {
-  //       let sum = 0;
-  //       items.forEach((item) => {
-  //         const price = item.get('price');
-  //         sum += quantities[item.name] * price;
-  //       });
-  //       setSubtotal(sum);
-  //     });
-  // };
-
-  const calcTotal = (itemList) => {
-    let sum = 0;
-    // throwing error that there is no forEach function for itemlist
-    // itemList.forEach((item) => {
-    //   sum += quantities[item.name] * item.price;
-    // });
-
-    // still not updating correctly or displaying upon first screen
-    // for (let i = 0; i < itemList.length; i++) {
-    //   sum+= itemList[i].price * itemList[i].quantity; 
-    // }
-    // setSubtotal(sum);
+  const calcTotal = (useremail) => {
+    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
+      .then((items) => {
+        let sum = 0;
+        items.forEach((item) => {
+          const price = item.get('price');
+          sum += item.fields.quantity * price;
+        });
+        setSubtotal(sum);
+      });
   };
 
   const products = itemList.map((item) => (
@@ -167,8 +134,6 @@ export default function CartScreen({ navigation }) {
       type={item.unit[0]}
       initialQuantity={String(item.quantity)}
       image={item.image[0].url}
-      quantities={quantities}
-      setQuantities={setQuantities}
       border
     />
   ));
@@ -176,15 +141,12 @@ export default function CartScreen({ navigation }) {
   useEffect(() => {
     // TODO: replace hardcoded email with logged-in user data
     getItems('jameshe@ucla.edu');
-    calcTotal(itemList);
+    calcTotal('jameshe@ucla.edu');
   }, [refresh]);
 
   return (
     <View style={styles.entireScreen}>
       <View style={styles.container}>
-        {/* <Title style={styles.titleText}>
-          Cart
-        </Title> */}
         <ScrollView style={styles.scrollView}>
           {products}
         </ScrollView>

@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Image, ScrollView,
+  View, StyleSheet,  ScrollView, ImageBackground, TouchableOpacity,
 } from 'react-native';
 import {
-  Text, Button,
+  Text, 
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import logo from '../assets/imgs/square_logo.png';
 
 import CartProduct from '../Cart/CartProductUntoggle';
 
+const background = require('../assets/imgs/checkoutBackground.png');
+
 const styles = StyleSheet.create({
+  scrollStyle: {
+    backgroundColor: '#FFFFFA',
+  },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -18,25 +23,50 @@ const styles = StyleSheet.create({
   headerContainer: {
     flexDirection: 'column',
     alignItems: 'center',
-    marginTop: '8%',
+    marginTop: '6%',
     marginHorizontal: '16%',
     marginBottom: '8%',
   },
-  titleText: {
-    marginBottom: 10,
-    fontSize: 18,
-    fontWeight: '700',
-  },
   bodyText: {
-    fontSize: 14,
-  },
-  button: {
-    width: '60%',
-    marginTop: 10,
-    backgroundColor: '#0492c2',
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 16,
+    justifyContent: 'center',
+    marginTop: '115%',
+    textAlign: 'center',
   },
   subcontainer: {
     marginHorizontal: '8%',
+  },
+  backgroundStyle: {
+    width: '100%',
+    height: 1000,
+  },
+  titleText: {
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 24,
+  },
+  overviewHeader: {
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 18,
+  },
+  totalDueText: {
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 18,
+  },
+  button: {
+    borderRadius: 25,
+    height: 50,
+    width: 300,
+    marginTop: 60,
+    marginBottom: 60,
+    backgroundColor: '#1D763C',
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 24,
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 
@@ -75,47 +105,49 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
   }, []);
 
   return (
-    <ScrollView>
-      <View style={styles.headerContainer}>
-        <Image style={{ width: 275, height: 275 }} source={logo} />
-        <Text style={[styles.bodyText, { marginLeft: '0%', marginTop: '8%' }]}>
-          Your order has been placed! Our staff will contact you alskjfslfjd lsjfhl sjdfljs
-          dflj f delivery shipping money stlsjf lfj lsfj slfj lfdj lkjdnsvnfskv ndfjn sdfn
-        </Text>
-      </View>
+    <ScrollView style={styles.scrollStyle}>
+      <ImageBackground source={background} style={styles.backgroundStyle}>
+        <View style={styles.headerContainer}>
+          <Text style={styles.titleText}>
+            Order Successful!
+          </Text>
+          <Text style={styles.bodyText}>
+            Your order has been placed! You will receive a confirmation email within 24 hours.
+            Thank you for choosing Food Roots!
+          </Text>
+        </View>
 
-      <View style={styles.subcontainer}>
-        <Text style={[styles.titleText, {
-          fontSize: 22,
-          marginLeft: '0%',
-        }]}
-        >
-          {`Order Overview (${count}):`}
-        </Text>
-        <View>
-          {products}
-        </View>
-        <View style={{
-          flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
-        }}
-        >
-          <Text style={styles.titleText}>
-            Total due at delivery:
+        <View style={styles.subcontainer}>
+          <Text style={styles.overviewHeader}>
+            {`Order Overview (${count}):`}
           </Text>
-          <Text style={styles.titleText}>
-            {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
-          </Text>
+          <View>
+            {products}
+          </View>
+          <View style={{
+            flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
+          }}
+          >
+            <Text style={styles.overviewHeader}>
+              Total due at delivery:
+            </Text>
+            <Text style={styles.overviewHeader}>
+              {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
+            </Text>
+          </View>
         </View>
-      </View>
-      <View style={[styles.container, { marginBottom: '8%' }]}>
-        <Button
-          mode="contained"
-          style={styles.button}
-          onPress={() => navigation.navigate('Marketplace')}
-        >
-          Return To Marketplace
-        </Button>
-      </View>
+        <View style={[styles.container, { marginBottom: '8%' }]}>
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => navigation.navigate('Marketplace')}
+          >
+            <Text style={styles.buttonText}>
+              Return To Marketplace
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
     </ScrollView>
   );
 }
