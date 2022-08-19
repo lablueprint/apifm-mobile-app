@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import {
-  View, StyleSheet, Image,
+  View, StyleSheet, Image, Alert,
 } from 'react-native';
 import {
   Text, Button, TextInput,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/Feather';
 
 const Airtable = require('airtable');
 
@@ -23,75 +23,116 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     flexDirection: 'row',
-    height: 125,
-    marginTop: 5,
-    marginBottom: 0,
+    height: 130,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C4C4C4',
+    marginTop: -1,
+    marginBottom: 1,
+    width: '100%',
+    marginLeft: 0,
+  },
+  containerNoBorder: {
+    justifyContent: 'center',
+    flexDirection: 'row',
+    height: 130,
+    borderBottomColor: '#C4C4C4',
+    marginTop: 1,
+    marginBottom: 1,
+    width: '100%',
+    marginLeft: 0,
   },
   container2: {
-    alignItems: 'center',
+    alignItems: 'flex-end',
     justifyConent: 'center',
     flexDirection: 'column',
-    marginLeft: 0,
+    marginLeft: -5,
     marginTop: 10,
-    marginRight: 5,
+    marginRight: 8,
+    width: '25%',
   },
   container3: {
-    //    flex: 1,
-    //    flexDirection: 'column',
+    flex: 1,
+    //  flexDirection: 'column',
     marginLeft: 0,
-    marginTop: 20,
-    width: 125,
+    marginTop: 16,
+    display: 'flex',
+    // alignItems: 'stretch',
+    width: '100%',
+  },
+  container4: {
+    width: '100%',
+  },
+  quantityContainer: {
+    flexDirection: 'row',
+    height: 60,
   },
 
   itemName: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontSize: 20,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 16,
     marginRight: 10,
-    marginLeft: 13,
+    marginLeft: 15,
     marginTop: 0,
     marginBottom: 0,
+    color: '#34221D',
+    width: '100%',
   },
-
+  quantityBox: {
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#C4C4C4',
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 14,
+    margin: '1%',
+    marginTop: 10,
+    marginLeft: 17,
+    marginBottom: 20,
+    padding: '-3%',
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    textAlign: 'center',
+    backgroundColor: '#FFFFFA',
+  },
   itemQuantityType: {
-    fontFamily: 'Verdana',
+    fontFamily: 'JosefinSans-Light',
     fontStyle: 'normal',
-    fontWeight: 'normal',
     fontSize: 14,
     marginBottom: 5,
-    marginLeft: 15,
-    marginTop: 5,
+    marginLeft: 10,
+    marginTop: 15,
   },
   itemQuantity: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 14,
     alignContent: 'center',
   },
   itemTotalPrice: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'bold',
-    fontSize: 18,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 16,
     marginBottom: '0%',
-    marginLeft: 100,
+    marginLeft: '45%',
     marginTop: 10,
+    color: '#34221D',
   },
   itemPricePer: {
-    fontFamily: 'Verdana',
-    fontStyle: 'normal',
-    fontWeight: 'normal',
-    fontSize: 12,
+    fontFamily: 'JosefinSans-Light',
+    fontSize: 14,
     marginBottom: 0,
-    marginLeft: 100,
+    marginLeft: 15,
+    marginTop: 7,
+  },
+  removeItemButton: {
+    padding: 0,
+    marginTop: 30,
+    marginLeft: '45%',
+    marginRight: -20,
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 85,
+    height: 85,
     marginLeft: 5,
-    marginTop: 20,
-    marginBottom: 20,
+    marginTop: 21,
+    borderRadius: 5,
   },
 });
 
@@ -105,22 +146,18 @@ export default function CartProduct(props) {
     type,
     initialQuantity,
     image,
+    border,
+    quantities,
+    setQuantities,
   } = props;
 
   const [quantity, setQuantity] = useState(String(initialQuantity));
-
-  const getItem = () => {
-    base('CART V3').select({ maxRecords: 1, filterByFormula: `({item_id}='${itemID}')` }).firstPage()
-      .then((records) => {
-        const newItem = records[0].fields;
-        setQuantity(String(newItem.quantity));
-      });
-  };
-
   const imageurl = { uri: image };
 
   const handleQuantityChange = (newQuantity) => {
     setQuantity(newQuantity);
+    quantities[name] = newQuantity;
+    console.log(quantities);
     base('CART V3').update([
       {
         id: String(itemID),
@@ -130,14 +167,14 @@ export default function CartProduct(props) {
       },
     ], (err) => {
       if (err) {
-        console.error(err);
+        Alert.alert(err.error, err.message);
       }
     });
     setRefresh(refresh + 1);
   };
 
   useEffect(() => {
-    getItem();
+
   }, []);
 
   const deleteItem = () => {
@@ -146,42 +183,45 @@ export default function CartProduct(props) {
         console.error(err);
       }
     });
-    setRefresh(refresh + 1);
+    delete quantities[name];
+    console.log(quantities);
+    setRefresh(refresh - 1);
   };
 
   return (
-    <View style={styles.container}>
+    <View style={border ? styles.container : styles.containerNoBorder}>
       <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
-        <Text style={styles.itemName}>
-          {name}
+        <View style={styles.container4}>
+          <Text style={styles.itemName}>
+            {name}
+          </Text>
+        </View>
+        <Text style={styles.itemPricePer}>
+          {`$${price} ${type}`}
         </Text>
         <View style={styles.quantityContainer}>
-          <Text style={styles.itemQuantityType}>
-            Quantity:
-            {' '}
-          </Text>
           <TextInput
+            style={styles.quantityBox}
             keyboardType="numeric"
             value={quantity}
-            style={styles.quantityBox}
             onChangeText={handleQuantityChange}
           />
+          <Text style={styles.itemQuantityType}>
+            {type}
+          </Text>
         </View>
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          {`$ ${parseFloat((price) * quantity).toFixed(2)}`}
-        </Text>
-        <Text style={styles.itemPricePer}>
-          {`$ ${price} ${type}`}
+          {`$${parseFloat((price) * quantity).toFixed(2)}`}
         </Text>
         <Button
           style={styles.removeItemButton}
           onPress={deleteItem}
           color="#000000"
         >
-          <Icon style={{ fontSize: 20 }} name="delete" />
+          <Icon style={{ fontSize: 18 }} name="trash-2" />
         </Button>
       </View>
     </View>
@@ -197,4 +237,5 @@ CartProduct.propTypes = {
   type: PropTypes.string.isRequired,
   initialQuantity: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  border: PropTypes.bool.isRequired,
 };
