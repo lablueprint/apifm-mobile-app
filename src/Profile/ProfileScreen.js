@@ -131,7 +131,7 @@ export default function ProfileScreen({ navigation }) {
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
     });
-  }, []);
+  });
 
   // When save changes is clicked, fields belonging to this user will be updated
   const handleSaveChanges = () => {
