@@ -20,8 +20,8 @@ const tabonfavorites = require('../assets/tabonfavorites.png');
 const taboffmarketplace = require('../assets/taboffmarketplace.png');
 const tabofffavorites = require('../assets/tabofffavorites.png');
 
-const wednesdayError = require('../assets/wednesdayalert.png');
-const errorbackground = require('../assets/errormessage.png');
+const sadDurianBG = require('../assets/saddurianbg.png');
+const exclamation = require('../assets/exclamation.png');
 const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
@@ -103,18 +103,60 @@ const styles = StyleSheet.create({
   },
   calendarErrorMessage: {
     position: 'absolute',
-    borderRadius: 15,
-    width: 400,
-    height: 70,
-    top: '-4%',
-    left: '14.5%',
-    alignItems: 'center',
+    borderRadius: 10,
+    width: 300,
+    height: 50,
+    backgroundColor: '#FF5353',
+    alignSelf: 'flex-end',
+    top: '5%',
+    right: '3.5%',
   },
-  wednesdayAlertContainer: {
+  calendarErrorFlag: {
+    width: 20,
+    height: 20,
+    position: 'absolute',
+    top: '-10%',
+    right: '12.5%',
+    backgroundColor: '#FF5353',
+    transform: [{ rotate: '45deg' }],
+  },
+  calendarErrorText: {
+    fontFamily: 'JosefinSans-Medium',
+    fontSize: 13,
+    color: '#FCF7F0',
+    position: 'absolute',
+    left: '14%',
+    width: '85%',
+  },
+  exclamation: {
+    left: '5%',
+    position: 'absolute',
+  },
+  alertContainer: {
     width: 360,
     height: 335,
     backgroundColor: '#FFFFFA',
     alignSelf: 'center',
+    borderRadius: 20,
+  },
+  alertTitle: {
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 18,
+    color: '#34221D',
+    width: '75%',
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  alertSubtitle: {
+    fontFamily: 'JosefinSans-Regular',
+    fontSize: 14,
+    color: '#5D5D5D',
+    width: '75%',
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginTop: 5,
   },
   filterPopup: {
     width: 330,
@@ -180,6 +222,11 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
+  // temporary for approved users, will be replaced by 'redux' branch merge
+  const currentUser = {
+    approved: true,
+  };
+
   const today = new Date();
   const tempToday = new Date();
   const thisFriday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 5)));
@@ -189,9 +236,12 @@ export default function MarketplaceScreen({ navigation }) {
   const nextMonday = new Date(tempToday.setDate((tempToday.getDate() - tempToday.getDay() + 8)));
   const displayMonday = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}`;
 
-  const closedMarket = (today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3
-  || (today.getDay() === 5 && today.getHours() >= 15)
-  || today.getDay() === 6 || today.getDay() === 0;
+  const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
+  || today.getDay() === 6 || today.getDay() === 0
+  || (today.getDay() === 1 && today.getHours() <= 14));
+  const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
+  || today.getDay() === 3
+  || (today.getDay() === 4 && today.getHours <= 15));
 
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
@@ -201,6 +251,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [filterVisibility, setFilterVisibility] = useState(false);
   const [favoritesFilter, setFavoritesFilter] = useState(false);
 
+  const [unapprovedAlert, setUnapprovedAlert] = useState(false);
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
@@ -217,17 +268,22 @@ export default function MarketplaceScreen({ navigation }) {
     return deliveryList;
   };
 
-  const selectDayAlert = () => {
-    if (!closedMarket && !mondayDelivery && !fridayDelivery) {
-      return true;
+  const showProduce = () => {
+    if (!currentUser.approved
+      || closedMarket || restrictedMarket
+      || (!mondayDelivery && !fridayDelivery)) {
+      return false;
     }
-    return false;
+    return true;
   };
 
   const getProduce = async () => {
     let favorites = [];
     let mondayState = false;
-    if ((today.getDay() === 2 && today.getHours >= 17) || today.getDay() === 3) {
+    if (!currentUser.approved) {
+      setUnapprovedAlert(true);
+    }
+    if (restrictedMarket) {
       mondayState = true;
       setMondayDelivery(true);
       setWednesdayAlert(true);
@@ -439,7 +495,8 @@ export default function MarketplaceScreen({ navigation }) {
             <TouchableOpacity onPress={() => { setCalendarVisibility(true); }}>
               <FeatherIcon style={styles.calendarIcon} name="calendar" size={24} />
             </TouchableOpacity>
-            {!mondayDelivery && !fridayDelivery && !closedMarket
+            {currentUser.approved
+            && !mondayDelivery && !fridayDelivery && !closedMarket && !restrictedMarket
               && <View style={styles.circle} />}
 
             <TouchableOpacity onPress={() => { setFilterVisibility(true); }}>
@@ -502,7 +559,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={calendarVisibility && !closedMarket}
+              visible={calendarVisibility && !closedMarket && !restrictedMarket}
               onDismiss={() => {
                 setCalendarVisibility(true);
               }}
@@ -524,7 +581,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={filterVisibility}
+              visible={filterVisibility && !closedMarket}
               onDismiss={() => {
                 setFilterVisibility(false);
               }}
@@ -553,7 +610,7 @@ export default function MarketplaceScreen({ navigation }) {
         <View>
           <Portal>
             <Modal
-              visible={showAlert}
+              visible={showAlert && currentUser.approved}
               contentContainerStyle={styles.calendarErrorMessage}
               onDismiss={() => {
                 setShowAlert(false);
@@ -564,10 +621,15 @@ export default function MarketplaceScreen({ navigation }) {
                 },
               }}
             >
+              <View style={styles.calendarErrorFlag} />
               <Image
-                source={errorbackground}
-                style={styles.errorBackground}
+                source={exclamation}
+                style={styles.exclamation}
               />
+              <Text style={styles.calendarErrorText}>
+                Looks like you don&apos;t have a delivery date
+                yet. Click here to select a delivery date!
+              </Text>
             </Modal>
           </Portal>
         </View>
@@ -575,18 +637,74 @@ export default function MarketplaceScreen({ navigation }) {
           <Portal>
             <Modal
               visible={wednesdayAlert}
-              contentContainerStyle={styles.wednesdayAlertContainer}
+              contentContainerStyle={styles.alertContainer}
               onDismiss={() => {
                 setWednesdayAlert(false);
               }}
             >
               <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setWednesdayAlert(false); }}>
-                <Icon name="close" size={22} />
+                <Icon
+                  name="close"
+                  size={22}
+                  color="#000"
+                  style={{
+                    marginBottom: 20,
+                  }}
+                />
               </TouchableOpacity>
+              <Text style={styles.alertTitle}>
+                Sorry! We&apos;re currently updating the produce list.
+              </Text>
+              <Text style={styles.alertSubtitle}>
+                You can currently preview produce for Monday deliveries,
+                but you cannot place an order.
+                Please come back on Thursday to place an order!
+              </Text>
               <Image
-                source={wednesdayError}
+                source={sadDurianBG}
                 style={{
-                  width: 260, height: 260, alignSelf: 'center', marginTop: 20,
+                  width: 150, height: 150, alignSelf: 'center',
+                }}
+              />
+            </Modal>
+          </Portal>
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={unapprovedAlert}
+              contentContainerStyle={styles.alertContainer}
+              onDismiss={() => {
+                setUnapprovedAlert(false);
+              }}
+              theme={{
+                colors: {
+                  backdrop: 'transparent',
+                },
+              }}
+            >
+              <TouchableOpacity style={{ alignSelf: 'flex-end', marginRight: 15 }} onPress={() => { setUnapprovedAlert(false); }}>
+                <Icon
+                  name="close"
+                  size={22}
+                  color="#000"
+                  style={{
+                    marginBottom: 20,
+                  }}
+                />
+              </TouchableOpacity>
+              <Text style={styles.alertTitle}>
+                Sorry! Your account has not been approved yet.
+              </Text>
+              <Text style={styles.alertSubtitle}>
+                You won&apos;t be able to place any orders yet,
+                but feel free to browse the marketplace
+                while our staff reveiws your information.
+              </Text>
+              <Image
+                source={sadDurianBG}
+                style={{
+                  width: 150, height: 150, alignSelf: 'center', marginTop: 20,
                 }}
               />
             </Modal>
@@ -596,7 +714,7 @@ export default function MarketplaceScreen({ navigation }) {
         {((mondayDelivery || fridayDelivery) && !closedMarket)
           && (
             <TouchableOpacity onPress={() => {
-              if (!closedMarket) {
+              if (!closedMarket && !restrictedMarket) {
                 const newCalVis = !calendarVisibility;
                 setCalendarVisibility(newCalVis);
               }
@@ -640,7 +758,7 @@ export default function MarketplaceScreen({ navigation }) {
               <ProduceGrid
                 navigation={navigation}
                 userId={userId}
-                showAlert={selectDayAlert}
+                showProduce={showProduce}
                 produceList={produceList}
                 favorites={favoritesFilter}
                 mondayDelivery={mondayDelivery}
