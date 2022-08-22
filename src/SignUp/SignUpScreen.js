@@ -450,7 +450,7 @@ export default function SignUpScreen({ navigation }) {
               />
             </TouchableOpacity>
 
-            <Image style={styles.image} source={headerImage} />
+            <Image style={styles.image} source={foodrootslogo} />
           </View>
 
           <Text style={styles.titleText}>Sign Up</Text>
@@ -621,7 +621,7 @@ export default function SignUpScreen({ navigation }) {
               />
             </TouchableOpacity>
 
-            <Image style={styles.image} source={headerImage} />
+            <Image style={styles.image} source={foodrootslogo} />
           </View>
 
           <Title style={styles.titleText}>Sign Up</Title>
@@ -741,7 +741,7 @@ export default function SignUpScreen({ navigation }) {
                 color="#FF9F00"
               />
             </TouchableOpacity>
-            <Image style={styles.image} source={headerImage} />
+            <Image style={styles.image} source={foodrootslogo} />
           </View>
 
           <Text style={styles.titleText}>Sign Up</Text>
