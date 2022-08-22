@@ -105,9 +105,9 @@ export default function ProfileScreen({ navigation }) {
   const [lastName, setLastName] = useState('');
   const [orgName, setOrgName] = useState('');
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
+  const [refresh, setRefresh] = useState('0');
 
-  useEffect(() => {
-    const useremail = 'helen@gmail.com';
+  const retrieveAvatar = (useremail) => {
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
@@ -131,7 +131,12 @@ export default function ProfileScreen({ navigation }) {
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
     });
-  });
+  };
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    retrieveAvatar(useremail);
+  }, [refresh]);
 
   // When save changes is clicked, fields belonging to this user will be updated
   const handleSaveChanges = () => {
@@ -167,7 +172,7 @@ export default function ProfileScreen({ navigation }) {
           style={styles.image}
           source={avatar}
         />
-        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar', { refresh, setRefresh }); }}>
           <Image
             style={styles.edit}
             source={require('../assets/imgs/edit.png')}
