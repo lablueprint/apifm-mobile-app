@@ -13,7 +13,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 
 const Airtable = require('airtable');
-const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
+const foodrootslogo = require('../assets/imgs/frh.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
 const airtableConfig = {
@@ -22,8 +22,6 @@ const airtableConfig = {
 };
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
-
-const headerImage = require('../assets/imgs/header.png');
 
 const styles = StyleSheet.create({
   container: {
