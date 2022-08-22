@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     color: '#1D763C',
+    margin: 20,
 
   },
 
@@ -160,7 +161,7 @@ export default function LoginScreen({ navigation }) {
             style={styles.bottomTextBold}
             onPress={() => handleSignUp()}
           >
-            Sign Up
+            &nbsp;Sign Up
           </Text>
         </Text>
       </View>

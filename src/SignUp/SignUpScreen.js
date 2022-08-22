@@ -441,7 +441,7 @@ export default function SignUpScreen({ navigation }) {
         <View style={styles.container}>
           <View style={styles.text}>
 
-            <TouchableOpacity onPress={() => { navigation.navigate('Terms'); }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
               <ArrowIcon
                 style={styles.backArrow}
                 name="arrowleft"
@@ -816,6 +816,7 @@ export default function SignUpScreen({ navigation }) {
               returnKeyType="next"
               onSubmitEditing={() => { accEmailInput.current.focus(); }}
               blurOnSubmit={false}
+              ref={accNameInput}
               width={330}
             />
           </View>
