@@ -107,8 +107,6 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 
 // eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
-  // TODO: remove when sign-in is implemented
-  console.log('ji');
   const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
   const DUMMY_NAME = 'Joe Bruin';
 
@@ -117,15 +115,12 @@ export default function ProfileScreen({ navigation }) {
   const [address, setAddress] = useState('');
 
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
-  // const [avatarNum, setAvatarNum] = useState(0);
-  // const avatarFruits = ['placeholder', 'pipa', 'eggplant', 'mango', 'dragonfruit', 'lychee', 'bokchoy'];
 
   useEffect(() => {
     const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
-      console.log(record[0].fields.avatarNum);
       switch (record[0].fields.avatarNum) {
         case 1: setAvatar(require('../assets/imgs/pipa.png'));
           break;
@@ -141,9 +136,6 @@ export default function ProfileScreen({ navigation }) {
           break;
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
-      // const url = `../assets/imgs/${avatarFruits[avatarNum]}.png`;
-      // // eslint-disable-next-line import/no-dynamic-require
-      // setAvatar(require(url));
 
       const userEmailTwo = 'happyhippo@gmail.com';
       setEmail(record[0].fields.email);
@@ -151,29 +143,16 @@ export default function ProfileScreen({ navigation }) {
     });
   }, []);
 
-  // When save changes is clicked, fields belonging to this user will be updated
-  // const handleSaveChanges = () => {
-
-  // };
-
-  // practicing covering stuff and stuff
   const [isEditMode, setEditMode] = useState(false);
 
   function onEdit() {
-    // setEditMode((setEditMode) => !setEditMode);
-    console.log('edit');
     setEditMode(true);
     setTitle('Save');
-    // make text field editabl
-    // change edit to save
   }
 
   function onSave() {
-    console.log('save');
-    // as long as the fields aren't empty, the fields will be updated in airtable
     if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
       Alert.alert('Your changes have been saved.');
-      // Airtable call to update fields
       setEditMode(false);
       setTitle('Edit');
       base('Users').update([
@@ -199,11 +178,7 @@ export default function ProfileScreen({ navigation }) {
     console.log('cancel');
     setEditMode(false);
     setTitle('Edit');
-    // make text fields uneditable
-    // makes cancel
   }
-
-  // trying to hide the edit button
 
   const [shouldShow, setShouldShow] = useState(true);
 
@@ -213,12 +188,10 @@ export default function ProfileScreen({ navigation }) {
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-        {/* tyrna get it to work */}
         <View className="box">
           <Text
             style={styles.buttonText}
             onPress={() => {
-              console.log('help');
               if (isEditMode) onSave();
               else onEdit();
             }}
@@ -233,7 +206,6 @@ export default function ProfileScreen({ navigation }) {
             </View>
           )}
 
-          {/* <Button style={styles.buttonText} onPress={handleSaveChanges}>Save</Button> */}
           <View style={styles.titleText}>
             <Text style={styles.mainTitle}>Profile</Text>
             <Image
@@ -241,7 +213,7 @@ export default function ProfileScreen({ navigation }) {
               source={avatar}
             />
             {!isEditMode && (
-            <TouchableOpacity onPress={() => { console.log('working?'); navigation.navigate('EditAvatar'); }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
               <Image
                 style={styles.edit}
                 source={require('../assets/imgs/edit.png')}
@@ -249,15 +221,11 @@ export default function ProfileScreen({ navigation }) {
             </TouchableOpacity>
             )}
 
-            {/* <Button onPress={() => setTitle('Save')}>{title}</Button> */}
-
-            {/* stuffffffffffffffffffff */}
             <Text style={styles.titleText}>
               {DUMMY_NAME}
             </Text>
             <Text style={styles.subtitleText}> Organization Name </Text>
           </View>
-          {/* Start of text input region */}
           <View style={styles.inputContainer}>
             <Text style={styles.labelText}>Email</Text>
             <TextInput
@@ -279,7 +247,6 @@ export default function ProfileScreen({ navigation }) {
               style={styles.textInput}
               value={phoneNum}
               onChangeText={setPhoneNum}
-          // placeholder="(123)456-7890"
               placeholderTextColor="#34221D"
               keyboardType="numeric"
               returnKeyType="next"
@@ -294,7 +261,6 @@ export default function ProfileScreen({ navigation }) {
               style={styles.textInput}
               value={address}
               onChangeText={setAddress}
-          // placeholder="330 De Neve Dr., Los Angeles"
               placeholderTextColor="#34221D"
               returnKeyType="next"
               blurOnSubmit={false}
@@ -302,7 +268,6 @@ export default function ProfileScreen({ navigation }) {
               editable={isEditMode}
             />
           </View>
-          {/* End of text input region for email, phone, address */}
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
