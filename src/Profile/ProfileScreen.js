@@ -140,6 +140,7 @@ export default function ProfileScreen({ navigation }) {
       const userEmailTwo = 'happyhippo@gmail.com';
       setEmail(record[0].fields.email);
       setAddress(record[0].fields.address);
+      setPhoneNum(record[0].fields['business phone']);
     });
   }, []);
 
