@@ -65,7 +65,7 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-export default function EditAvatarScreen({ navigation }) {
+export default function EditAvatarScreen({ route, navigation }) {
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
   const [avatarNum, setAvatarNum] = useState(0);
 
@@ -121,7 +121,9 @@ export default function EditAvatarScreen({ navigation }) {
         },
       },
     ]);
-    navigation.navigate('Profile');
+
+    route.params.setRefresh(route.params.refresh + 1);
+    navigation.goBack();
   };
 
   const saveAvatar = async () => {

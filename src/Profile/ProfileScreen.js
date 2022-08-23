@@ -115,9 +115,9 @@ export default function ProfileScreen({ navigation }) {
   const [address, setAddress] = useState('');
 
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
+  const [refresh, setRefresh] = useState('0');
 
-  useEffect(() => {
-    const useremail = 'helen@gmail.com';
+  const retrieveAvatar = (useremail) => {
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
@@ -142,7 +142,12 @@ export default function ProfileScreen({ navigation }) {
       setAddress(record[0].fields.address);
       setPhoneNum(record[0].fields['business phone']);
     });
-  }, []);
+  };
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    retrieveAvatar(useremail);
+  }, [refresh]);
 
   const [isEditMode, setEditMode] = useState(false);
 
@@ -272,6 +277,76 @@ export default function ProfileScreen({ navigation }) {
         </View>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
+=======
+    <View style={styles.container}>
+      <Text style={styles.buttonText} onPress={handleSaveChanges}>Save</Text>
+      <View style={styles.titleText}>
+        <Text style={styles.mainTitle}>Profile</Text>
+        <Image
+          style={styles.image}
+          source={avatar}
+        />
+        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar', { refresh, setRefresh }); }}>
+          <Image
+            style={styles.edit}
+            source={require('../assets/imgs/edit.png')}
+          />
+        </TouchableOpacity>
+
+        <Text style={styles.titleText}>
+          {firstName}
+          {' '}
+          {lastName}
+        </Text>
+        <Text style={styles.subtitleText}>
+          {orgName}
+        </Text>
+      </View>
+      {/* Start of text input region */}
+      <View style={styles.inputContainer}>
+        <Text style={styles.labelText}>Email</Text>
+        <TextInput
+          style={styles.textInput}
+          value={email}
+          onChangeText={setEmail}
+          placeholder="joebruin@gmail.com"
+          placeholderTextColor="#34221D"
+          keyboardType="email-address"
+          returnKeyType="next"
+          blurOnSubmit={false}
+          width={330}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.labelText}>Phone Number</Text>
+        <TextInput
+          style={styles.textInput}
+          value={phoneNum}
+          onChangeText={setPhoneNum}
+          placeholder="(123)456-7890"
+          placeholderTextColor="#34221D"
+          keyboardType="numeric"
+          returnKeyType="next"
+          blurOnSubmit={false}
+          width={330}
+        />
+      </View>
+      <View style={styles.inputContainer}>
+        <Text style={styles.labelText}>Address</Text>
+        <TextInput
+          style={styles.textInput}
+          value={address}
+          onChangeText={setAddress}
+          placeholder="330 De Neve Dr., Los Angeles"
+          placeholderTextColor="#34221D"
+          returnKeyType="next"
+          blurOnSubmit={false}
+          width={330}
+        />
+      </View>
+      {/* End of text input region for email, phone, address */}
+    </View>
+
   );
 }
 

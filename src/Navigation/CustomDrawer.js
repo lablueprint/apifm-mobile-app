@@ -118,7 +118,7 @@ function CustomDrawer(props) {
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
     });
-  }, []);
+  });
 
   return (
     <View style={styles.main}>
