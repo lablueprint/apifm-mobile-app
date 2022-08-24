@@ -96,53 +96,66 @@ const styles = StyleSheet.create({
 
 export default function CartScreen({ navigation }) {
   const [itemList, setItemList] = useState([]);
-  const [refresh, setRefresh] = useState(0);
+  const [itemRefresh, setItemRefresh] = useState(0);
+  const [calcRefresh, setCalcRefresh] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
+  const [quantities, setQuantities] = useState({});
 
-  const getItems = (useremail) => {
-    const list = [];
-    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
-      records.forEach((record) => {
-        const item = record;
-        list.push(item.fields);
+  const calcTotal = (quantitiesList) => {
+    let total = 0;
+    if (quantitiesList) {
+      const names = Object.keys(quantitiesList);
+      names.pop();
+      names.forEach((produce) => {
+        total += quantitiesList[produce] * quantitiesList.prices[produce];
       });
-      setItemList(list);
-      fetchNextPage();
-    });
+    }
+
+    return total;
   };
 
-  const calcTotal = (useremail) => {
-    base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
-      .then((items) => {
-        let sum = 0;
-        items.forEach((item) => {
-          const price = item.get('price');
-          sum += item.fields.quantity * price;
-        });
-        setSubtotal(sum);
+  const getItems = async (useremail) => {
+    const list = [];
+    const allQuantities = {};
+    const allPrices = {};
+    await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
+      records.forEach((record) => {
+        const item = record.fields;
+        allQuantities[item.name] = item.quantity;
+        const price = item.price[0];
+        allPrices[item.name] = price;
+        list.push(item);
       });
+      fetchNextPage();
+    });
+    allQuantities.prices = allPrices;
+    setItemList(list);
+    setSubtotal(calcTotal(allQuantities));
+    setQuantities(allQuantities);
   };
 
   const products = itemList.map((item) => (
     <CartProduct
       itemID={item.item_id}
       key={item.item_id}
-      setRefresh={setRefresh}
-      refresh={refresh}
+      itemRefresh={itemRefresh}
+      setItemRefresh={setItemRefresh}
+      calcRefresh={calcRefresh}
+      setCalcRefresh={setCalcRefresh}
       name={item.name[0]}
       price={item.price[0]}
       type={item.unit[0]}
-      initialQuantity={String(item.quantity)}
       image={item.image[0].url}
       border
     />
   ));
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged-in user data
     getItems('jameshe@ucla.edu');
-    calcTotal('jameshe@ucla.edu');
-  }, [refresh]);
+  }, [itemRefresh]);
+  useEffect(() => {
+    setSubtotal(calcTotal(quantities));
+  }, [calcRefresh]);
 
   return (
     <View style={styles.entireScreen}>
