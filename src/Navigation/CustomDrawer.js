@@ -6,6 +6,8 @@ import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
+import store from '../lib/redux/store';
+import { logoutUser } from '../lib/airlock/airlock';
 
 const styles = StyleSheet.create({
   main: {
@@ -70,6 +72,7 @@ const styles = StyleSheet.create({
 
 function CustomDrawer(props) {
   const { navigation } = props;
+  const currentUser = store.getState().auth.user;
 
   return (
     <View style={styles.main}>
@@ -90,33 +93,36 @@ function CustomDrawer(props) {
             style={styles.photo}
           />
           <Text style={styles.title}>
-            Joe Bruin
+            { currentUser.firstName}
+            {' '}
+            {currentUser.lastName}
           </Text>
           <Text style={styles.subtitle}>
-            Organization Name
+            {currentUser.organization}
           </Text>
         </View>
         <View style={styles.drawers}>
           <DrawerItemList {...props} />
         </View>
       </DrawerContentScrollView>
-      <View>
-        <TouchableOpacity />
-        <View style={styles.footer}>
-          <Icon
-            size={26}
-            name="logout-variant"
-            color="#34221D"
-            onPress={() => { navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
-          />
-          <Text
-            style={styles.footerDrawer}
-            onPress={() => { navigation.navigate('Log In'); }} // TODO: change to signed out screen once it is implemented
-          >
-            Log out
-          </Text>
-        </View>
-      </View>
+      <TouchableOpacity
+        style={styles.footer}
+        onPress={() => {
+          logoutUser();
+          navigation.navigate('Log In');
+        }}
+      >
+        <Icon
+          size={26}
+          name="logout-variant"
+          color="#34221D"
+        />
+        <Text
+          style={styles.footerDrawer}
+        >
+          Log out
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 }

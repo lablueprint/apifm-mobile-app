@@ -78,13 +78,12 @@ function OrderCard({
   useEffect(() => {
     setItemList(itemsList.get(new Date(items[0]).toString()));
     setImage(images.get(new Date(items[0]).toString()));
-
   }, [items]);
   const imageurl = { uri: image };
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-          <Image resizeMode="cover" style={styles.image} source={image === '' ? missingImage : imageurl}/>
+        <Image resizeMode="cover" style={styles.image} source={image === '' ? missingImage : imageurl} />
         <Text style={styles.date}>
           {`Delivered on ${date}`}
         </Text>
@@ -103,11 +102,12 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   items: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.object),
-    ])
+    ]),
   ),
   itemsList: PropTypes.instanceOf(Map).isRequired,
   images: PropTypes.string.isRequired,

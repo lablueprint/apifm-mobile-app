@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
+import store from '../lib/redux/store';
 
 import CartProduct from '../Cart/CartProductUntoggle';
 
@@ -88,6 +89,8 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function CheckoutScreen({ route, navigation }) {
+  const currentUser = store.getState().auth.user;
+
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
@@ -143,7 +146,7 @@ export default function CheckoutScreen({ route, navigation }) {
 
   useEffect(() => {
     // TODO: replace hardcoded email with logged in user info
-    setOrderDetails('helen@gmail.com');
+    setOrderDetails(currentUser.email);
     calcTotal();
 
     setDeliveryFee(10);
@@ -170,11 +173,10 @@ export default function CheckoutScreen({ route, navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err, deletedRecords) => {
+    base('CART V3').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
       }
-      console.log(deletedRecords);
     });
   };
   return (
