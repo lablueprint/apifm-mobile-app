@@ -134,7 +134,15 @@ export default function CartScreen({ navigation }) {
     setItemList(list);
     setSubtotal(calcTotal(allQuantities));
     setQuantities(allQuantities);
+    console.log(allQuantities);
   };
+
+  useEffect(() => {
+    getItems(currentUser.email);
+  }, [itemRefresh]);
+  useEffect(() => {
+    setSubtotal(calcTotal(quantities));
+  }, [calcRefresh]);
 
   const products = itemList.map((item) => (
     <CartProduct
@@ -152,16 +160,8 @@ export default function CartScreen({ navigation }) {
       setQuantities={setQuantities}
       minQuantity={item['minimum quantity']}
       maxQuantity={item['maximum quantity']}
-      border
     />
   ));
-
-  useEffect(() => {
-    getItems(currentUser.email);
-  }, [itemRefresh]);
-  useEffect(() => {
-    setSubtotal(calcTotal(quantities));
-  }, [calcRefresh]);
 
   return (
     <View style={styles.entireScreen}>

@@ -26,16 +26,6 @@ const styles = StyleSheet.create({
     height: 130,
     borderBottomWidth: 1,
     borderBottomColor: '#C4C4C4',
-    marginTop: -1,
-    marginBottom: 1,
-    width: '100%',
-    marginLeft: 0,
-  },
-  containerNoBorder: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    height: 130,
-    borderBottomColor: '#C4C4C4',
     marginTop: 1,
     marginBottom: 1,
     width: '100%',
@@ -145,7 +135,6 @@ export default function CartProduct(props) {
     price,
     type,
     image,
-    border,
     quantities,
     setQuantities,
     minQuantity,
@@ -189,10 +178,6 @@ export default function CartProduct(props) {
   };
 
   const deleteItem = () => {
-    setQuantities(() => ({
-      ...quantities,
-      [name]: undefined,
-    }));
     base('CART V3').destroy([itemID], (err) => {
       if (err) {
         Alert.alert(err);
@@ -202,7 +187,7 @@ export default function CartProduct(props) {
   };
 
   return (
-    <View style={border ? styles.container : styles.containerNoBorder}>
+    <View style={styles.container}>
       <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
         <View style={styles.container4}>
@@ -253,7 +238,6 @@ CartProduct.propTypes = {
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  border: PropTypes.bool.isRequired,
   // eslint-disable-next-line react/forbid-prop-types
   quantities: PropTypes.object.isRequired,
   setQuantities: PropTypes.func.isRequired,
