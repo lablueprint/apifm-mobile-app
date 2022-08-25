@@ -7,7 +7,7 @@ import {
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
-
+import store from '../lib/redux/store';
 import CartProduct from './CartProduct';
 
 const Airtable = require('airtable');
@@ -95,6 +95,8 @@ const styles = StyleSheet.create({
 });
 
 export default function CartScreen({ navigation }) {
+  const currentUser = store.getState().auth.user;
+
   const [itemList, setItemList] = useState([]);
   const [itemRefresh, setItemRefresh] = useState(0);
   const [calcRefresh, setCalcRefresh] = useState(0);
@@ -155,7 +157,7 @@ export default function CartScreen({ navigation }) {
   ));
 
   useEffect(() => {
-    getItems('jameshe@ucla.edu');
+    getItems(currentUser.email);
   }, [itemRefresh]);
   useEffect(() => {
     setSubtotal(calcTotal(quantities));
