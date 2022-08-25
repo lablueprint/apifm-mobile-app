@@ -146,6 +146,8 @@ export default function CartScreen({ navigation }) {
       price={item.price[0]}
       type={item.unit[0]}
       image={item.image[0].url}
+      quantities={quantities}
+      setQuantities={setQuantities}
       border
     />
   ));
@@ -160,6 +162,9 @@ export default function CartScreen({ navigation }) {
   return (
     <View style={styles.entireScreen}>
       <View style={styles.container}>
+        {/* <Title style={styles.titleText}>
+          Cart
+        </Title> */}
         <ScrollView style={styles.scrollView}>
           {products}
         </ScrollView>
