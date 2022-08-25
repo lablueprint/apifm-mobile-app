@@ -232,20 +232,17 @@ function ProduceDetailsScreen({ navigation, route }) {
 
   const [orderQuantity, setOrderQuantity] = useState(minQuantity.toString());
 
-  const onChangeQuantity = (e) => {
-    if (e === '') {
-      setOrderQuantity('');
-    } else {
-      const value = Number(e);
-      if (value > 0 && value <= maxQuantity) {
-        setOrderQuantity(value.toString());
-      }
-    }
-  };
-
   const onSubmitQuantity = () => {
     if (orderQuantity === '') {
       setOrderQuantity(minQuantity.toString());
+    } else {
+      let value = Number(orderQuantity);
+      if (value < minQuantity) {
+        value = minQuantity;
+      } else if (value > maxQuantity) {
+        value = maxQuantity;
+      }
+      setOrderQuantity(value.toString());
     }
   };
 
@@ -274,13 +271,20 @@ function ProduceDetailsScreen({ navigation, route }) {
         );
       });
       if (quantityToUpdate.length) {
-        const newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
+        let newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
+        if (newQuantity < minQuantity) {
+          newQuantity = minQuantity;
+        } else if (newQuantity > maxQuantity) {
+          newQuantity = maxQuantity;
+        }
         await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
               quantity: newQuantity,
               'Delivery Date': deliveryDate,
+              'minimum quantity': minQuantity,
+              'maximum quantity': maxQuantity,
             },
           },
         ], (err) => {
@@ -296,6 +300,8 @@ function ProduceDetailsScreen({ navigation, route }) {
               quantity: Number(orderQuantity),
               shopper: [userId],
               'Delivery Date': deliveryDate,
+              'minimum quantity': minQuantity,
+              'maximum quantity': maxQuantity,
             },
           },
         ], (err) => {
@@ -370,7 +376,7 @@ function ProduceDetailsScreen({ navigation, route }) {
                 <TextInput
                   style={styles.textInput}
                   value={orderQuantity}
-                  onChangeText={onChangeQuantity}
+                  onChangeText={setOrderQuantity}
                   onSubmitEditing={onSubmitQuantity}
                   onEndEditing={onSubmitQuantity}
                   placeholder={orderQuantity}

@@ -146,39 +146,46 @@ export default function CartProduct(props) {
     type,
     image,
     border,
-    // eslint-disable-next-line react/prop-types
     quantities,
-    // eslint-disable-next-line react/prop-types
     setQuantities,
+    minQuantity,
+    maxQuantity,
   } = props;
 
   const imageurl = { uri: image };
 
-  const handleQuantityChange = async (newQuantity) => {
-    if (newQuantity === '') {
-      setQuantities(() => ({
-        ...quantities,
-        [name]: newQuantity,
-      }));
-    } else {
-      setQuantities(() => ({
-        ...quantities,
-        [name]: Number(newQuantity),
-      }));
-      await base('CART V3').update([
-        {
-          id: String(itemID),
-          fields: {
-            quantity: Number(newQuantity),
-          },
-        },
-      ], (err) => {
-        if (err) {
-          Alert.alert(err.error, err.message);
-        }
-      });
-      setCalcRefresh(calcRefresh + 1);
+  const handleQuantityChange = (newQuantity) => {
+    setQuantities(() => ({
+      ...quantities,
+      [name]: newQuantity,
+    }));
+    setCalcRefresh(calcRefresh + 1);
+  };
+
+  const submitQuantity = async () => {
+    let updatedQuantity = Number(quantities[name]);
+    if (updatedQuantity < minQuantity) {
+      updatedQuantity = minQuantity;
+    } else if (updatedQuantity > maxQuantity) {
+      updatedQuantity = maxQuantity;
     }
+    setQuantities(() => ({
+      ...quantities,
+      [name]: updatedQuantity,
+    }));
+    await base('CART V3').update([
+      {
+        id: String(itemID),
+        fields: {
+          quantity: updatedQuantity,
+        },
+      },
+    ], (err) => {
+      if (err) {
+        Alert.alert(err.error, err.message);
+      }
+    });
+    setCalcRefresh(calcRefresh + 1);
   };
 
   const deleteItem = () => {
@@ -212,6 +219,8 @@ export default function CartProduct(props) {
             keyboardType="numeric"
             value={String(quantities[name])}
             onChangeText={handleQuantityChange}
+            onSubmitEditing={submitQuantity}
+            onEndEditing={submitQuantity}
           />
           <Text style={styles.itemQuantityType}>
             {type}
@@ -245,4 +254,9 @@ CartProduct.propTypes = {
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
   border: PropTypes.bool.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  quantities: PropTypes.object.isRequired,
+  setQuantities: PropTypes.func.isRequired,
+  minQuantity: PropTypes.number.isRequired,
+  maxQuantity: PropTypes.number.isRequired,
 };
