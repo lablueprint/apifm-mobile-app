@@ -150,6 +150,7 @@ export default function CartScreen({ navigation }) {
       setQuantities={setQuantities}
       minQuantity={item['minimum quantity']}
       maxQuantity={item['maximum quantity']}
+      border
     />
   ));
 
@@ -163,9 +164,6 @@ export default function CartScreen({ navigation }) {
   return (
     <View style={styles.entireScreen}>
       <View style={styles.container}>
-        {/* <Title style={styles.titleText}>
-          Cart
-        </Title> */}
         <ScrollView style={styles.scrollView}>
           {products}
         </ScrollView>
