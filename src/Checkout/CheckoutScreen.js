@@ -1,9 +1,10 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Alert, ScrollView, TouchableOpacity,
+  View, StyleSheet, Alert, ScrollView,
 } from 'react-native';
 import {
-  Text,
+  Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
@@ -12,12 +13,6 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import CartProduct from '../Cart/CartProductUntoggle';
 
 const styles = StyleSheet.create({
-  entireScreen: {
-    flex: 1,
-    backgroundColor: '#FFFFFA',
-  },
-  productsContainter: {
-  },
   container: {
     justifyContent: 'center',
     alignItems: 'center',
@@ -27,9 +22,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     flex: 1,
-    width: '100%',
-    marginBottom: 30,
-    marginTop: 15,
+    width: '95%',
+    marginBottom: '2%',
   },
   bodyText: {
     marginLeft: 5,
@@ -48,10 +42,9 @@ const styles = StyleSheet.create({
   },
   subdetails: {
     fontSize: 14,
-    fontFamily: 'JosefinSans-Regular',
-    marginTop: '0%',
+    marginTop: '.5%',
     marginBottom: '.5%',
-    color: '#34221D',
+    color: '#636363',
   },
   subcontainer: {
     marginHorizontal: '8%',
@@ -59,9 +52,9 @@ const styles = StyleSheet.create({
   shippingContainer: {
     marginTop: '8%',
     marginHorizontal: '8%',
-    marginBottom: '2%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#C4C4C4',
+    marginBottom: '4%',
+    borderBottomColor: 'grey',
+    borderBottomWidth: 2,
   },
   shippingSubcontainer: {
     marginLeft: '0%',
@@ -81,21 +74,6 @@ const styles = StyleSheet.create({
     marginLeft: '0%',
     marginRight: '30%',
     marginBottom: '3%',
-  },
-  placeOrderButton: {
-    borderRadius: 25,
-    height: 50,
-    width: 300,
-    marginBottom: 20,
-    marginTop:30,
-    backgroundColor: '#1D763C',
-  },
-  placeOrderButtonText: {
-    color: '#FFFFFF',
-    fontFamily: 'JosefinSans-SemiBold',
-    fontSize: 24,
-    textAlign: 'center',
-    marginTop: 5,
   },
 });
 
@@ -165,7 +143,7 @@ export default function CheckoutScreen({ route, navigation }) {
 
   useEffect(() => {
     // TODO: replace hardcoded email with logged in user info
-    setOrderDetails('jameshe@ucla.edu');
+    setOrderDetails('helen@gmail.com');
     calcTotal();
 
     setDeliveryFee(10);
@@ -200,16 +178,13 @@ export default function CheckoutScreen({ route, navigation }) {
     });
   };
   return (
-    <View style={styles.entireScreen}>
-      <ScrollView style={styles.scrollView}>
+    <View>
+      <ScrollView>
         <View style={[styles.subcontainer, {
-          marginTop: '3%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: '#C4C4C4', borderBottomWidth: 1,
+          marginTop: '8%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: 'grey', borderBottomWidth: 2,
         }]}
         >
-          <Text style={[styles.title, {
-            fontFamily: 'JosefinSans-Regular', fontSize: 18, marginLeft: '0%', marginBottom: '2%', color:'#34221D',
-          }]}
-          >
+          <Text style={[styles.title, { fontWeight: '700', marginLeft: '0%', marginBottom: '0%' }]}>
             Shipping Address
           </Text>
           <View style={{
@@ -217,13 +192,13 @@ export default function CheckoutScreen({ route, navigation }) {
           }}
           >
             <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
-              <Icon size={30} color="#1D763C" name="location-sharp" />
+              <Icon size={25} color="grey" name="location-sharp" />
             </View>
             <View style={{
               marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
             }}
             >
-              <Text style={[styles.title, { fontFamily: 'JosefinSans-Regular', fontSize: 16 ,color:'#34221D',}]}>
+              <Text style={[styles.title, { fontWeight: '600' }]}>
                 {shippingAddress.address}
                 ,
                 {shippingAddress.apartmentLine}
@@ -234,10 +209,10 @@ export default function CheckoutScreen({ route, navigation }) {
             </View>
           </View>
         </View>
-        <View style={[styles.subcontainer, { borderBottomColor: '#C4C4C4', borderBottomWidth: 1 }]}>
+        <View style={[styles.subcontainer, { borderBottomColor: 'grey', borderBottomWidth: 2 }]}>
           <View style={styles.title}>
             <Text style={[styles.title, {
-              fontFamily: 'JosefinSans-SemiBold', marginLeft: '0%', marginBottom: '0%',color:'#34221D'
+              fontWeight: '700', marginLeft: '0%', marginBottom: '0%',
             }]}
             >
               Review Items
@@ -245,8 +220,7 @@ export default function CheckoutScreen({ route, navigation }) {
             <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
               Delivery Date:
               {' '}
-              {/* {deliveryDate} */}
-              Mon, May 23, 2023
+              {deliveryDate}
             </Text>
             <View style={{ flex: 1 }}>
               <View>
@@ -258,25 +232,19 @@ export default function CheckoutScreen({ route, navigation }) {
         <View style={[styles.subcontainer]}>
           <View style={styles.title}>
             <Text style={[styles.title, {
-              fontFamily: 'JosefinSans-SemiBold', marginLeft: '0%', marginBottom: '0%', marginTop: '7%', fontSize: 18, color:'#34221D'
+              fontWeight: '700', marginLeft: '0%', marginBottom: '0%', marginTop: '8%',
             }]}
             >
               Order Summary
             </Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-            <Text style={[styles.subdetails, {
-              fontFamily: 'JosefinSans-Regular', color: '#636363', marginTop: '1%', fontSize: 14,
-            }]}
-            >
-              Items (
+            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+              Items(
               {count}
-              ):
+              )
             </Text>
-            <Text style={[styles.subdetails, {
-              fontFamily: 'JosefinSans-Regular', color: '#636363', marginTop: '1%', fontSize: 14,
-            }]}
-            >
+            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
               $
               {parseFloat(total).toFixed(2)}
             </Text>
@@ -285,16 +253,10 @@ export default function CheckoutScreen({ route, navigation }) {
             flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '0%',
           }}
           >
-            <Text style={[styles.subdetails, {
-              fontFamily: 'JosefinSans-Regular', color: '#636363', marginTop: '2%', fontSize: 14,
-            }]}
-            >
+            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
               Delivery Fee:
             </Text>
-            <Text style={[styles.subdetails, {
-              marginRight: '0%', marginTop: '2%', fontFamily: 'JosefinSans-Regular', color: '#636363', fontSize: 14,
-            }]}
-            >
+            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
               $
               {parseFloat(deliveryFee).toFixed(2)}
             </Text>
@@ -305,7 +267,6 @@ export default function CheckoutScreen({ route, navigation }) {
           <Text style={[styles.subdetails, {
             color: '#C4C4C4',
             marginLeft: '0%',
-            fontFamily: 'JosefinSans-Regular',
           }]}
           >
             {`Add $ ${parseFloat(freeFee).toFixed(2)} to qualify for free shipping!`}
@@ -316,19 +277,19 @@ export default function CheckoutScreen({ route, navigation }) {
             flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
           }}
           >
-            <Text style={[styles.title, { fontFamily: 'JosefinSans-SemiBold', fontSize: 18 , color:'#34221D'}]}>
+            <Text style={[styles.title, { marginLeft: '0%' }]}>
               Order Total
             </Text>
-            <Text style={[styles.title, { fontFamily: 'JosefinSans-SemiBold', fontSize: 18 , color:'#34221D'}]}>
+            <Text style={[styles.title, { marginRight: '0%' }]}>
               $
               {parseFloat(total + deliveryFee).toFixed(2)}
             </Text>
           </View>
         </View>
         <View style={[styles.container, { marginBottom: '8%' }]}>
-          <TouchableOpacity
+          <Button
             mode="contained"
-            style={styles.placeOrderButton}
+            style={styles.button}
             onPress={() => {
               pushToOrderTable('helen@gmail.com');
               navigation.navigate('Order Successful', {
@@ -336,10 +297,8 @@ export default function CheckoutScreen({ route, navigation }) {
               });
             }}
           >
-            <Text style = {styles.placeOrderButtonText}>
-              Place Order
-            </Text>
-          </TouchableOpacity>
+            Confirm
+          </Button>
         </View>
       </ScrollView>
     </View>
