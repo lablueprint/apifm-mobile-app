@@ -94,7 +94,7 @@ export default function CheckoutScreen({ route, navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate, setDeliveryDate] = useState('unavailable');
+  const [deliveryDate] = useState(route.params.deliveryDate);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
   const [itemList] = useState(route.params.itemList);
@@ -145,13 +145,11 @@ export default function CheckoutScreen({ route, navigation }) {
   ));
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged in user info
     setOrderDetails(currentUser.email);
     calcTotal();
 
     setDeliveryFee(10);
     setFreeFee(20);
-    setDeliveryDate('January 2023!');
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -164,6 +162,7 @@ export default function CheckoutScreen({ route, navigation }) {
             user_id: useremail,
             produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
+            'delivery date': deliveryDate,
             'delivery fee (temp)': deliveryFee,
             'fee to be free (temp)': freeFee,
           }, (err) => {
@@ -315,6 +314,7 @@ CheckoutScreen.propTypes = {
     params: PropTypes.shape({
       // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
+      deliveryDate: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

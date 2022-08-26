@@ -94,7 +94,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function CartScreen({ navigation }) {
+export default function CartScreen({ navigation, route }) {
+  const { deliveryDate } = route.params;
+
   const currentUser = store.getState().auth.user;
 
   const [itemList, setItemList] = useState([]);
@@ -123,10 +125,12 @@ export default function CartScreen({ navigation }) {
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const item = record.fields;
-        allQuantities[item.name] = item.quantity;
-        const price = item.price[0];
-        allPrices[item.name] = price;
-        list.push(item);
+        if (item['Delivery Date'] === deliveryDate) {
+          allQuantities[item.name] = item.quantity;
+          const price = item.price[0];
+          allPrices[item.name] = price;
+          list.push(item);
+        }
       });
       fetchNextPage();
     });
@@ -179,7 +183,7 @@ export default function CartScreen({ navigation }) {
         <TouchableOpacity
           mode="contained"
           style={styles.continueButton}
-          onPress={() => navigation.navigate('Checkout', { itemList })}
+          onPress={() => navigation.navigate('Checkout', { itemList, deliveryDate })}
         >
           <Text style={styles.continueButtonText}>
             Continue
@@ -192,4 +196,7 @@ export default function CartScreen({ navigation }) {
 
 CartScreen.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({ deliveryDate: PropTypes.string.isRequired }),
+  }).isRequired,
 };

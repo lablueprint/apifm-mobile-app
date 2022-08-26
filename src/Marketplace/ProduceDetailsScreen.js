@@ -184,7 +184,7 @@ function ProduceDetailsScreen({ navigation, route }) {
   const {
     userId, produceId, favorite, setFavorite,
     image, name, tags, price, unit, seller, maxQuantity, minQuantity,
-    mondayDelivery,
+    deliveryDate,
   } = route.params;
 
   const produceTags = tags.map((tag) => (
@@ -250,10 +250,6 @@ function ProduceDetailsScreen({ navigation, route }) {
 
   const onAddToCart = async () => {
     try {
-      let deliveryDate = 'Friday';
-      if (mondayDelivery) {
-        deliveryDate = 'Monday';
-      }
       setVisible(true);
       const quantityToUpdate = [];
       await base('CART V3').select({
@@ -434,7 +430,7 @@ ProduceDetailsScreen.propTypes = {
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
       minQuantity: PropTypes.number.isRequired,
-      mondayDelivery: PropTypes.bool.isRequired,
+      deliveryDate: PropTypes.string.isRequired,
     }),
   }).isRequired,
 };
