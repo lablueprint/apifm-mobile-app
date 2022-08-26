@@ -134,7 +134,6 @@ export default function CartScreen({ navigation }) {
     setItemList(list);
     setSubtotal(calcTotal(allQuantities));
     setQuantities(allQuantities);
-    console.log(allQuantities);
   };
 
   useEffect(() => {

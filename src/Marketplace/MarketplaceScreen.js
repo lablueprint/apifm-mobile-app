@@ -771,7 +771,12 @@ export default function MarketplaceScreen({ navigation }) {
               />
             )}
         </ScrollView>
-        <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
+        <TouchableOpacity onPress={() => {
+          if (!closedMarket && !restrictedMarket) {
+            navigation.navigate('Cart');
+          }
+        }}
+        >
           <View style={[styles.cartButtonCircle, styles.elevation]}>
             <Image source={cart} style={styles.cartButtonImage} />
           </View>

@@ -15,6 +15,8 @@ import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
 import ProduceDetailsScreen from '../Marketplace/ProduceDetailsScreen';
+import OrderScreen from '../Orders/OrderScreen';
+import OrderDetailsScreen from '../Orders/OrderDetailsScreen';
 import OrderSuccessfulScreen from '../Checkout/OrderSuccessfulScreen';
 
 const stackNavig = createNativeStackNavigator();
@@ -111,10 +113,11 @@ function DrawerRoutes() {
       />
       <Drawer.Screen
         name="Orders"
-        component={ProfileScreen} // TODO: change to past orders screen once it is implemented
+        component={OrderScreen}
         options={{
           title: 'Past orders',
           drawerIcon: cartIcon,
+          headerTitle: '',
         }}
       />
       <Drawer.Screen
@@ -155,7 +158,7 @@ export default function StackNavigation() {
           headerTitleStyle: {
             fontFamily: 'JosefinSans-Regular',
             fontSize: 24,
-            color:'#34221D',
+            color: '#34221D',
           },
         }}
       />
@@ -174,13 +177,15 @@ export default function StackNavigation() {
           headerTitleStyle: {
             fontFamily: 'JosefinSans-Regular',
             fontSize: 24,
-            color:'#34221D',
+            color: '#34221D',
           },
         }}
       />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
+      {/* need to adjust the header to hide the order details */}
     </stackNavig.Navigator>
   );
 }
