@@ -95,8 +95,6 @@ export default function CheckoutScreen({ route, navigation }) {
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
   const [deliveryDate, setDeliveryDate] = useState('unavailable');
-  const [deliveryFee, setDeliveryFee] = useState(0);
-  const [freeFee, setFreeFee] = useState(0);
   const [itemList] = useState(route.params.itemList);
 
   const calcTotal = () => {
@@ -105,11 +103,50 @@ export default function CheckoutScreen({ route, navigation }) {
     itemList.forEach((item) => {
       const { price, quantity } = item;
       sum += quantity * price;
-      c += 1; // not confirmed if its +1 or +quantity by designers
-      // if for instance some one buys 5 lbs of peanuts, I imagine it'd be one item
+      c += 1;
     });
     setTotal(sum);
     setCount(c);
+  };
+
+  const parseDate = (useremail) => {
+    let date = '';
+    base('Cart V3').select({
+      filterByFormula: `({shopper}='${useremail}')`,
+    }).firstPage()
+      .then((records) => {
+        const [month, day] = records[0].fields['Delivery Date'].split('/');
+        switch (month) {
+          case '01': date = 'January';
+            break;
+          case '02': date = 'February';
+            break;
+          case '03': date = 'March';
+            break;
+          case '04': date = 'April';
+            break;
+          case '05': date = 'May';
+            break;
+          case '06': date = 'June';
+            break;
+          case '07': date = 'July';
+            break;
+          case '08': date = 'August';
+            break;
+          case '09': date = 'September';
+            break;
+          case '10': date = 'October';
+            break;
+          case '11': date = 'November';
+            break;
+          case '12': date = 'December';
+            break;
+          default: { Alert.alert('Invalid Month');
+            return; }
+        }
+        date = date.concat(` ${day}`);
+        setDeliveryDate(date);
+      });
   };
 
   const setOrderDetails = (useremail) => {
@@ -145,13 +182,9 @@ export default function CheckoutScreen({ route, navigation }) {
   ));
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged in user info
     setOrderDetails(currentUser.email);
     calcTotal();
-
-    setDeliveryFee(10);
-    setFreeFee(20);
-    setDeliveryDate('January 2023!');
+    parseDate(currentUser.email);
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -164,8 +197,7 @@ export default function CheckoutScreen({ route, navigation }) {
             user_id: useremail,
             produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
-            'delivery fee (temp)': deliveryFee,
-            'fee to be free (temp)': freeFee,
+            'Est. Delivery Date': item.get('Delivery Date'),
           }, (err) => {
             if (err) {
               Alert.alert(err.message);
@@ -220,7 +252,7 @@ export default function CheckoutScreen({ route, navigation }) {
               Review Items
             </Text>
             <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Delivery Date:
+              Estimated Delivery Date:
               {' '}
               {deliveryDate}
             </Text>
@@ -252,39 +284,15 @@ export default function CheckoutScreen({ route, navigation }) {
             </Text>
           </View>
           <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '0%',
-          }}
-          >
-            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Delivery Fee:
-            </Text>
-            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              $
-              {parseFloat(deliveryFee).toFixed(2)}
-            </Text>
-          </View>
-          {deliveryFee > 0
-        && (
-        <View style={styles.conditionalShippingFeeContainer}>
-          <Text style={[styles.subdetails, {
-            color: '#C4C4C4',
-            marginLeft: '0%',
-          }]}
-          >
-            {`Add $ ${parseFloat(freeFee).toFixed(2)} to qualify for free shipping!`}
-          </Text>
-        </View>
-        )}
-          <View style={{
             flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
           }}
           >
             <Text style={[styles.title, { marginLeft: '0%' }]}>
-              Order Total
+              Order Subtotal
             </Text>
             <Text style={[styles.title, { marginRight: '0%' }]}>
               $
-              {parseFloat(total + deliveryFee).toFixed(2)}
+              {parseFloat(total).toFixed(2)}
             </Text>
           </View>
         </View>
