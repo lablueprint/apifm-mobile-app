@@ -6,22 +6,22 @@ import {
 import {
   Title, Checkbox, Button,
 } from 'react-native-paper';
+import Airtable from '@calblueprint/airlock';
 import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
+import { registerUser } from '../lib/airlock/airlock';
 
-const Airtable = require('airtable');
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
+Airtable.configure({
+  apiKey: 'airlock',
+  // this must be updated by the tester
+  endpointUrl: Config.ENDPOINT_URL,
+});
 
 const headerImage = require('../assets/imgs/header.png');
 
@@ -385,53 +385,42 @@ export default function SignUpScreen({ navigation }) {
   };
 
   // add the new inputs
-  const handleSignUp = () => {
+  const handleSignUp = async () => {
     if (!agree) {
       Alert.alert('Please read and agree with the Terms and Conditions to proceed');
     } else {
-      base('Users').create([
-        {
-          fields: {
-            email,
+      try {
+        const userData = {
+          email,
+          password,
+          firstName,
+          lastName,
+          organization,
+          number,
+          busPhone,
+          recipient,
+          address,
+          apt,
+          zip,
+          instr,
+          fullName,
+          billAddress,
+          billApt,
+          billZip,
+          accFullName,
+          accEmail,
+          accNumber,
+        };
+        const result = await registerUser(userData);
+        if (result) {
+          navigation.navigate('Sign Up Confirmation', {
+            username: email,
             password,
-            'first name': firstName,
-            'last name': lastName,
-            organization,
-            'personal phone': number,
-            'business phone': busPhone,
-            'delivery recipient': recipient,
-            address,
-            'apartment number': apt,
-            zipcode: zip,
-            instructions: instr,
-            'billing name': fullName,
-            'billing address': billAddress,
-            'billing apartment number': billApt,
-            'billing zipcode': billZip,
-            'accounting name': accFullName,
-            'accounting email': accEmail,
-            'accounting phone': accNumber,
-          },
-        },
-      ], (error) => {
-        if (error) {
-          Alert.alert('Error!', error.message);
+          });
         }
-      });
-      setFirstName('');
-      setLastName('');
-      setOrganization('');
-      setEmail('');
-      setConfirmPassword('');
-      setPassword('');
-      setNumber('');
-      setBusPhone('');
-      setAddress('');
-      setApt('');
-      setZip('');
-      setInstr('');
-      // might need to set the new inputs to empty strings but likely not?
-      navigation.navigate('Sign Up Confirmation');
+      } catch (err) {
+        Alert.alert(err.error, err.message);
+      }
     }
   };
 
@@ -591,7 +580,7 @@ export default function SignUpScreen({ navigation }) {
             onPress={() => {
               if (checkAccountInputs()) {
                 Keyboard.dismiss();
-                setPage(2);
+                setPage(4);
               }
             }}
           >

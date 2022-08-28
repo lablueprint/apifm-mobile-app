@@ -67,24 +67,32 @@ function OrderCard({
 
   const dateObj = new Date(items[0]);
   const date = dateObj.toDateString();
+  const today = new Date();
+  const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
+  || today.getDay() === 6 || today.getDay() === 0
+  || (today.getDay() === 1 && today.getHours() <= 14));
+  const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
+  || today.getDay() === 3
+  || (today.getDay() === 4 && today.getHours <= 15));
 
   const onPressCard = () => {
-    const time = dateObj.toLocaleTimeString('en-US');
-    navigation.navigate('OrderDetails', {
-      navigation, orderId, date, time, items,
-    });
+    if (!closedMarket && !restrictedMarket) {
+      const time = dateObj.toLocaleTimeString('en-US');
+      navigation.navigate('OrderDetails', {
+        navigation, orderId, date, time, items,
+      });
+    }
   };
 
   useEffect(() => {
     setItemList(itemsList.get(new Date(items[0]).toString()));
     setImage(images.get(new Date(items[0]).toString()));
-
   }, [items]);
   const imageurl = { uri: image };
   return (
     <TouchableOpacity style={styles.container} onPress={onPressCard}>
       <View style={styles.cardContainer}>
-          <Image resizeMode="cover" style={styles.image} source={image === '' ? missingImage : imageurl}/>
+        <Image resizeMode="cover" style={styles.image} source={image === '' ? missingImage : imageurl} />
         <Text style={styles.date}>
           {`Delivered on ${date}`}
         </Text>
@@ -103,11 +111,12 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   items: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.object),
-    ])
+    ]),
   ),
   itemsList: PropTypes.instanceOf(Map).isRequired,
   images: PropTypes.string.isRequired,
