@@ -1,13 +1,14 @@
-/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  Alert, View, StyleSheet, TextInput, Image, TouchableOpacity,
+  Alert, View, StyleSheet, TextInput, Platform, Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
 } from 'react-native';
 import {
-  Text,
+  Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { mdiSourcePull } from '@mdi/js';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   container: {
@@ -60,8 +61,16 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'right',
     marginLeft: 'auto',
-    top: 20,
-    right: 20,
+    top: 22,
+    right: 0,
+  },
+  buttonTextTwo: {
+    fontSize: 16,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'right',
+    marginLeft: 'auto',
+    botton: 215,
+    right: 280,
   },
   image: {
     marginLeft: 'auto',
@@ -79,6 +88,11 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 30,
   },
+  inner: {
+    padding: 24,
+    flex: 1,
+    justifyContent: 'space-around',
+  },
 });
 
 const Airtable = require('airtable');
@@ -93,7 +107,6 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 
 // eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
-  // TODO: remove when sign-in is implemented
   const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
   const DUMMY_NAME = 'Joe Bruin';
 
@@ -101,20 +114,13 @@ export default function ProfileScreen({ navigation }) {
   const [phoneNum, setPhoneNum] = useState('');
   const [address, setAddress] = useState('');
 
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [orgName, setOrgName] = useState('');
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
-  const [refresh, setRefresh] = useState('0');
 
-  const retrieveAvatar = (useremail) => {
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
-      setFirstName(record[0].fields.firstName);
-      setLastName(record[0].fields.lastName);
-      setOrgName(record[0].fields.organization);
-
       switch (record[0].fields.avatarNum) {
         case 1: setAvatar(require('../assets/imgs/pipa.png'));
           break;
@@ -130,20 +136,26 @@ export default function ProfileScreen({ navigation }) {
           break;
         default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
+
+      const userEmailTwo = 'happyhippo@gmail.com';
+      setEmail(record[0].fields.email);
+      setAddress(record[0].fields.address);
+      setPhoneNum(record[0].fields['business phone']);
     });
-  };
+  }, []);
 
-  useEffect(() => {
-    const useremail = 'helen@gmail.com';
-    retrieveAvatar(useremail);
-  }, [refresh]);
+  const [isEditMode, setEditMode] = useState(false);
 
-  // When save changes is clicked, fields belonging to this user will be updated
-  const handleSaveChanges = () => {
-    // as long as the fields aren't empty, the fields will be updated in airtable
+  function onEdit() {
+    setEditMode(true);
+    setTitle('Save');
+  }
+
+  function onSave() {
     if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
       Alert.alert('Your changes have been saved.');
-      // Airtable call to update fields
+      setEditMode(false);
+      setTitle('Edit');
       base('Users').update([
         {
           id: DUMMY_USER_ID,
@@ -161,77 +173,105 @@ export default function ProfileScreen({ navigation }) {
     } else {
       Alert.alert('Please fill out all fields.');
     }
-  };
+  }
+
+  function onCancel() {
+    console.log('cancel');
+    setEditMode(false);
+    setTitle('Edit');
+  }
+
+  const [shouldShow, setShouldShow] = useState(true);
+
+  const [title, setTitle] = useState('Edit');
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.buttonText} onPress={handleSaveChanges}>Save</Text>
-      <View style={styles.titleText}>
-        <Text style={styles.mainTitle}>Profile</Text>
-        <Image
-          style={styles.image}
-          source={avatar}
-        />
-        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar', { refresh, setRefresh }); }}>
-          <Image
-            style={styles.edit}
-            source={require('../assets/imgs/edit.png')}
-          />
-        </TouchableOpacity>
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-        <Text style={styles.titleText}>
-          {firstName}
-          {' '}
-          {lastName}
-        </Text>
-        <Text style={styles.subtitleText}>
-          {orgName}
-        </Text>
-      </View>
-      {/* Start of text input region */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Email</Text>
-        <TextInput
-          style={styles.textInput}
-          value={email}
-          onChangeText={setEmail}
-          placeholder="joebruin@gmail.com"
-          placeholderTextColor="#34221D"
-          keyboardType="email-address"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Phone Number</Text>
-        <TextInput
-          style={styles.textInput}
-          value={phoneNum}
-          onChangeText={setPhoneNum}
-          placeholder="(123)456-7890"
-          placeholderTextColor="#34221D"
-          keyboardType="numeric"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Address</Text>
-        <TextInput
-          style={styles.textInput}
-          value={address}
-          onChangeText={setAddress}
-          placeholder="330 De Neve Dr., Los Angeles"
-          placeholderTextColor="#34221D"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-      {/* End of text input region for email, phone, address */}
-    </View>
+        <View className="box">
+          <Text
+            style={styles.buttonText}
+            onPress={() => {
+              if (isEditMode) onSave();
+              else onEdit();
+            }}
+          >
+
+            {title}
+
+          </Text>
+          {isEditMode && (
+            <View className="boxContent">
+              <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
+            </View>
+          )}
+
+          <View style={styles.titleText}>
+            <Text style={styles.mainTitle}>Profile</Text>
+            <Image
+              style={styles.image}
+              source={avatar}
+            />
+            {!isEditMode && (
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+              <Image
+                style={styles.edit}
+                source={require('../assets/imgs/edit.png')}
+              />
+            </TouchableOpacity>
+            )}
+
+            <Text style={styles.titleText}>
+              {DUMMY_NAME}
+            </Text>
+            <Text style={styles.subtitleText}> Organization Name </Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Email</Text>
+            <TextInput
+              style={styles.textInput}
+              value={email}
+              onChangeText={setEmail}
+              placeholder={email}
+              placeholderTextColor="#34221D"
+              keyboardType="email-address"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Phone Number</Text>
+            <TextInput
+              style={styles.textInput}
+              value={phoneNum}
+              onChangeText={setPhoneNum}
+              placeholderTextColor="#34221D"
+              keyboardType="numeric"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Address</Text>
+            <TextInput
+              style={styles.textInput}
+              value={address}
+              onChangeText={setAddress}
+              placeholderTextColor="#34221D"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
