@@ -1,10 +1,11 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
+  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
+import { loginUser } from '../lib/airlock/airlock';
 
 const backgroundImage = require('../assets/imgs/login.png');
 
@@ -85,18 +86,24 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen({ navigation }) {
-  const handleSignIn = () => {
-    navigation.navigate('Marketplace');
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const passwordInput = useRef();
+
+  const handleSignIn = async () => {
+    try {
+      const result = await loginUser(username, password);
+      if (result) {
+        navigation.navigate('Marketplace');
+      }
+    } catch (err) {
+      Alert.alert(err.error, err.message);
+    }
   };
 
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
-
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-
-  const passwordInput = useRef();
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>

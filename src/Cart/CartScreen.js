@@ -7,7 +7,7 @@ import {
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
-
+import store from '../lib/redux/store';
 import CartProduct from './CartProduct';
 
 const Airtable = require('airtable');
@@ -73,6 +73,8 @@ const styles = StyleSheet.create({
 });
 
 export default function CartScreen({ navigation }) {
+  const currentUser = store.getState().auth.user;
+
   const [itemList, setItemList] = useState([]);
   const [refresh, setRefresh] = useState(0);
   const [subtotal, setSubtotal] = useState(0);
@@ -116,9 +118,8 @@ export default function CartScreen({ navigation }) {
   ));
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged-in user data
-    getItems('helen@gmail.com');
-    calcTotal('helen@gmail.com');
+    getItems(currentUser.email);
+    calcTotal(currentUser.email);
   }, [refresh]);
 
   return (
