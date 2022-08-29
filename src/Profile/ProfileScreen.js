@@ -115,9 +115,9 @@ export default function ProfileScreen({ navigation }) {
   const [address, setAddress] = useState('');
 
   const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
-  const [refresh, setRefresh] = useState('0');
 
-  const retrieveAvatar = (useremail) => {
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
@@ -142,12 +142,7 @@ export default function ProfileScreen({ navigation }) {
       setAddress(record[0].fields.address);
       setPhoneNum(record[0].fields['business phone']);
     });
-  };
-
-  useEffect(() => {
-    const useremail = 'helen@gmail.com';
-    retrieveAvatar(useremail);
-  }, [refresh]);
+  }, []);
 
   const [isEditMode, setEditMode] = useState(false);
 
