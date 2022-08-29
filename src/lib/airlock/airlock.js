@@ -6,7 +6,7 @@ import { serviceLogin, serviceLogout } from '../redux/services';
 Airtable.configure({
   apiKey: 'airlock',
   // this must be updated by the tester
-  endpointUrl: Config.ENDPOINT_URL,
+  endpointUrl: 'https://790c-64-30-75-107.ngrok.io',
 });
 
 const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);

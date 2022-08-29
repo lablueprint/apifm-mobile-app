@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
+import Config from 'react-native-config';
 import store from '../lib/redux/store';
 import { logoutUser } from '../lib/airlock/airlock';
 

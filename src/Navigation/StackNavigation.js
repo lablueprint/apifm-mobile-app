@@ -11,6 +11,7 @@ import SignUpScreen from '../SignUp/SignUpScreen';
 import SignUpConfirmation from '../SignUp/SignUpConfirmScreen';
 import LoginScreen from '../SignIn/LoginScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
+import EditAvatarScreen from '../Profile/EditAvatarScreen';
 import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
@@ -137,12 +138,19 @@ function DrawerRoutes() {
 
 export default function StackNavigation() {
   return (
-    <stackNavig.Navigator initialRouteName="Profile">
+    <stackNavig.Navigator initialRouteName="Log In">
       <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="Profile" component={ProfileScreen} />
+      <stackNavig.Screen
+        name="EditAvatar"
+        component={EditAvatarScreen}
+        options={{
+          headerTitle: '', headerTransparent: true, headerShadowVisible: false,
+        }}
+      />
       <stackNavig.Screen
         name="Cart"
         component={CartScreen}

@@ -1,19 +1,10 @@
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, Image, StyleSheet, TouchableOpacity, Alert,
+  Text, View, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import PropTypes from 'prop-types';
-import Config from 'react-native-config';
-import store from '../lib/redux/store';
 
-const Airtable = require('airtable');
-const placeholder = require('../assets/imgs/placeholder.png');
-const pipa = require('../assets/imgs/pipa.png');
-const eggplant = require('../assets/imgs/eggplant.png');
-const mango = require('../assets/imgs/mango.png');
-const dragonfruit = require('../assets/imgs/dragonfruit.png');
-const lychee = require('../assets/imgs/lychee.png');
-const bokchoy = require('../assets/imgs/bokchoy.png');
+import Config from 'react-native-config';
 
 const styles = StyleSheet.create({
   master: {
@@ -64,6 +55,8 @@ const styles = StyleSheet.create({
   },
 });
 
+const Airtable = require('airtable');
+
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -84,7 +77,7 @@ export default function EditAvatarScreen({ route, navigation }) {
   const [bokchoy, setBokchoy] = useState(avatarNum === 6);
 
   useEffect(() => {
-    const useremail = currentUser.email;
+    const useremail = 'helen@gmail.com';
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage().then((record) => {
@@ -113,13 +106,13 @@ export default function EditAvatarScreen({ route, navigation }) {
           setAvatarNum(5);
           setBokchoy(true);
           break;
-        default: setAvatar(placeholder);
+        default: setAvatar(require('../assets/imgs/placeholder.png'));
       }
     });
   }, []);
 
   const sendUpdate = async () => {
-    const user = currentUser.id;
+    const user = 'recIpBFqr2EXNbS7d';
     await base('Users').update([
       {
         id: user,
@@ -134,12 +127,12 @@ export default function EditAvatarScreen({ route, navigation }) {
   };
 
   const saveAvatar = async () => {
-    const user = currentUser.id;
-    await base('Users').find(user, (err) => {
+    const user = 'recIpBFqr2EXNbS7d';
+    await base('Users').find(user, (err, record) => {
       if (err) {
-        Alert.alert(err.error, err.message);
         return;
       }
+
       sendUpdate();
     });
   };
@@ -268,7 +261,3 @@ export default function EditAvatarScreen({ route, navigation }) {
     </View>
   );
 }
-
-EditAvatarScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
-};

@@ -6,8 +6,6 @@ import {
 import {
   Title, Checkbox, Button,
 } from 'react-native-paper';
-import Airtable from '@calblueprint/airlock';
-import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -16,12 +14,6 @@ import { registerUser } from '../lib/airlock/airlock';
 
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
-
-Airtable.configure({
-  apiKey: 'airlock',
-  // this must be updated by the tester
-  endpointUrl: Config.ENDPOINT_URL,
-});
 
 const headerImage = require('../assets/imgs/header.png');
 
