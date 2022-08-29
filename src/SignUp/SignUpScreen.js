@@ -619,7 +619,6 @@ export default function SignUpScreen({ navigation }) {
               />
             </TouchableOpacity>
 
-            <Image style={styles.image} source={foodrootslogo} />
           </View>
 
           <Title style={styles.titleText}>Sign Up</Title>

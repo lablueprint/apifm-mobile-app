@@ -4,6 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
+import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
 
 const backgroundImage = require('../assets/imgs/login.png');
@@ -37,6 +38,10 @@ const styles = StyleSheet.create({
     paddingBottom: '1%',
   },
 
+  eye: {
+    marginRight: 5,
+  },
+
   inputs: {
     borderWidth: 1,
     height: 38,
@@ -56,10 +61,11 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     color: '#868686',
+    paddingTop: 1,
   },
 
   sideText: {
-    marginLeft: 165,
+    left: '27%',
     fontFamily: 'JosefinSans',
     fontSize: 12,
   },
@@ -94,8 +100,13 @@ export default function LoginScreen({ navigation }) {
     navigation.navigate('Sign Up');
   };
 
+  const handleForgotPassword = () => {
+    navigation.navigate('Forgot Password');
+  };
+
   const [username, setUserName] = useState('');
   const [password, setPassword] = useState('');
+  const [hidePass, setHidePass] = useState(true);
 
   const passwordInput = useRef();
 
@@ -121,6 +132,7 @@ export default function LoginScreen({ navigation }) {
             blurOnSubmit={false}
             width={300}
           />
+
         </View>
 
         <View style={styles.inputs}>
@@ -135,14 +147,33 @@ export default function LoginScreen({ navigation }) {
             value={password}
             onChangeText={setPassword}
             placeholder="Password"
+            secureTextEntry={!!hidePass}
             returnKeyType="next"
             blurOnSubmit={false}
             ref={passwordInput}
-            width={300}
+            width={280}
+          />
+
+          <EyeIcon
+            style={styles.eye}
+            name={hidePass ? 'eye-slash' : 'eye'}
+            size={15}
+            color="grey"
+            onPress={() => setHidePass(!hidePass)}
           />
         </View>
 
-        <Text style={styles.sideText}>Forgot password?</Text>
+        <TouchableOpacity
+          mode="contained"
+          // style={styles.sideText}
+          onPress={() => handleForgotPassword()}
+        >
+          <Text
+            style={styles.sideText}
+          >
+            Forgot password?
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           mode="contained"
