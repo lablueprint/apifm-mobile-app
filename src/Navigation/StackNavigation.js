@@ -98,6 +98,10 @@ function DrawerRoutes() {
         options={{
           title: 'Profile',
           drawerIcon: profileIcon,
+          headerShown: false,
+          headerStyle: {
+            height: 0,
+          },
         }}
       />
       <Drawer.Screen
@@ -143,13 +147,11 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
-      <stackNavig.Screen name="Profile" component={ProfileScreen} />
+      <stackNavig.Screen name="Profile" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen
         name="EditAvatar"
         component={EditAvatarScreen}
-        options={{
-          headerTitle: '', headerTransparent: true, headerShadowVisible: false,
-        }}
+        options={{ headerShown: false }}
       />
       <stackNavig.Screen
         name="Cart"

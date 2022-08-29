@@ -1,4 +1,3 @@
-/* eslint-disable global-require */
 import 'react-native-gesture-handler';
 import {
   View, Text, Image, TouchableOpacity, StyleSheet,
@@ -7,9 +6,16 @@ import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import store from '../lib/redux/store';
 import { logoutUser } from '../lib/airlock/airlock';
+
+const placeholder = require('../assets/imgs/placeholder.png');
+const pipa = require('../assets/imgs/pipa.png');
+const eggplant = require('../assets/imgs/eggplant.png');
+const mango = require('../assets/imgs/mango.png');
+const dragonfruit = require('../assets/imgs/dragonfruit.png');
+const lychee = require('../assets/imgs/lychee.png');
+const bokchoy = require('../assets/imgs/bokchoy.png');
 
 const styles = StyleSheet.create({
   main: {
@@ -72,56 +78,29 @@ const styles = StyleSheet.create({
   },
 });
 
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
-
 function CustomDrawer(props) {
   const { navigation } = props;
   const currentUser = store.getState().auth.user;
 
-  // TODO: remove when sign-in is implemented
-  const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
-  const DUMMY_NAME = 'Joe Bruin';
-
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [orgName, setOrgName] = useState('');
-
-  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
+  const [avatar, setAvatar] = useState(placeholder);
 
   useEffect(() => {
-    const useremail = 'helen@gmail.com';
-    base('Users').select({
-      filterByFormula: `({email}='${useremail}')`,
-    }).firstPage().then((record) => {
-      setFirstName(record[0].fields.firstName);
-      setLastName(record[0].fields.lastName);
-      setOrgName(record[0].fields.organization);
-
-      switch (record[0].fields.avatarNum) {
-        case 1: setAvatar(require('../assets/imgs/pipa.png'));
-          break;
-        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
-          break;
-        case 3: setAvatar(require('../assets/imgs/mango.png'));
-          break;
-        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
-          break;
-        case 5: setAvatar(require('../assets/imgs/lychee.png'));
-          break;
-        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
-          break;
-        default: setAvatar(require('../assets/imgs/placeholder.png'));
-      }
-    });
-  });
+    switch (currentUser.avatarNum) {
+      case 1: setAvatar(pipa);
+        break;
+      case 2: setAvatar(eggplant);
+        break;
+      case 3: setAvatar(mango);
+        break;
+      case 4: setAvatar(dragonfruit);
+        break;
+      case 5: setAvatar(lychee);
+        break;
+      case 6: setAvatar(bokchoy);
+        break;
+      default: setAvatar(placeholder);
+    }
+  }, [currentUser.avatarNum]);
 
   return (
     <View style={styles.main}>
@@ -137,7 +116,6 @@ function CustomDrawer(props) {
         />
         <View style={styles.header}>
           <Image
-            // eslint-disable-next-line global-require
             source={avatar}
             style={styles.photo}
           />

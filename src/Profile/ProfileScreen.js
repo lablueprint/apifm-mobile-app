@@ -1,14 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Alert, View, StyleSheet, TextInput, Platform, Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
+  Alert, View, StyleSheet, TextInput, Platform,
+  Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
 } from 'react-native';
 import {
-  Text, Button,
+  Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { mdiSourcePull } from '@mdi/js';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import store from '../lib/redux/store';
+import { serviceUpdateUser } from '../lib/redux/services';
+
+const Airtable = require('airtable');
+const editIcon = require('../assets/imgs/edit.png');
+const placeholder = require('../assets/imgs/placeholder.png');
+const pipa = require('../assets/imgs/pipa.png');
+const eggplant = require('../assets/imgs/eggplant.png');
+const mango = require('../assets/imgs/mango.png');
+const dragonfruit = require('../assets/imgs/dragonfruit.png');
+const lychee = require('../assets/imgs/lychee.png');
+const bokchoy = require('../assets/imgs/bokchoy.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -69,7 +81,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'right',
     marginLeft: 'auto',
-    botton: 215,
     right: 280,
   },
   image: {
@@ -95,8 +106,6 @@ const styles = StyleSheet.create({
   },
 });
 
-const Airtable = require('airtable');
-
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
   baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
@@ -105,60 +114,53 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-// eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
-  const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
-  const DUMMY_NAME = 'Joe Bruin';
+  const currentUser = store.getState().auth.user;
 
-  const [email, setEmail] = useState('');
-  const [phoneNum, setPhoneNum] = useState('');
-  const [address, setAddress] = useState('');
+  const [title, setTitle] = useState('Edit');
+  const [isEditMode, setEditMode] = useState(false);
+  const [refresh, setRefresh] = useState(0);
 
-  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
+  const [email, setEmail] = useState(currentUser.email);
+  const [phoneNum, setPhoneNum] = useState(currentUser.phoneNumber);
+  const [address, setAddress] = useState(currentUser.address);
+
+  const [avatar, setAvatar] = useState(placeholder);
 
   useEffect(() => {
-    const useremail = 'helen@gmail.com';
-    base('Users').select({
-      filterByFormula: `({email}='${useremail}')`,
-    }).firstPage().then((record) => {
-      switch (record[0].fields.avatarNum) {
-        case 1: setAvatar(require('../assets/imgs/pipa.png'));
-          break;
-        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
-          break;
-        case 3: setAvatar(require('../assets/imgs/mango.png'));
-          break;
-        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
-          break;
-        case 5: setAvatar(require('../assets/imgs/lychee.png'));
-          break;
-        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
-          break;
-        default: setAvatar(require('../assets/imgs/placeholder.png'));
-      }
+    switch (currentUser.avatarNum) {
+      case 1: setAvatar(pipa);
+        break;
+      case 2: setAvatar(eggplant);
+        break;
+      case 3: setAvatar(mango);
+        break;
+      case 4: setAvatar(dragonfruit);
+        break;
+      case 5: setAvatar(lychee);
+        break;
+      case 6: setAvatar(bokchoy);
+        break;
+      default: setAvatar(placeholder);
+    }
+  }, [refresh]);
 
-      const userEmailTwo = 'happyhippo@gmail.com';
-      setEmail(record[0].fields.email);
-      setAddress(record[0].fields.address);
-      setPhoneNum(record[0].fields['business phone']);
-    });
-  }, []);
-
-  const [isEditMode, setEditMode] = useState(false);
-
-  function onEdit() {
+  const onEdit = () => {
     setEditMode(true);
     setTitle('Save');
-  }
+  };
 
-  function onSave() {
+  const onSave = async () => {
     if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
+      // TODO: add checker that the adjustments are different from what's already saved,
+      // that way users don't always have the alert
+      // TODO: add checker for email and phone number, can reuse checks from sign up screen
       Alert.alert('Your changes have been saved.');
       setEditMode(false);
       setTitle('Edit');
-      base('Users').update([
+      await base('Users').update([
         {
-          id: DUMMY_USER_ID,
+          id: currentUser.id,
           fields: {
             email,
             address,
@@ -170,25 +172,25 @@ export default function ProfileScreen({ navigation }) {
           Alert.alert(err.error, err.message);
         }
       });
+      const updatedUser = {
+        ...currentUser, email, address, phoneNumber: phoneNum,
+      };
+      serviceUpdateUser(updatedUser);
     } else {
       Alert.alert('Please fill out all fields.');
     }
-  }
+  };
 
-  function onCancel() {
-    console.log('cancel');
+  const onCancel = () => {
     setEditMode(false);
     setTitle('Edit');
-  }
-
-  const [shouldShow, setShouldShow] = useState(true);
-
-  const [title, setTitle] = useState('Edit');
+  };
 
   return (
+    // TODO: fix how the keyboard view blocks the text fields
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View className="box">
           <Text
             style={styles.buttonText}
@@ -197,13 +199,21 @@ export default function ProfileScreen({ navigation }) {
               else onEdit();
             }}
           >
-
             {title}
-
           </Text>
-          {isEditMode && (
+          {isEditMode ? (
             <View className="boxContent">
               <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
+            </View>
+          ) : (
+            <View className="boxContent">
+              {/* TODO: need to add a drawer toggle */}
+              <Text
+                style={styles.buttonTextTwo}
+                onPress={() => { navigation.toggleDrawer(); }}
+              >
+                Drawer
+              </Text>
             </View>
           )}
 
@@ -213,17 +223,19 @@ export default function ProfileScreen({ navigation }) {
               style={styles.image}
               source={avatar}
             />
-            {!isEditMode && (
-            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+            {isEditMode && (
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar', { refresh, setRefresh }); }}>
               <Image
                 style={styles.edit}
-                source={require('../assets/imgs/edit.png')}
+                source={editIcon}
               />
             </TouchableOpacity>
             )}
 
             <Text style={styles.titleText}>
-              {DUMMY_NAME}
+              {currentUser.firstName}
+              {' '}
+              {currentUser.lastName}
             </Text>
             <Text style={styles.subtitleText}> Organization Name </Text>
           </View>
@@ -276,5 +288,8 @@ export default function ProfileScreen({ navigation }) {
 }
 
 ProfileScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    toggleDrawer: PropTypes.func,
+  }).isRequired,
 };
