@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
+import store from '../lib/redux/store';
 
 import CartProduct from '../Cart/CartProductUntoggle';
 
@@ -88,10 +89,12 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function CheckoutScreen({ route, navigation }) {
+  const currentUser = store.getState().auth.user;
+
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate, setDeliveryDate] = useState('unavailable');
+  const [deliveryDate] = useState(route.params.deliveryDate);
   const [deliveryFee, setDeliveryFee] = useState(0);
   const [freeFee, setFreeFee] = useState(0);
   const [itemList] = useState(route.params.itemList);
@@ -142,13 +145,11 @@ export default function CheckoutScreen({ route, navigation }) {
   ));
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged in user info
-    setOrderDetails('helen@gmail.com');
+    setOrderDetails(currentUser.email);
     calcTotal();
 
     setDeliveryFee(10);
     setFreeFee(20);
-    setDeliveryDate('January 2023!');
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -161,6 +162,7 @@ export default function CheckoutScreen({ route, navigation }) {
             user_id: useremail,
             produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
+            'delivery date': deliveryDate,
             'delivery fee (temp)': deliveryFee,
             'fee to be free (temp)': freeFee,
           }, (err) => {
@@ -170,11 +172,10 @@ export default function CheckoutScreen({ route, navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err, deletedRecords) => {
+    base('CART V3').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
       }
-      console.log(deletedRecords);
     });
   };
   return (
@@ -311,7 +312,9 @@ CheckoutScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
+      // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
+      deliveryDate: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };
