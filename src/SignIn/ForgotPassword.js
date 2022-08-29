@@ -2,6 +2,9 @@ import React, { useState, useRef } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Image,
 } from 'react-native';
+import {
+  Provider, Portal, Modal,
+} from 'react-native-paper';
 import PropTypes from 'prop-types';
 import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
@@ -47,6 +50,7 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 3,
   },
+
   bigText: {
     fontSize: 30,
     fontFamily: 'JosefinSans-SemiBold',
@@ -108,101 +112,145 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
+  alertContainer: {
+    width: 290,
+    height: 164,
+    backgroundColor: '#FFFFFA',
+    alignSelf: 'center',
+    borderRadius: 20,
+  },
+  alertTitle: {
+    width: 192,
+    height: 80,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 18,
+    color: '#1D763C',
+    textAlign: 'center',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
 });
 
 export default function ForgotPassword({ navigation }) {
-  const handleResetPassword = () => {
-    navigation.navigate('Log In');
-  };
-
   const [password, setPassword] = useState('');
   const [confirmpass, setConfirmPass] = useState('');
 
   const [hidePass1, setHidePass1] = useState(true);
   const [hidePass2, setHidePass2] = useState(true);
 
+  const [successful, setSuccessful] = useState(false);
+
   const passwordInput = useRef();
 
+  const handleResetPassword = () => {
+    setSuccessful(true);
+    setTimeout(
+      () => {
+        navigation.navigate('Log In');
+      },
+      3000,
+    );
+  };
+
   return (
-    <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
-      <View style={styles.container}>
-        <View style={styles.text}>
+    <Provider>
+      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
+        <View style={styles.container}>
+          <View style={styles.text}>
 
-          <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-            <ArrowIcon
-              style={styles.backArrow}
-              name="arrowleft"
-              size={34}
-              color="#FF9F00"
+            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
+            </TouchableOpacity>
+
+            <Image style={styles.image} source={foodrootslogo} />
+          </View>
+
+          <Text style={styles.bigText}> Forgot your password? </Text>
+
+          <View style={styles.inputs}>
+
+            <TextInput
+              style={styles.textInput}
+              value={password}
+              onChangeText={setPassword}
+              placeholder="Password"
+              secureTextEntry={!!hidePass1}
+              returnKeyType="next"
+              onSubmitEditing={() => { passwordInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={280}
             />
-          </TouchableOpacity>
 
-          <Image style={styles.image} source={foodrootslogo} />
-        </View>
+            <EyeIcon
+              style={styles.eye}
+              name={hidePass1 ? 'eye-slash' : 'eye'}
+              size={15}
+              color="grey"
+              onPress={() => setHidePass1(!hidePass1)}
+            />
 
-        <Text style={styles.bigText}> Forgot your password? </Text>
+          </View>
 
-        <View style={styles.inputs}>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={confirmpass}
+              onChangeText={setConfirmPass}
+              placeholder="Confirm Password"
+              secureTextEntry={!!hidePass2}
+              returnKeyType="next"
+              blurOnSubmit={false}
+              ref={passwordInput}
+              width={280}
+            />
 
-          <TextInput
-            style={styles.textInput}
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Password"
-            secureTextEntry={!!hidePass1}
-            returnKeyType="next"
-            onSubmitEditing={() => { passwordInput.current.focus(); }}
-            blurOnSubmit={false}
-            width={280}
-          />
+            <EyeIcon
+              style={styles.eye}
+              name={hidePass2 ? 'eye-slash' : 'eye'}
+              size={15}
+              color="grey"
+              onPress={() => setHidePass2(!hidePass2)}
+            />
+          </View>
 
-          <EyeIcon
-            style={styles.eye}
-            name={hidePass1 ? 'eye-slash' : 'eye'}
-            size={15}
-            color="grey"
-            onPress={() => setHidePass1(!hidePass1)}
-          />
+          <Text style={styles.smallText}> Password must be 8 or more characters in length. </Text>
 
-        </View>
-
-        <View style={styles.inputs}>
-          <TextInput
-            style={styles.textInput}
-            value={confirmpass}
-            onChangeText={setConfirmPass}
-            placeholder="Confirm Password"
-            secureTextEntry={!!hidePass2}
-            returnKeyType="next"
-            blurOnSubmit={false}
-            ref={passwordInput}
-            width={280}
-          />
-
-          <EyeIcon
-            style={styles.eye}
-            name={hidePass2 ? 'eye-slash' : 'eye'}
-            size={15}
-            color="grey"
-            onPress={() => setHidePass2(!hidePass2)}
-          />
-        </View>
-
-        <Text style={styles.smallText}> Password must be 8 or more characters in length. </Text>
-
-        <TouchableOpacity
-          mode="contained"
-          style={styles.button}
-          onPress={() => handleResetPassword()}
-        >
-          <Text
-            style={styles.buttonText}
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => handleResetPassword()}
           >
-            Reset Password
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ImageBackground>
+            <Text
+              style={styles.buttonText}
+            >
+              Reset Password
+            </Text>
+          </TouchableOpacity>
+        </View>
+        <View>
+          <Portal>
+            <Modal
+              visible={successful}
+              contentContainerStyle={styles.alertContainer}
+              onDismiss={() => {
+                setSuccessful(false);
+              }}
+            >
+              <Text style={styles.alertTitle}>
+                Password reset successful! You will now be returned to the login screen.
+              </Text>
+            </Modal>
+          </Portal>
+
+        </View>
+
+      </ImageBackground>
+    </Provider>
   );
 }
 
