@@ -1,5 +1,5 @@
 {
-  "name": "APIFM",
+  "name": "apifm",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "output": "./src/lib/"
   },
   "dependencies": {
-    "@calblueprint/airlock": "git://github.com/calblueprint/airlock.git",
+    "@calblueprint/airlock": "^0.7.4",
     "@expo-google-fonts/josefin-sans": "^0.2.2",
     "@mdi/font": "^6.5.95",
     "@mdi/js": "^6.5.95",
@@ -73,9 +73,5 @@
   },
   "jest": {
     "preset": "react-native"
-  },
-  "airtable-schema-generator": {
-    "mode": "auto",
-    "output": "./src/"
   }
 }
