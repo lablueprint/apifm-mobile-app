@@ -148,6 +148,7 @@ function ProduceCard({
               {`$${price}`}
             </Text>
             <Text style={styles.quantity}>
+              {'/ '}
               {unit}
             </Text>
           </View>

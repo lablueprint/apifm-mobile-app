@@ -350,7 +350,10 @@ function ProduceDetailsScreen({ navigation, route }) {
                   $
                   {price}
                 </Text>
-                <Text style={styles.textUnit}>{unit}</Text>
+                <Text style={styles.textUnit}>
+                  {'/ '}
+                  {unit}
+                </Text>
               </View>
               <View style={styles.numberChange}>
                 <TouchableOpacity
