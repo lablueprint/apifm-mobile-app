@@ -71,9 +71,5 @@
   },
   "jest": {
     "preset": "react-native"
-  },
-  "airtable-schema-generator": {
-    "mode": "auto",
-    "output": "./src/"
   }
 }

@@ -67,6 +67,7 @@ function OrderCard({
 
   const dateObj = new Date(items[0]);
   const date = dateObj.toDateString();
+  const deliveryDate = `${String(dateObj.getMonth() + 1).padStart(2, '0')}/${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getFullYear())}`;
   const today = new Date();
   const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
   || today.getDay() === 6 || today.getDay() === 0
@@ -79,7 +80,7 @@ function OrderCard({
     if (!closedMarket && !restrictedMarket) {
       const time = dateObj.toLocaleTimeString('en-US');
       navigation.navigate('OrderDetails', {
-        navigation, orderId, date, time, items,
+        navigation, orderId, deliveryDate, date, time, items,
       });
     }
   };
@@ -111,13 +112,12 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
   items: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.object),
     ]),
-  ),
+  ).isRequired,
   itemsList: PropTypes.instanceOf(Map).isRequired,
   images: PropTypes.string.isRequired,
 };
