@@ -252,20 +252,23 @@ function ProduceDetailsScreen({ navigation, route }) {
     try {
       setVisible(true);
       const quantityToUpdate = [];
-      await base('CART V3').select({
-      }).eachPage((records, fetchNextPage) => {
-        records.forEach(
-          (record) => {
-            if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
-              quantityToUpdate.push(record);
-            }
-            fetchNextPage();
-          },
-          (err) => {
-            if (err) { Alert.alert(err.error, err.message); }
-          },
-        );
-      });
+      await base('CART V3').select({})
+        .eachPage((records, fetchNextPage) => {
+          if (records.length !== 0) {
+            records.forEach(
+              (record) => {
+                if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
+                  quantityToUpdate.push(record);
+                }
+                fetchNextPage();
+              },
+              (err) => {
+                if (err) { Alert.alert(err.error, err.message); }
+              },
+            );
+          }
+          fetchNextPage();
+        });
       if (quantityToUpdate.length) {
         let newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
         if (newQuantity < minQuantity) {

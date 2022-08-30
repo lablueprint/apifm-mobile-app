@@ -471,7 +471,7 @@ export default function MarketplaceScreen({ navigation }) {
     } else {
       setShowAlert(false);
       const orderDeliveryDate = mondayDelivery ? displayMonday : displayFriday;
-      setDeliveryDate(orderDeliveryDate);
+      setDeliveryDate(`${orderDeliveryDate}/${today.getFullYear()}`);
     }
   }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 

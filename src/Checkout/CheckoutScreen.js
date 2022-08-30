@@ -157,14 +157,13 @@ export default function CheckoutScreen({ route, navigation }) {
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         items.forEach((item) => {
+          // TODO: add delivery date check
           cartIDs.push(item.get('item_id'));
           base('Orders').create({
-            user_id: useremail,
+            Shopper: [currentUser.id],
             produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
-            'delivery date': deliveryDate,
-            'delivery fee (temp)': deliveryFee,
-            'fee to be free (temp)': freeFee,
+            'Est. Delivery Date': deliveryDate,
           }, (err) => {
             if (err) {
               Alert.alert(err.message);
@@ -172,11 +171,12 @@ export default function CheckoutScreen({ route, navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err) => {
-      if (err) {
-        Alert.alert(err.message);
-      }
-    });
+    // TODO: uncomment when delivery date checker implemented
+    // base('CART V3').destroy(cartIDs, (err) => {
+    //   if (err) {
+    //     Alert.alert(err.message);
+    //   }
+    // });
   };
   return (
     <View>
@@ -292,7 +292,7 @@ export default function CheckoutScreen({ route, navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable('helen@gmail.com');
+              pushToOrderTable(currentUser.email);
               navigation.navigate('Order Successful', {
                 itemList,
               });

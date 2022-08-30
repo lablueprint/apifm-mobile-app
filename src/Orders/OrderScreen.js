@@ -71,11 +71,11 @@ export default function OrderScreen({ navigation }) {
     // Each order card should be a map pointing from month to the
     // dates of the orders in that month to the actual order cards
     const monthCondenseOrders = new Map();
-    base('Orders').select({ filterByFormula: `({user_id}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
+    base('Orders').select({ filterByFormula: `({email}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const order = record;
-        const currDateObj = new Date(order.fields['delivery date (temp)']);
-        const currDate = new Date(order.fields['delivery date (temp)']).toString();
+        const currDateObj = new Date(order.fields['Est. Delivery Date'].substring(6, 10), Number(order.fields['Est. Delivery Date'].substring(0, 2)) - 1, order.fields['Est. Delivery Date'].substring(3, 5));
+        const currDate = new Date(order.fields['Est. Delivery Date'].substring(6, 10), Number(order.fields['Est. Delivery Date'].substring(0, 2)) - 1, order.fields['Est. Delivery Date'].substring(3, 5)).toString();
         const currMonthYear = new Date(
           currDateObj.getFullYear(),
           currDateObj.getMonth(),
@@ -83,7 +83,7 @@ export default function OrderScreen({ navigation }) {
         ).toString();
         order.fields.orderId = order.id;
 
-        if (!('delivery date (temp)' in record.fields)) {
+        if (!('Est. Delivery Date' in record.fields)) {
           return;
         }
         if (!('Quantity' in record.fields)) {
