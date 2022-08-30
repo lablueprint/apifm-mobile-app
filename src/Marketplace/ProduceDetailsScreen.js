@@ -184,7 +184,7 @@ function ProduceDetailsScreen({ navigation, route }) {
   const {
     userId, produceId, favorite, setFavorite,
     image, name, tags, price, unit, seller, maxQuantity, minQuantity,
-    deliveryDate,
+    mondayDelivery, deliveryDate,
   } = route.params;
 
   const produceTags = tags.map((tag) => (
@@ -278,9 +278,8 @@ function ProduceDetailsScreen({ navigation, route }) {
             id: quantityToUpdate[0].id,
             fields: {
               quantity: newQuantity,
+              'Delivery Day': mondayDelivery ? 'Monday' : 'Friday',
               'Delivery Date': deliveryDate,
-              'minimum quantity': minQuantity,
-              'maximum quantity': maxQuantity,
             },
           },
         ], (err) => {
@@ -295,9 +294,8 @@ function ProduceDetailsScreen({ navigation, route }) {
               Produce: [produceId],
               quantity: Number(orderQuantity),
               shopper: [userId],
+              'Delivery Day': mondayDelivery ? 'Monday' : 'Friday',
               'Delivery Date': deliveryDate,
-              'minimum quantity': minQuantity,
-              'maximum quantity': maxQuantity,
             },
           },
         ], (err) => {
@@ -430,6 +428,7 @@ ProduceDetailsScreen.propTypes = {
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
       minQuantity: PropTypes.number.isRequired,
+      mondayDelivery: PropTypes.bool.isRequired,
       deliveryDate: PropTypes.string.isRequired,
     }),
   }).isRequired,

@@ -161,8 +161,8 @@ export default function CartScreen({ navigation, route }) {
       image={item.image[0].url}
       quantities={quantities}
       setQuantities={setQuantities}
-      minQuantity={item['minimum quantity']}
-      maxQuantity={item['maximum quantity']}
+      minQuantity={item['minimum quantity'][0]}
+      maxQuantity={item['maximum quantity'][0]}
     />
   ));
 

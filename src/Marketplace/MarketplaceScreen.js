@@ -770,6 +770,7 @@ export default function MarketplaceScreen({ navigation }) {
                 showProduce={showProduce}
                 produceList={produceList}
                 favorites={favoritesFilter}
+                mondayDelivery={mondayDelivery}
                 deliveryDate={deliveryDate}
               />
             )}
