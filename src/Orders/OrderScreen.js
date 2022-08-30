@@ -6,8 +6,8 @@ import {
 import { Title } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { useSelector } from 'react-redux';
 import OrderCard from './OrdersCard';
-import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 
@@ -18,10 +18,6 @@ const airtableConfig = {
 
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
-
-const currentUser = store.getState().auth.user;
-const CONST_USER = currentUser.email;
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +51,10 @@ const styles = StyleSheet.create({
 });
 
 export default function OrderScreen({ navigation }) {
+  const { user: currentUser, refresh } = useSelector((state) => state.auth);
+  const CONST_USER = currentUser.email;
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
   const [orderMap, setOrderMap] = useState(new Map());
   const [itemsList, setItemsList] = useState(new Map());
   const [images, setImages] = useState(new Map());
@@ -140,7 +140,7 @@ export default function OrderScreen({ navigation }) {
 
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [refresh]);
 
   // This useEffect is supposed to update the ordercards once all the produce
   // items are fully downloaded from the airtable api call

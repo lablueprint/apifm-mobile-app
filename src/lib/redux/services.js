@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import store from './store';
-import { login, logout } from './sliceAuth';
+import { login, logout, refresh } from './sliceAuth';
 
 export const serviceLogin = (userData) => {
   try {
@@ -17,4 +17,8 @@ export const serviceLogin = (userData) => {
 export const serviceLogout = () => {
   AsyncStorage.removeItem('user');
   store.dispatch(logout());
+};
+
+export const serviceRefresh = () => {
+  store.dispatch(refresh());
 };
