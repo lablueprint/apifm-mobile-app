@@ -237,9 +237,10 @@ export default function MarketplaceScreen({ navigation }) {
   const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
   || today.getDay() === 6 || today.getDay() === 0
   || (today.getDay() === 1 && today.getHours() <= 14));
-  const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
-  || today.getDay() === 3
-  || (today.getDay() === 4 && today.getHours <= 15));
+  // const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
+  // || today.getDay() === 3
+  // || (today.getDay() === 4 && today.getHours <= 15));
+  const restrictedMarket = false;
 
   const [allProduce, setAllProduce] = useState([]);
   const [unsortedProduce, setUnsortedProduce] = useState([]);
