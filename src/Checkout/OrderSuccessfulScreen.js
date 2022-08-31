@@ -88,7 +88,7 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
       name={item.name[0]}
       price={item.price[0]}
       key={item.item_id}
-      type={item.unit[0]}
+      type={`/ ${item.unit[0]}`}
       quantity={item.quantity}
       image={item.image[0].url}
     />

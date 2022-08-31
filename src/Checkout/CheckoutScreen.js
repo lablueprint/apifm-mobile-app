@@ -4,7 +4,7 @@ import {
   View, StyleSheet, Alert, ScrollView, TouchableOpacity,
 } from 'react-native';
 import {
-  Text, Button,
+  Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
@@ -38,11 +38,6 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
     fontSize: 20,
-  },
-  button: {
-    width: '30%',
-    marginTop: 10,
-    backgroundColor: '#0492c2',
   },
   title: {
     fontSize: 18,
@@ -148,45 +143,8 @@ export default function CheckoutScreen({ route, navigation }) {
     setCount(c);
   };
 
-  // const parseDate = (useremail) => {
-  //   let date = '';
-  //   base('Cart V3').select({
-  //     filterByFormula: `({shopper}='${useremail}')`,
-  //   }).firstPage()
-  //     .then((records) => {
-  //       const [month, day] = records[0].fields['Delivery Date'].split('/');
-  //       switch (month) {
-  //         case '01': date = 'January';
-  //           break;
-  //         case '02': date = 'February';
-  //           break;
-  //         case '03': date = 'March';
-  //           break;
-  //         case '04': date = 'April';
-  //           break;
-  //         case '05': date = 'May';
-  //           break;
-  //         case '06': date = 'June';
-  //           break;
-  //         case '07': date = 'July';
-  //           break;
-  //         case '08': date = 'August';
-  //           break;
-  //         case '09': date = 'September';
-  //           break;
-  //         case '10': date = 'October';
-  //           break;
-  //         case '11': date = 'November';
-  //           break;
-  //         case '12': date = 'December';
-  //           break;
-  //         default: { Alert.alert('Invalid Month');
-  //           return; }
-  //       }
-  //       date = date.concat(` ${day}`);
-  //       setDeliveryDate(date);
-  //     });
-  // };
+  // TODO: parse delivery date from MM/DD/YYYY ->
+  // Monday, September 10, 2022 use new Date formatting in JS
 
   const retrieveUserDetails = (useremail) => {
     base('Users').select({
@@ -197,7 +155,7 @@ export default function CheckoutScreen({ route, navigation }) {
           setShippingAddress({
             address: records[0].fields.address,
             zipcode: records[0].fields.zipcode,
-            apartmentLine: ` Apt ${records[0].fields['apartment number']}`,
+            apartmentLine: records[0].fields['apartment number'] ? `, Apt ${records[0].fields['apartment number']}` : '',
           });
         } else {
           setShippingAddress({
@@ -214,7 +172,7 @@ export default function CheckoutScreen({ route, navigation }) {
       name={item.name[0]}
       price={item.price[0]}
       key={item.item_id}
-      type={item.unit[0]}
+      type={`/ ${item.unit[0]}`}
       quantity={item.quantity}
       image={item.image[0].url}
     />
@@ -223,10 +181,6 @@ export default function CheckoutScreen({ route, navigation }) {
   useEffect(() => {
     retrieveUserDetails(currentUser.email);
     calcTotal();
-
-    // scheduled sent the email to apifm, waiting on response
-    setDeliveryFee(10);
-    setFreeFee(20);
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -288,7 +242,6 @@ export default function CheckoutScreen({ route, navigation }) {
             >
               <Text style={[styles.title, { fontWeight: '600' }]}>
                 {shippingAddress.address}
-                ,
                 {shippingAddress.apartmentLine}
               </Text>
               <Text style={styles.subdetails}>
@@ -336,7 +289,7 @@ export default function CheckoutScreen({ route, navigation }) {
               Delivery Fee:
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              $0.00
+              TBD
               {/* TODO: implement delivery fee */}
             </Text>
           </View>
