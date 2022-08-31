@@ -61,20 +61,18 @@ const styles = StyleSheet.create({
   },
   subtotalContainer: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     marginBottom: '4%',
     marginTop: '0%',
     marginLeft: '2%',
     marginRight: '2%',
+    width: '100%',
   },
   subtotalText: {
     fontFamily: 'JosefinSans-Regular',
     fontSize: 18,
-    marginLeft: 15,
-    marginRight: 140,
   },
   subtotal: {
-    marginRight: '4%',
-    marginLeft: 140,
     fontFamily: 'JosefinSans-Regular',
     fontSize: 18,
   },

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ImageBackground, ScrollView, TouchableOpacity,
+  View, StyleSheet, Image, ScrollView, TouchableOpacity,
 } from 'react-native';
 import {
   Text,
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'JosefinSans-SemiBold',
     width: '62%',
-    marginTop: 300,
+    marginTop: 310,
     marginBottom: 30,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -66,14 +66,16 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   mainTitleText: {
-    marginTop: 40,
+    marginTop: 60,
     marginBottom: 10,
     fontSize: 22,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
   },
   backgroundImage: {
-    flex: 1,
+    position: 'absolute',
+    left: 0,
+    top: 0,
   },
 });
 
@@ -112,47 +114,46 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
   }, []);
 
   return (
-    <ScrollView>
-      <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
+    <ScrollView style={{ backgroundColor: '#FFFFFA' }}>
+      <Image source={backgroundImage} style={styles.backgroundImage} />
 
-        <Text style={styles.mainTitleText}>Order Successful!</Text>
-        <Text style={styles.bodyText}>
-          Your order has been placed!
-          You will receive a confirmation email within 24 hours.
-          Thank you for choosing Food Roots!
+      <Text style={styles.mainTitleText}>Order Successful!</Text>
+      <Text style={styles.bodyText}>
+        Your order has been placed!
+        You will receive a confirmation email within 24 hours.
+        Thank you for choosing Food Roots!
+      </Text>
+
+      <View style={styles.subcontainer}>
+        <Text style={styles.titleText}>
+          Order Overview
         </Text>
-
-        <View style={styles.subcontainer}>
-          <Text style={styles.titleText}>
-            Order Overview
-          </Text>
-          <View>
-            {products}
-          </View>
-          <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginTop: '20%',
-          }}
-          >
-            <Text style={styles.titleText}>
-              Total due at delivery
-            </Text>
-            <Text style={styles.titleText}>
-              {`$${parseFloat(total + deliveryFee).toFixed(2)}`}
-            </Text>
-          </View>
+        <View>
+          {products}
         </View>
-        <TouchableOpacity
-          mode="contained"
-          style={styles.button}
-          onPress={() => navigation.navigate('Marketplace')}
+        <View style={{
+          flexDirection: 'row', justifyContent: 'space-between', marginTop: '15%',
+        }}
         >
-          <Text
-            style={styles.buttonText}
-          >
-            Return to Market
+          <Text style={styles.titleText}>
+            Total due at delivery
           </Text>
-        </TouchableOpacity>
-      </ImageBackground>
+          <Text style={styles.titleText}>
+            {`$${parseFloat(total + deliveryFee).toFixed(2)}`}
+          </Text>
+        </View>
+      </View>
+      <TouchableOpacity
+        mode="contained"
+        style={styles.button}
+        onPress={() => navigation.navigate('Marketplace')}
+      >
+        <Text
+          style={styles.buttonText}
+        >
+          Return to Market
+        </Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

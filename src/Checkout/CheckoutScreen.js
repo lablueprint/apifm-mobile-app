@@ -9,10 +9,9 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
-import { useSelector } from 'react-redux';
+import store from '../lib/redux/store';
 
 import CartProduct from '../Cart/CartProductUntoggle';
-import { serviceRefresh } from '../lib/redux/services';
 
 const styles = StyleSheet.create({
   container: {
@@ -123,12 +122,12 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function CheckoutScreen({ route, navigation }) {
-  const { user: currentUser } = useSelector((state) => state.auth);
+  const currentUser = store.getState().auth.user;
 
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate] = useState(route.params.deliveryDate);
+  const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [itemList] = useState(route.params.itemList);
 
   const calcTotal = () => {
@@ -143,10 +142,57 @@ export default function CheckoutScreen({ route, navigation }) {
     setCount(c);
   };
 
-  // TODO: parse delivery date from MM/DD/YYYY ->
-  // Monday, September 10, 2022 use new Date formatting in JS
+  const parseDate = (useremail) => {
+    let date = '';
+    base('Cart V3').select({
+      filterByFormula: `({shopper}='${useremail}')`,
+    }).firstPage()
+      .then((records) => {
+        const [dayOfWeek] = records[0].fields['Delivery Day'];
+        switch (dayOfWeek) {
+          case 'M': date = 'Mon, ';
+            break;
+          case 'F': date = 'Fri, ';
+            break;
+          default: { Alert.alert('Invalid Day of Week');
+            return; }
+        }
+        const [month, day, year] = records[0].fields['Delivery Date'].split('/');
+        switch (month) {
+          case '01': date = date.concat('Jan');
+            break;
+          case '02': date = date.concat('Feb');
+            break;
+          case '03': date = date.concat('Mar');
+            break;
+          case '04': date = date.concat('Apr');
+            break;
+          case '05': date = date.concat('May');
+            break;
+          case '06': date = date.concat('Jun');
+            break;
+          case '07': date = date.concat('Jul');
+            break;
+          case '08': date = date.concat('Aug');
+            break;
+          case '09': date = date.concat('Sep');
+            break;
+          case '10': date = date.concat('Oct');
+            break;
+          case '11': date = date.concat('Nov');
+            break;
+          case '12': date = date.concat('Dec');
+            break;
+          default: { Alert.alert('Invalid Month');
+            return; }
+        }
+        date = date.concat(` ${day}`);
+        date = date.concat(`, ${year}`);
+        setDeliveryDate(date);
+      });
+  };
 
-  const retrieveUserDetails = (useremail) => {
+  const setOrderDetails = (useremail) => {
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
@@ -155,7 +201,7 @@ export default function CheckoutScreen({ route, navigation }) {
           setShippingAddress({
             address: records[0].fields.address,
             zipcode: records[0].fields.zipcode,
-            apartmentLine: records[0].fields['apartment number'] ? `, Apt ${records[0].fields['apartment number']}` : '',
+            apartmentLine: ` Apt ${records[0].fields['apartment number']}`,
           });
         } else {
           setShippingAddress({
@@ -172,15 +218,16 @@ export default function CheckoutScreen({ route, navigation }) {
       name={item.name[0]}
       price={item.price[0]}
       key={item.item_id}
-      type={`/ ${item.unit[0]}`}
+      type={item.unit[0]}
       quantity={item.quantity}
       image={item.image[0].url}
     />
   ));
 
   useEffect(() => {
-    retrieveUserDetails(currentUser.email);
+    setOrderDetails(currentUser.email);
     calcTotal();
+    parseDate(currentUser.email);
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -188,19 +235,17 @@ export default function CheckoutScreen({ route, navigation }) {
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         items.forEach((item) => {
-          if (item.get('Delivery Date') === deliveryDate) {
-            cartIDs.push(item.get('item_id'));
-            base('Orders').create({
-              Shopper: [currentUser.id],
-              produce_id: item.get('Produce'),
-              Quantity: item.get('quantity'),
-              'Est. Delivery Date': deliveryDate,
-            }, (err) => {
-              if (err) {
-                Alert.alert(err.message);
-              }
-            });
-          }
+          cartIDs.push(item.get('item_id'));
+          base('Orders').create({
+            user_id: useremail,
+            produce_id: item.get('Produce'),
+            Quantity: item.get('quantity'),
+            'Est. Delivery Date': item.get('Delivery Date'),
+          }, (err) => {
+            if (err) {
+              Alert.alert(err.message);
+            }
+          });
         });
       });
     base('CART V3').destroy(cartIDs, (err) => {
@@ -208,10 +253,9 @@ export default function CheckoutScreen({ route, navigation }) {
         Alert.alert(err.message);
       }
     });
-    serviceRefresh();
   };
   return (
-    <View>
+    <View style={{ backgroundColor: '#FFFFFA' }}>
       <ScrollView>
         <TouchableOpacity>
           <Icon
@@ -242,6 +286,7 @@ export default function CheckoutScreen({ route, navigation }) {
             >
               <Text style={[styles.title, { fontWeight: '600' }]}>
                 {shippingAddress.address}
+                ,
                 {shippingAddress.apartmentLine}
               </Text>
               <Text style={styles.subdetails}>
@@ -289,7 +334,7 @@ export default function CheckoutScreen({ route, navigation }) {
               Delivery Fee:
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              TBD
+              $0.00
               {/* TODO: implement delivery fee */}
             </Text>
           </View>
@@ -311,7 +356,7 @@ export default function CheckoutScreen({ route, navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable(currentUser.email);
+              pushToOrderTable('helen@gmail.com');
               navigation.navigate('Order Successful', {
                 itemList,
               });
@@ -335,9 +380,7 @@ CheckoutScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
-      // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
-      deliveryDate: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };
