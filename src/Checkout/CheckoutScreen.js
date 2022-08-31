@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Alert, ScrollView,
+  View, StyleSheet, Alert, ScrollView, TouchableOpacity,
 } from 'react-native';
 import {
   Text, Button,
@@ -17,6 +17,13 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  backButton: {
+    color: 'black',
+    paddingLeft: 30,
+    paddingTop: 40,
+    position: 'absolute',
+    zIndex: 99,
   },
   titleText: {
     marginBottom: 10,
@@ -39,16 +46,20 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     marginBottom: '2%',
-    color: 'black',
+    color: '#34221D',
+    fontFamily: 'JosefinSans-SemiBold',
   },
   subdetails: {
     fontSize: 14,
     marginTop: '.5%',
     marginBottom: '.5%',
     color: '#636363',
+    fontFamily: 'JosefinSans-Regular',
   },
   subcontainer: {
     marginHorizontal: '8%',
+    paddingTop: 10,
+    paddingBottom: 20,
   },
   shippingContainer: {
     marginTop: '8%',
@@ -75,6 +86,33 @@ const styles = StyleSheet.create({
     marginLeft: '0%',
     marginRight: '30%',
     marginBottom: '3%',
+  },
+  mainTitle: {
+    marginTop: 40,
+    marginBottom: 10,
+    fontSize: 22,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  button: {
+    width: '60%',
+    marginTop: 40,
+    marginBottom: 40,
+    backgroundColor: '#1D763C',
+    borderRadius: 99,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  buttonText: {
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    color: '#FFFFFF',
+    fontSize: 18,
   },
 });
 
@@ -214,19 +252,28 @@ export default function CheckoutScreen({ route, navigation }) {
   return (
     <View>
       <ScrollView>
+        <TouchableOpacity>
+          <Icon
+            size={30}
+            name="arrow-back"
+            style={styles.backButton}
+            onPress={() => { navigation.goBack(); }}
+          />
+        </TouchableOpacity>
+        <Text style={styles.mainTitle}>Checkout</Text>
         <View style={[styles.subcontainer, {
-          marginTop: '8%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: 'grey', borderBottomWidth: 2,
+          marginVertical: '5%', marginHorizontal: '8%', borderBottomColor: '#c4c4c4', borderBottomWidth: 1,
         }]}
         >
-          <Text style={[styles.title, { fontWeight: '700', marginLeft: '0%', marginBottom: '0%' }]}>
+          <Text style={styles.title}>
             Shipping Address
           </Text>
           <View style={{
-            flexDirection: 'row', justifyContent: 'flex-start', marginBottom: '4%',
+            flexDirection: 'row', justifyContent: 'flex-start',
           }}
           >
             <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
-              <Icon size={25} color="grey" name="location-sharp" />
+              <Icon size={25} color="#1D763C" name="location-sharp" />
             </View>
             <View style={{
               marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
@@ -243,16 +290,13 @@ export default function CheckoutScreen({ route, navigation }) {
             </View>
           </View>
         </View>
-        <View style={[styles.subcontainer, { borderBottomColor: 'grey', borderBottomWidth: 2 }]}>
+        <View style={[styles.subcontainer, { borderBottomColor: '#c4c4c4', borderBottomWidth: 1, marginBottom: '5%' }]}>
           <View style={styles.title}>
-            <Text style={[styles.title, {
-              fontWeight: '700', marginLeft: '0%', marginBottom: '0%',
-            }]}
-            >
+            <Text style={styles.title}>
               Review Items
             </Text>
-            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Estimated Delivery Date:
+            <Text style={[styles.subdetails, { color: '#34221D' }]}>
+              Delivery Date:
               {' '}
               {deliveryDate}
             </Text>
@@ -265,30 +309,36 @@ export default function CheckoutScreen({ route, navigation }) {
         </View>
         <View style={[styles.subcontainer]}>
           <View style={styles.title}>
-            <Text style={[styles.title, {
-              fontWeight: '700', marginLeft: '0%', marginBottom: '0%', marginTop: '8%',
-            }]}
-            >
+            <Text style={styles.title}>
               Order Summary
             </Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Items(
+              Items (
               {count}
-              )
+              ):
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
               $
               {parseFloat(total).toFixed(2)}
             </Text>
           </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '2%' }}>
+            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+              Delivery Fee:
+            </Text>
+            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
+              $0.00
+              {/* TODO: implement delivery fee */}
+            </Text>
+          </View>
           <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
+            flexDirection: 'row', justifyContent: 'space-between', marginTop: '12%',
           }}
           >
             <Text style={[styles.title, { marginLeft: '0%' }]}>
-              Order Subtotal
+              Order Total
             </Text>
             <Text style={[styles.title, { marginRight: '0%' }]}>
               $
@@ -297,7 +347,7 @@ export default function CheckoutScreen({ route, navigation }) {
           </View>
         </View>
         <View style={[styles.container, { marginBottom: '8%' }]}>
-          <Button
+          <TouchableOpacity
             mode="contained"
             style={styles.button}
             onPress={() => {
@@ -307,8 +357,12 @@ export default function CheckoutScreen({ route, navigation }) {
               });
             }}
           >
-            Confirm
-          </Button>
+            <Text
+              style={styles.buttonText}
+            >
+              Place Order
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
