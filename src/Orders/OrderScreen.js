@@ -6,8 +6,8 @@ import {
 import { Title } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { useSelector } from 'react-redux';
 import OrderCard from './OrdersCard';
-import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 
@@ -18,10 +18,6 @@ const airtableConfig = {
 
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
-
-const currentUser = store.getState().auth.user;
-const CONST_USER = currentUser.email;
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +51,10 @@ const styles = StyleSheet.create({
 });
 
 export default function OrderScreen({ navigation }) {
+  const { user: currentUser, refresh } = useSelector((state) => state.auth);
+  const CONST_USER = currentUser.email;
+  const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
   const [orderMap, setOrderMap] = useState(new Map());
   const [itemsList, setItemsList] = useState(new Map());
   const [images, setImages] = useState(new Map());
@@ -71,11 +71,11 @@ export default function OrderScreen({ navigation }) {
     // Each order card should be a map pointing from month to the
     // dates of the orders in that month to the actual order cards
     const monthCondenseOrders = new Map();
-    base('Orders').select({ filterByFormula: `({user_id}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
+    base('Orders').select({ filterByFormula: `({email}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const order = record;
-        const currDateObj = new Date(order.fields['delivery date (temp)']);
-        const currDate = new Date(order.fields['delivery date (temp)']).toString();
+        const currDateObj = new Date(order.fields['Est. Delivery Date'].substring(6, 10), Number(order.fields['Est. Delivery Date'].substring(0, 2)) - 1, order.fields['Est. Delivery Date'].substring(3, 5));
+        const currDate = new Date(order.fields['Est. Delivery Date'].substring(6, 10), Number(order.fields['Est. Delivery Date'].substring(0, 2)) - 1, order.fields['Est. Delivery Date'].substring(3, 5)).toString();
         const currMonthYear = new Date(
           currDateObj.getFullYear(),
           currDateObj.getMonth(),
@@ -83,7 +83,7 @@ export default function OrderScreen({ navigation }) {
         ).toString();
         order.fields.orderId = order.id;
 
-        if (!('delivery date (temp)' in record.fields)) {
+        if (!('Est. Delivery Date' in record.fields)) {
           return;
         }
         if (!('Quantity' in record.fields)) {
@@ -140,7 +140,7 @@ export default function OrderScreen({ navigation }) {
 
   useEffect(() => {
     getOrders();
-  }, []);
+  }, [refresh]);
 
   // This useEffect is supposed to update the ordercards once all the produce
   // items are fully downloaded from the airtable api call

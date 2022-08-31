@@ -9,9 +9,10 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
-import store from '../lib/redux/store';
+import { useSelector } from 'react-redux';
 
 import CartProduct from '../Cart/CartProductUntoggle';
+import { serviceRefresh } from '../lib/redux/services';
 
 const styles = StyleSheet.create({
   container: {
@@ -89,7 +90,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function CheckoutScreen({ route, navigation }) {
-  const currentUser = store.getState().auth.user;
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
@@ -112,7 +113,7 @@ export default function CheckoutScreen({ route, navigation }) {
     setCount(c);
   };
 
-  const setOrderDetails = (useremail) => {
+  const retrieveUserDetails = (useremail) => {
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
@@ -145,9 +146,10 @@ export default function CheckoutScreen({ route, navigation }) {
   ));
 
   useEffect(() => {
-    setOrderDetails(currentUser.email);
+    retrieveUserDetails(currentUser.email);
     calcTotal();
 
+    // scheduled sent the email to apifm, waiting on response
     setDeliveryFee(10);
     setFreeFee(20);
   }, []);
@@ -157,19 +159,19 @@ export default function CheckoutScreen({ route, navigation }) {
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         items.forEach((item) => {
-          cartIDs.push(item.get('item_id'));
-          base('Orders').create({
-            user_id: useremail,
-            produce_id: item.get('Produce'),
-            Quantity: item.get('quantity'),
-            'delivery date': deliveryDate,
-            'delivery fee (temp)': deliveryFee,
-            'fee to be free (temp)': freeFee,
-          }, (err) => {
-            if (err) {
-              Alert.alert(err.message);
-            }
-          });
+          if (item.get('Delivery Date') === deliveryDate) {
+            cartIDs.push(item.get('item_id'));
+            base('Orders').create({
+              Shopper: [currentUser.id],
+              produce_id: item.get('Produce'),
+              Quantity: item.get('quantity'),
+              'Est. Delivery Date': deliveryDate,
+            }, (err) => {
+              if (err) {
+                Alert.alert(err.message);
+              }
+            });
+          }
         });
       });
     base('CART V3').destroy(cartIDs, (err) => {
@@ -177,6 +179,7 @@ export default function CheckoutScreen({ route, navigation }) {
         Alert.alert(err.message);
       }
     });
+    serviceRefresh();
   };
   return (
     <View>
@@ -292,7 +295,7 @@ export default function CheckoutScreen({ route, navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable('helen@gmail.com');
+              pushToOrderTable(currentUser.email);
               navigation.navigate('Order Successful', {
                 itemList,
               });

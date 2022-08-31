@@ -117,7 +117,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 
 export default function OrderDetailsScreen({ route }) {
   const {
-    navigation, orderId, date, time, items,
+    navigation, orderId, deliveryDay, deliveryDate, date, time, items,
   } = route.params;
 
   const currentUser = store.getState().auth.user;
@@ -183,6 +183,8 @@ export default function OrderDetailsScreen({ route }) {
           Produce: items[1][i].produce_id,
           shopper: [CONST_USER_ID],
           quantity: items[1][i].Quantity,
+          'Delivery Day': deliveryDay,
+          'Delivery Date': deliveryDate,
         };
         cartObj.push(cartRow);
       }
@@ -196,7 +198,6 @@ export default function OrderDetailsScreen({ route }) {
   };
 
   useEffect(() => {
-    // TODO: replace hardcoded email with logged in user info
     setOrderDetails(CONST_USER);
     setDeliveryFee(10);
     setFreeFee(20);
@@ -275,7 +276,7 @@ export default function OrderDetailsScreen({ route }) {
             Review Items
           </Text>
           <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
-            Delivery Date: Mon, Sep 10, 2022
+            {`Delivery Date: ${date}`}
           </Text>
           <View>
             {productList}
@@ -332,7 +333,7 @@ export default function OrderDetailsScreen({ route }) {
             uppercase={false}
             onPress={() => {
               orderAgain();
-              navigation.navigate('Cart');
+              navigation.navigate('Cart', { deliveryDate });
             }}
           >
             <Text style={styles.buttonText}>
@@ -350,6 +351,8 @@ OrderDetailsScreen.propTypes = {
     params: PropTypes.shape({
       navigation: PropTypes.shape({ navigate: PropTypes.func }),
       orderId: PropTypes.string,
+      deliveryDay: PropTypes.string,
+      deliveryDate: PropTypes.string,
       date: PropTypes.string,
       time: PropTypes.string,
       items: PropTypes.arrayOf(

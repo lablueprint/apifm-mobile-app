@@ -142,6 +142,7 @@ export default function CartProduct(props) {
   } = props;
 
   const imageurl = { uri: image };
+  const totalUnits = type === 'each' ? '' : type;
 
   const handleQuantityChange = (newQuantity) => {
     setQuantities(() => ({
@@ -196,7 +197,7 @@ export default function CartProduct(props) {
           </Text>
         </View>
         <Text style={styles.itemPricePer}>
-          {`$${price} ${type}`}
+          {`$${price} / ${type}`}
         </Text>
         <View style={styles.quantityContainer}>
           <TextInput
@@ -208,7 +209,7 @@ export default function CartProduct(props) {
             onEndEditing={submitQuantity}
           />
           <Text style={styles.itemQuantityType}>
-            {type}
+            {totalUnits}
           </Text>
         </View>
       </View>
