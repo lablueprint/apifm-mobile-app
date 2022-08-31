@@ -69,6 +69,34 @@ const styles = StyleSheet.create({
     width: 125,
     margin: 10,
   },
+  buttonTextOne: {
+    fontSize: 16,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#34221D',
+    textAlign: 'right',
+    marginLeft: 'auto',
+    top: 22,
+    right: 310,
+  },
+  buttonTextTwoInactive: {
+    fontSize: 16,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#868686',
+    textAlign: 'right',
+    marginLeft: 'auto',
+    right: 32,
+    zIndex: 99,
+  },
+  buttonTextTwoActive: {
+    fontSize: 16,
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#34221D',
+    textAlign: 'right',
+    marginLeft: 'auto',
+    right: 32,
+    zIndex: 99,
+  },
+
 });
 
 const airtableConfig = {
@@ -150,8 +178,13 @@ export default function EditAvatarScreen({ route, navigation }) {
   return (
     <View style={styles.master}>
       <View>
-        <Text onPress={cancelAvatar}>Cancel</Text>
-        <Text onPress={saveAvatar}>Save</Text>
+        <Text onPress={cancelAvatar} style={styles.buttonTextOne}>Cancel</Text>
+        <Text
+          onPress={saveAvatar}
+          style={styles.buttonTextTwoActive}
+        >
+          Save
+        </Text>
       </View>
       <Text style={styles.text}>Select an avatar</Text>
       <View style={[styles.viewport, styles.elevation]}>

@@ -9,6 +9,7 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import store from '../lib/redux/store';
 import { serviceUpdateUser } from '../lib/redux/services';
 
@@ -75,6 +76,7 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     top: 22,
     right: 0,
+    zIndex: 99,
   },
   buttonTextTwo: {
     fontSize: 16,
@@ -103,6 +105,9 @@ const styles = StyleSheet.create({
     padding: 24,
     flex: 1,
     justifyContent: 'space-around',
+  },
+  menuIcon: {
+    width: '10%',
   },
 });
 
@@ -207,13 +212,15 @@ export default function ProfileScreen({ navigation }) {
             </View>
           ) : (
             <View className="boxContent">
-              {/* TODO: need to add a drawer toggle */}
-              <Text
-                style={styles.buttonTextTwo}
-                onPress={() => { navigation.toggleDrawer(); }}
-              >
-                Drawer
-              </Text>
+              <TouchableOpacity>
+                <Icon
+                  size={21}
+                  name="menu"
+                  color="#000000"
+                  style={styles.menuIcon}
+                  onPress={() => { navigation.toggleDrawer(); }}
+                />
+              </TouchableOpacity>
             </View>
           )}
 
