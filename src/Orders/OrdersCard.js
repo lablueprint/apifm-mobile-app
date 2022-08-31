@@ -67,12 +67,23 @@ function OrderCard({
 
   const dateObj = new Date(items[0]);
   const date = dateObj.toDateString();
+  const deliveryDay = dateObj.getDay() === 1 ? 'Monday' : 'Friday';
+  const deliveryDate = `${String(dateObj.getMonth() + 1).padStart(2, '0')}/${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getFullYear())}`;
+  const today = new Date();
+  const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
+  || today.getDay() === 6 || today.getDay() === 0
+  || (today.getDay() === 1 && today.getHours() <= 14));
+  const restrictedMarket = ((today.getDay() === 2 && today.getHours >= 17)
+  || today.getDay() === 3
+  || (today.getDay() === 4 && today.getHours <= 15));
 
   const onPressCard = () => {
-    const time = dateObj.toLocaleTimeString('en-US');
-    navigation.navigate('OrderDetails', {
-      navigation, orderId, date, time, items,
-    });
+    if (!closedMarket && !restrictedMarket) {
+      const time = dateObj.toLocaleTimeString('en-US');
+      navigation.navigate('OrderDetails', {
+        navigation, orderId, deliveryDay, deliveryDate, date, time, items,
+      });
+    }
   };
 
   useEffect(() => {
@@ -102,13 +113,12 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
-  // eslint-disable-next-line react/require-default-props
   items: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.object),
     ]),
-  ),
+  ).isRequired,
   itemsList: PropTypes.instanceOf(Map).isRequired,
   images: PropTypes.string.isRequired,
 };

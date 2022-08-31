@@ -184,7 +184,7 @@ function ProduceDetailsScreen({ navigation, route }) {
   const {
     userId, produceId, favorite, setFavorite,
     image, name, tags, price, unit, seller, maxQuantity, minQuantity,
-    mondayDelivery,
+    mondayDelivery, deliveryDate,
   } = route.params;
 
   const produceTags = tags.map((tag) => (
@@ -232,20 +232,17 @@ function ProduceDetailsScreen({ navigation, route }) {
 
   const [orderQuantity, setOrderQuantity] = useState(minQuantity.toString());
 
-  const onChangeQuantity = (e) => {
-    if (e === '') {
-      setOrderQuantity('');
-    } else {
-      const value = Number(e);
-      if (value > 0 && value <= maxQuantity) {
-        setOrderQuantity(value.toString());
-      }
-    }
-  };
-
   const onSubmitQuantity = () => {
     if (orderQuantity === '') {
       setOrderQuantity(minQuantity.toString());
+    } else {
+      let value = Number(orderQuantity);
+      if (value < minQuantity) {
+        value = minQuantity;
+      } else if (value > maxQuantity) {
+        value = maxQuantity;
+      }
+      setOrderQuantity(value.toString());
     }
   };
 
@@ -253,33 +250,38 @@ function ProduceDetailsScreen({ navigation, route }) {
 
   const onAddToCart = async () => {
     try {
-      let deliveryDate = 'Friday';
-      if (mondayDelivery) {
-        deliveryDate = 'Monday';
-      }
       setVisible(true);
       const quantityToUpdate = [];
-      await base('CART V3').select({
-      }).eachPage((records, fetchNextPage) => {
-        records.forEach(
-          (record) => {
-            if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
-              quantityToUpdate.push(record);
-            }
-            fetchNextPage();
-          },
-          (err) => {
-            if (err) { Alert.alert(err.error, err.message); }
-          },
-        );
-      });
+      await base('CART V3').select({})
+        .eachPage((records, fetchNextPage) => {
+          if (records.length !== 0) {
+            records.forEach(
+              (record) => {
+                if (produceId === record.fields.Produce[0] && record.fields.shopper[0] === userId) {
+                  quantityToUpdate.push(record);
+                }
+                fetchNextPage();
+              },
+              (err) => {
+                if (err) { Alert.alert(err.error, err.message); }
+              },
+            );
+          }
+          fetchNextPage();
+        });
       if (quantityToUpdate.length) {
-        const newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
+        let newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
+        if (newQuantity < minQuantity) {
+          newQuantity = minQuantity;
+        } else if (newQuantity > maxQuantity) {
+          newQuantity = maxQuantity;
+        }
         await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
               quantity: newQuantity,
+              'Delivery Day': mondayDelivery ? 'Monday' : 'Friday',
               'Delivery Date': deliveryDate,
             },
           },
@@ -295,6 +297,7 @@ function ProduceDetailsScreen({ navigation, route }) {
               Produce: [produceId],
               quantity: Number(orderQuantity),
               shopper: [userId],
+              'Delivery Day': mondayDelivery ? 'Monday' : 'Friday',
               'Delivery Date': deliveryDate,
             },
           },
@@ -350,7 +353,10 @@ function ProduceDetailsScreen({ navigation, route }) {
                   $
                   {price}
                 </Text>
-                <Text style={styles.textUnit}>{unit}</Text>
+                <Text style={styles.textUnit}>
+                  {'/ '}
+                  {unit}
+                </Text>
               </View>
               <View style={styles.numberChange}>
                 <TouchableOpacity
@@ -370,7 +376,7 @@ function ProduceDetailsScreen({ navigation, route }) {
                 <TextInput
                   style={styles.textInput}
                   value={orderQuantity}
-                  onChangeText={onChangeQuantity}
+                  onChangeText={setOrderQuantity}
                   onSubmitEditing={onSubmitQuantity}
                   onEndEditing={onSubmitQuantity}
                   placeholder={orderQuantity}
@@ -429,6 +435,7 @@ ProduceDetailsScreen.propTypes = {
       maxQuantity: PropTypes.number.isRequired,
       minQuantity: PropTypes.number.isRequired,
       mondayDelivery: PropTypes.bool.isRequired,
+      deliveryDate: PropTypes.string.isRequired,
     }),
   }).isRequired,
 };

@@ -9,9 +9,10 @@ import {
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
-import store from '../lib/redux/store';
+import { useSelector } from 'react-redux';
 
 import CartProduct from '../Cart/CartProductUntoggle';
+import { serviceRefresh } from '../lib/redux/services';
 
 const styles = StyleSheet.create({
   container: {
@@ -127,12 +128,12 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function CheckoutScreen({ route, navigation }) {
-  const currentUser = store.getState().auth.user;
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate, setDeliveryDate] = useState('unavailable');
+  const [deliveryDate] = useState(route.params.deliveryDate);
   const [itemList] = useState(route.params.itemList);
 
   const calcTotal = () => {
@@ -147,47 +148,47 @@ export default function CheckoutScreen({ route, navigation }) {
     setCount(c);
   };
 
-  const parseDate = (useremail) => {
-    let date = '';
-    base('Cart V3').select({
-      filterByFormula: `({shopper}='${useremail}')`,
-    }).firstPage()
-      .then((records) => {
-        const [month, day] = records[0].fields['Delivery Date'].split('/');
-        switch (month) {
-          case '01': date = 'January';
-            break;
-          case '02': date = 'February';
-            break;
-          case '03': date = 'March';
-            break;
-          case '04': date = 'April';
-            break;
-          case '05': date = 'May';
-            break;
-          case '06': date = 'June';
-            break;
-          case '07': date = 'July';
-            break;
-          case '08': date = 'August';
-            break;
-          case '09': date = 'September';
-            break;
-          case '10': date = 'October';
-            break;
-          case '11': date = 'November';
-            break;
-          case '12': date = 'December';
-            break;
-          default: { Alert.alert('Invalid Month');
-            return; }
-        }
-        date = date.concat(` ${day}`);
-        setDeliveryDate(date);
-      });
-  };
+  // const parseDate = (useremail) => {
+  //   let date = '';
+  //   base('Cart V3').select({
+  //     filterByFormula: `({shopper}='${useremail}')`,
+  //   }).firstPage()
+  //     .then((records) => {
+  //       const [month, day] = records[0].fields['Delivery Date'].split('/');
+  //       switch (month) {
+  //         case '01': date = 'January';
+  //           break;
+  //         case '02': date = 'February';
+  //           break;
+  //         case '03': date = 'March';
+  //           break;
+  //         case '04': date = 'April';
+  //           break;
+  //         case '05': date = 'May';
+  //           break;
+  //         case '06': date = 'June';
+  //           break;
+  //         case '07': date = 'July';
+  //           break;
+  //         case '08': date = 'August';
+  //           break;
+  //         case '09': date = 'September';
+  //           break;
+  //         case '10': date = 'October';
+  //           break;
+  //         case '11': date = 'November';
+  //           break;
+  //         case '12': date = 'December';
+  //           break;
+  //         default: { Alert.alert('Invalid Month');
+  //           return; }
+  //       }
+  //       date = date.concat(` ${day}`);
+  //       setDeliveryDate(date);
+  //     });
+  // };
 
-  const setOrderDetails = (useremail) => {
+  const retrieveUserDetails = (useremail) => {
     base('Users').select({
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
@@ -220,9 +221,12 @@ export default function CheckoutScreen({ route, navigation }) {
   ));
 
   useEffect(() => {
-    setOrderDetails(currentUser.email);
+    retrieveUserDetails(currentUser.email);
     calcTotal();
-    parseDate(currentUser.email);
+
+    // scheduled sent the email to apifm, waiting on response
+    setDeliveryFee(10);
+    setFreeFee(20);
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -230,17 +234,19 @@ export default function CheckoutScreen({ route, navigation }) {
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         items.forEach((item) => {
-          cartIDs.push(item.get('item_id'));
-          base('Orders').create({
-            user_id: useremail,
-            produce_id: item.get('Produce'),
-            Quantity: item.get('quantity'),
-            'Est. Delivery Date': item.get('Delivery Date'),
-          }, (err) => {
-            if (err) {
-              Alert.alert(err.message);
-            }
-          });
+          if (item.get('Delivery Date') === deliveryDate) {
+            cartIDs.push(item.get('item_id'));
+            base('Orders').create({
+              Shopper: [currentUser.id],
+              produce_id: item.get('Produce'),
+              Quantity: item.get('quantity'),
+              'Est. Delivery Date': deliveryDate,
+            }, (err) => {
+              if (err) {
+                Alert.alert(err.message);
+              }
+            });
+          }
         });
       });
     base('CART V3').destroy(cartIDs, (err) => {
@@ -248,6 +254,7 @@ export default function CheckoutScreen({ route, navigation }) {
         Alert.alert(err.message);
       }
     });
+    serviceRefresh();
   };
   return (
     <View>
@@ -351,7 +358,7 @@ export default function CheckoutScreen({ route, navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable('helen@gmail.com');
+              pushToOrderTable(currentUser.email);
               navigation.navigate('Order Successful', {
                 itemList,
               });
@@ -375,7 +382,9 @@ CheckoutScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
+      // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
+      deliveryDate: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

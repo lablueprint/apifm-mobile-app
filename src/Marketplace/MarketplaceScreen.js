@@ -9,10 +9,10 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector } from 'react-redux';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
-import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 
@@ -220,11 +220,10 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
-  const state = store.getState().auth;
-  if (!state.isLoggedIn) {
+  const { user: currentUser, isLoggedIn } = useSelector((state) => state.auth);
+  if (!isLoggedIn) {
     navigation.navigate('Login');
   }
-  const currentUser = state.user;
 
   const today = new Date();
   const tempToday = new Date();
@@ -253,6 +252,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [unapprovedAlert, setUnapprovedAlert] = useState(false);
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
+  const [deliveryDate, setDeliveryDate] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [wednesdayAlert, setWednesdayAlert] = useState(false);
 
@@ -469,6 +469,8 @@ export default function MarketplaceScreen({ navigation }) {
       setShowAlert(true);
     } else {
       setShowAlert(false);
+      const orderDeliveryDate = mondayDelivery ? displayMonday : displayFriday;
+      setDeliveryDate(`${orderDeliveryDate}/${today.getFullYear()}`);
     }
   }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 
@@ -768,10 +770,16 @@ export default function MarketplaceScreen({ navigation }) {
                 produceList={produceList}
                 favorites={favoritesFilter}
                 mondayDelivery={mondayDelivery}
+                deliveryDate={deliveryDate}
               />
             )}
         </ScrollView>
-        <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
+        <TouchableOpacity onPress={() => {
+          if (!closedMarket && !restrictedMarket) {
+            navigation.navigate('Cart', { deliveryDate });
+          }
+        }}
+        >
           <View style={[styles.cartButtonCircle, styles.elevation]}>
             <Image source={cart} style={styles.cartButtonImage} />
           </View>
