@@ -1,5 +1,5 @@
 {
-  "name": "APIFM",
+  "name": "apifm",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -15,11 +15,11 @@
     "output": "./src/lib/"
   },
   "dependencies": {
-    "@calblueprint/airlock": "git://github.com/calblueprint/airlock.git",
+    "@calblueprint/airlock": "^0.7.4",
     "@expo-google-fonts/josefin-sans": "^0.2.2",
     "@mdi/font": "^6.5.95",
     "@mdi/js": "^6.5.95",
-    "@react-native-async-storage/async-storage": "^1.17.7",
+    "@react-native-async-storage/async-storage": "^1.17.10",
     "@react-native-community/masked-view": "^0.1.11",
     "@react-navigation/drawer": "^6.4.1",
     "@react-navigation/native": "^6.0.10",
@@ -27,8 +27,8 @@
     "@react-navigation/stack": "^6.0.11",
     "@reduxjs/toolkit": "^1.8.3",
     "airtable": "^0.11.1",
-    "intl": "^1.2.5",
     "end-of-stream": "^1.4.4",
+    "intl": "^1.2.5",
     "jetifier": "^2.0.0",
     "lodash": "^4.17.21",
     "map-visit": "^1.0.0",
@@ -50,6 +50,7 @@
     "react-navigation-stack": "^2.10.4",
     "react-redux": "^8.0.2",
     "redux": "^4.2.0",
+    "redux-persist": "^6.0.0",
     "redux-thunk": "^2.4.1"
   },
   "devDependencies": {
