@@ -7,6 +7,7 @@ import {
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 import Config from 'react-native-config';
+import Icon from 'react-native-vector-icons/Ionicons';
 import store from '../lib/redux/store';
 import CartProduct from './CartProduct';
 
@@ -24,6 +25,24 @@ const styles = StyleSheet.create({
   entireScreen: {
     flex: 1,
     backgroundColor: '#FFFFFA',
+  },
+  mainTitle: {
+    marginTop: 40,
+    marginBottom: 10,
+    fontSize: 22,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    color: '#34221D',
+  },
+  backButton: {
+    color: 'black',
+    paddingLeft: 30,
+    paddingTop: 40,
+    position: 'absolute',
+    zIndex: 99,
   },
   container: {
     flex: 1,
@@ -62,18 +81,18 @@ const styles = StyleSheet.create({
   subtotalContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: '4%',
+    marginBottom: '10%',
     marginTop: '0%',
     marginLeft: '2%',
     marginRight: '2%',
-    width: '100%',
+    width: '90%',
   },
   subtotalText: {
-    fontFamily: 'JosefinSans-Regular',
+    fontFamily: 'JosefinSans-SemiBold',
     fontSize: 18,
   },
   subtotal: {
-    fontFamily: 'JosefinSans-Regular',
+    fontFamily: 'JosefinSans-SemiBold',
     fontSize: 18,
   },
   continueButton: {
@@ -166,6 +185,15 @@ export default function CartScreen({ navigation, route }) {
 
   return (
     <View style={styles.entireScreen}>
+      <TouchableOpacity>
+        <Icon
+          size={30}
+          name="arrow-back"
+          style={styles.backButton}
+          onPress={() => { navigation.goBack(); }}
+        />
+      </TouchableOpacity>
+      <Text style={styles.mainTitle}>Cart</Text>
       <View style={styles.container}>
         <ScrollView style={styles.scrollView}>
           {products}

@@ -150,21 +150,7 @@ export default function StackNavigation() {
       <stackNavig.Screen
         name="Cart"
         component={CartScreen}
-        options={{
-          title: 'Cart',
-          fontFamily: 'JosefinSans-Regular',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#FFFFFA',
-            borderBottomWidth: 0,
-            elevation: 0,
-          },
-          headerTitleStyle: {
-            fontFamily: 'JosefinSans-Regular',
-            fontSize: 24,
-            color: '#34221D',
-          },
-        }}
+        options={{ headerShown: false }}
       />
       <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
       {/* need to adjust the header to hide the order details */}

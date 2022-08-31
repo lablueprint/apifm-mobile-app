@@ -82,12 +82,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFA',
   },
   itemQuantityType: {
-    fontFamily: 'JosefinSans-Light',
+    fontFamily: 'JosefinSans-Regular',
     fontStyle: 'normal',
     fontSize: 14,
     marginBottom: 5,
-    marginLeft: 10,
+    marginLeft: 5,
     marginTop: 15,
+    color: '#868686',
   },
   itemQuantity: {
     fontFamily: 'JosefinSans-Regular',
@@ -103,11 +104,12 @@ const styles = StyleSheet.create({
     color: '#34221D',
   },
   itemPricePer: {
-    fontFamily: 'JosefinSans-Light',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 14,
     marginBottom: 0,
     marginLeft: 15,
     marginTop: 7,
+    color: '#868686',
   },
   removeItemButton: {
     padding: 0,
@@ -197,7 +199,7 @@ export default function CartProduct(props) {
           </Text>
         </View>
         <Text style={styles.itemPricePer}>
-          {`$${price} / ${type}`}
+          {`$${price}/${type}`}
         </Text>
         <View style={styles.quantityContainer}>
           <TextInput
@@ -209,7 +211,7 @@ export default function CartProduct(props) {
             onEndEditing={submitQuantity}
           />
           <Text style={styles.itemQuantityType}>
-            {totalUnits}
+            {type}
           </Text>
         </View>
       </View>
