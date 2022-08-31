@@ -578,7 +578,7 @@ export default function SignUpScreen({ navigation }) {
             onPress={() => {
               if (checkAccountInputs()) {
                 Keyboard.dismiss();
-                setPage(4);
+                setPage(2);
               }
             }}
           >
