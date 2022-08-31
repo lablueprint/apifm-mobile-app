@@ -6,7 +6,7 @@ import { serviceLogin, serviceLogout } from '../redux/services';
 Airtable.configure({
   apiKey: 'airlock',
   // this must be updated by the tester
-  endpointUrl: Config.ENDPOINT_URL,
+  endpointUrl: 'https://3372-64-30-75-107.ngrok.io',
 });
 
 const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
@@ -35,6 +35,7 @@ const registerUser = async (userData) => {
         'accounting name': userData.accFullName,
         'accounting email': userData.accEmail,
         'accounting phone': userData.accNumber,
+        avatarNum: 0,
       },
     });
     if (!response.body.success) {
@@ -65,6 +66,7 @@ const loginUser = async (username, password) => {
       organization: result.organization,
       phoneNumber: result['personal phone'],
       address: result.address,
+      avatarNum: result.avatarNum,
       approved: result['account approved'],
     };
     serviceLogin(userData);

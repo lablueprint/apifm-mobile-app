@@ -1,15 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Alert, View, StyleSheet, TextInput, Image, TouchableOpacity,
+  Alert, View, StyleSheet, TextInput, Platform,
+  Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
 } from 'react-native';
 import {
   Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import store from '../lib/redux/store';
+import { serviceUpdateUser } from '../lib/redux/services';
 
 const Airtable = require('airtable');
+const editIcon = require('../assets/imgs/edit.png');
 const placeholder = require('../assets/imgs/placeholder.png');
 const pipa = require('../assets/imgs/pipa.png');
 const eggplant = require('../assets/imgs/eggplant.png');
@@ -17,7 +22,6 @@ const mango = require('../assets/imgs/mango.png');
 const dragonfruit = require('../assets/imgs/dragonfruit.png');
 const lychee = require('../assets/imgs/lychee.png');
 const bokchoy = require('../assets/imgs/bokchoy.png');
-const edit = require('../assets/imgs/edit.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -70,8 +74,16 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'right',
     marginLeft: 'auto',
-    top: 20,
-    right: 20,
+    top: 22,
+    right: 0,
+    zIndex: 99,
+  },
+  buttonTextTwo: {
+    fontSize: 16,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'right',
+    marginLeft: 'auto',
+    right: 280,
   },
   image: {
     marginLeft: 'auto',
@@ -89,6 +101,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 30,
   },
+  inner: {
+    padding: 24,
+    flex: 1,
+    justifyContent: 'space-around',
+  },
+  menuIcon: {
+    width: '10%',
+  },
 });
 
 const airtableConfig = {
@@ -102,42 +122,48 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 export default function ProfileScreen({ navigation }) {
   const currentUser = store.getState().auth.user;
 
-  const [email, setEmail] = useState('');
-  const [phoneNum, setPhoneNum] = useState('');
-  const [address, setAddress] = useState('');
+  const [title, setTitle] = useState('Edit');
+  const [isEditMode, setEditMode] = useState(false);
+  const [refresh, setRefresh] = useState(0);
+
+  const [email, setEmail] = useState(currentUser.email);
+  const [phoneNum, setPhoneNum] = useState(currentUser.phoneNumber);
+  const [address, setAddress] = useState(currentUser.address);
 
   const [avatar, setAvatar] = useState(placeholder);
 
   useEffect(() => {
-    const useremail = currentUser.email;
-    base('Users').select({
-      filterByFormula: `({email}='${useremail}')`,
-    }).firstPage().then((record) => {
-      switch (record[0].fields.avatarNum) {
-        case 1: setAvatar(pipa);
-          break;
-        case 2: setAvatar(eggplant);
-          break;
-        case 3: setAvatar(mango);
-          break;
-        case 4: setAvatar(dragonfruit);
-          break;
-        case 5: setAvatar(lychee);
-          break;
-        case 6: setAvatar(bokchoy);
-          break;
-        default: setAvatar(placeholder);
-      }
-    });
-  }, []);
+    switch (currentUser.avatarNum) {
+      case 1: setAvatar(pipa);
+        break;
+      case 2: setAvatar(eggplant);
+        break;
+      case 3: setAvatar(mango);
+        break;
+      case 4: setAvatar(dragonfruit);
+        break;
+      case 5: setAvatar(lychee);
+        break;
+      case 6: setAvatar(bokchoy);
+        break;
+      default: setAvatar(placeholder);
+    }
+  }, [refresh]);
 
-  // When save changes is clicked, fields belonging to this user will be updated
-  const handleSaveChanges = () => {
-    // as long as the fields aren't empty, the fields will be updated in airtable
+  const onEdit = () => {
+    setEditMode(true);
+    setTitle('Save');
+  };
+
+  const onSave = async () => {
     if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
+      // TODO: add checker that the adjustments are different from what's already saved,
+      // that way users don't always have the alert
+      // TODO: add checker for email and phone number, can reuse checks from sign up screen
       Alert.alert('Your changes have been saved.');
-      // Airtable call to update fields
-      base('Users').update([
+      setEditMode(false);
+      setTitle('Edit');
+      await base('Users').update([
         {
           id: currentUser.id,
           fields: {
@@ -151,80 +177,126 @@ export default function ProfileScreen({ navigation }) {
           Alert.alert(err.error, err.message);
         }
       });
+      const updatedUser = {
+        ...currentUser, email, address, phoneNumber: phoneNum,
+      };
+      serviceUpdateUser(updatedUser);
     } else {
       Alert.alert('Please fill out all fields.');
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <Text style={styles.buttonText} onPress={handleSaveChanges}>Save</Text>
-      <View style={styles.titleText}>
-        <Text style={styles.mainTitle}>Profile</Text>
-        <Image
-          style={styles.image}
-          source={avatar}
-        />
-        <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
-          <Image
-            style={styles.edit}
-            source={edit}
-          />
-        </TouchableOpacity>
+  const onCancel = () => {
+    setEditMode(false);
+    setTitle('Edit');
+  };
 
-        <Text style={styles.titleText}>
-          {currentUser.firstName}
-          {' '}
-          {currentUser.lastName}
-        </Text>
-        <Text style={styles.subtitleText}> Organization Name </Text>
-      </View>
-      {/* Start of text input region */}
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Email</Text>
-        <TextInput
-          style={styles.textInput}
-          value={email}
-          onChangeText={setEmail}
-          placeholder={currentUser.email}
-          placeholderTextColor="#34221D"
-          keyboardType="email-address"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Phone Number</Text>
-        <TextInput
-          style={styles.textInput}
-          value={phoneNum}
-          onChangeText={setPhoneNum}
-          placeholder={currentUser.address}
-          placeholderTextColor="#34221D"
-          keyboardType="numeric"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.labelText}>Address</Text>
-        <TextInput
-          style={styles.textInput}
-          value={address}
-          onChangeText={setAddress}
-          placeholder={currentUser.phoneNumber}
-          placeholderTextColor="#34221D"
-          returnKeyType="next"
-          blurOnSubmit={false}
-          width={330}
-        />
-      </View>
-    </View>
+  return (
+    // TODO: fix how the keyboard view blocks the text fields
+    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
+
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View className="box">
+          <Text
+            style={styles.buttonText}
+            onPress={() => {
+              if (isEditMode) onSave();
+              else onEdit();
+            }}
+          >
+            {title}
+          </Text>
+          {isEditMode ? (
+            <View className="boxContent">
+              <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
+            </View>
+          ) : (
+            <View className="boxContent">
+              <TouchableOpacity>
+                <Icon
+                  size={21}
+                  name="menu"
+                  color="#000000"
+                  style={styles.menuIcon}
+                  onPress={() => { navigation.toggleDrawer(); }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <View style={styles.titleText}>
+            <Text style={styles.mainTitle}>Profile</Text>
+            <Image
+              style={styles.image}
+              source={avatar}
+            />
+            {isEditMode && (
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar', { refresh, setRefresh }); }}>
+              <Image
+                style={styles.edit}
+                source={editIcon}
+              />
+            </TouchableOpacity>
+            )}
+
+            <Text style={styles.titleText}>
+              {currentUser.firstName}
+              {' '}
+              {currentUser.lastName}
+            </Text>
+            <Text style={styles.subtitleText}> Organization Name </Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Email</Text>
+            <TextInput
+              style={styles.textInput}
+              value={email}
+              onChangeText={setEmail}
+              placeholder={email}
+              placeholderTextColor="#34221D"
+              keyboardType="email-address"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Phone Number</Text>
+            <TextInput
+              style={styles.textInput}
+              value={phoneNum}
+              onChangeText={setPhoneNum}
+              placeholderTextColor="#34221D"
+              keyboardType="numeric"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Address</Text>
+            <TextInput
+              style={styles.textInput}
+              value={address}
+              onChangeText={setAddress}
+              placeholderTextColor="#34221D"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
 ProfileScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    toggleDrawer: PropTypes.func,
+  }).isRequired,
 };
