@@ -159,10 +159,8 @@ export default function CartScreen({ navigation, route }) {
 
   useEffect(() => {
     getItems(currentUser.email);
-  }, [itemRefresh]);
-  useEffect(() => {
     setSubtotal(calcTotal(quantities));
-  }, [calcRefresh]);
+  }, [itemRefresh, calcRefresh]);
 
   const products = itemList.map((item) => (
     <CartProduct
@@ -221,7 +219,10 @@ export default function CartScreen({ navigation, route }) {
 }
 
 CartScreen.propTypes = {
-  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  navigation: PropTypes.shape({
+    navigate: PropTypes.func,
+    goBack: PropTypes.func,
+  }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({ deliveryDate: PropTypes.string.isRequired }),
   }).isRequired,

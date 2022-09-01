@@ -211,7 +211,7 @@ export default function CartProduct(props) {
             onEndEditing={submitQuantity}
           />
           <Text style={styles.itemQuantityType}>
-            {type}
+            {totalUnits}
           </Text>
         </View>
       </View>
