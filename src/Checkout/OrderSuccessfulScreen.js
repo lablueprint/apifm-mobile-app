@@ -82,7 +82,6 @@ const styles = StyleSheet.create({
 export default function OrderSuccessfulScreen({ route, navigation }) {
   const { itemList } = route.params;
   const [total, setTotal] = useState(0);
-  const [count, setCount] = useState(0);
   const [deliveryFee, setDeliveryFee] = useState(0);
 
   const products = itemList.map((item) => (
@@ -90,7 +89,7 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
       name={item.name[0]}
       price={item.price[0]}
       key={item.item_id}
-      type={`/ ${item.unit[0]}`}
+      type={`${item.unit[0]}`}
       quantity={item.quantity}
       image={item.image[0].url}
     />
@@ -98,14 +97,11 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
 
   const calcTotal = () => {
     let sum = 0;
-    let c = 0;
     itemList.forEach((item) => {
       const { price, quantity } = item;
       sum += quantity * price;
-      c += 1;
     });
     setTotal(sum);
-    setCount(c);
   };
 
   useEffect(() => {

@@ -197,7 +197,7 @@ export default function CheckoutScreen({ route, navigation }) {
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
       .then((records) => {
-        if (`${records[0].fields['apartment number']}` !== '') {
+        if (records[0].fields['apartment number']) {
           setShippingAddress({
             address: records[0].fields.address,
             zipcode: records[0].fields.zipcode,
@@ -237,8 +237,8 @@ export default function CheckoutScreen({ route, navigation }) {
         items.forEach((item) => {
           cartIDs.push(item.get('item_id'));
           base('Orders').create({
-            user_id: useremail,
-            produce_id: item.get('Produce'),
+            Shopper: [useremail],
+            produce_id: [item.get('Produce')],
             Quantity: item.get('quantity'),
             'Est. Delivery Date': item.get('Delivery Date'),
           }, (err) => {
@@ -356,7 +356,7 @@ export default function CheckoutScreen({ route, navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable('helen@gmail.com');
+              pushToOrderTable(currentUser.email);
               navigation.navigate('Order Successful', {
                 itemList,
               });
