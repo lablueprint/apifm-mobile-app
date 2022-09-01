@@ -230,15 +230,15 @@ export default function CheckoutScreen({ route, navigation }) {
     parseDate(currentUser.email);
   }, []);
 
-  const pushToOrderTable = async (useremail) => {
+  const pushToOrderTable = async (userid, useremail) => {
     const cartIDs = [];
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         items.forEach((item) => {
           cartIDs.push(item.get('item_id'));
           base('Orders').create({
-            Shopper: [useremail],
-            produce_id: [item.get('Produce')],
+            Shopper: [userid],
+            produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
             'Est. Delivery Date': item.get('Delivery Date'),
           }, (err) => {
@@ -248,7 +248,7 @@ export default function CheckoutScreen({ route, navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err) => {
+    await base('CART V3').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
       }
@@ -329,15 +329,6 @@ export default function CheckoutScreen({ route, navigation }) {
               {parseFloat(total).toFixed(2)}
             </Text>
           </View>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '2%' }}>
-            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Delivery Fee:
-            </Text>
-            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              $0.00
-              {/* TODO: implement delivery fee */}
-            </Text>
-          </View>
           <View style={{
             flexDirection: 'row', justifyContent: 'space-between', marginTop: '12%',
           }}
@@ -356,7 +347,7 @@ export default function CheckoutScreen({ route, navigation }) {
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable(currentUser.email);
+              pushToOrderTable(currentUser.id, currentUser.email);
               navigation.navigate('Order Successful', {
                 itemList,
               });
