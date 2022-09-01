@@ -6,7 +6,7 @@ import React from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
-import store from '../lib/redux/store';
+import { useSelector } from 'react-redux';
 import { logoutUser } from '../lib/airlock/airlock';
 
 const styles = StyleSheet.create({
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
 
 function CustomDrawer(props) {
   const { navigation } = props;
-  const currentUser = store.getState().auth.user;
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   return (
     <View style={styles.main}>
