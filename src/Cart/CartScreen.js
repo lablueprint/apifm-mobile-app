@@ -159,8 +159,10 @@ export default function CartScreen({ navigation, route }) {
 
   useEffect(() => {
     getItems(currentUser.email);
+  }, [itemRefresh]);
+  useEffect(() => {
     setSubtotal(calcTotal(quantities));
-  }, [itemRefresh, calcRefresh]);
+  }, [calcRefresh]);
 
   const products = itemList.map((item) => (
     <CartProduct

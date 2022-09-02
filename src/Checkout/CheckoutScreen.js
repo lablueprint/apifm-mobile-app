@@ -329,6 +329,14 @@ export default function CheckoutScreen({ route, navigation }) {
               {parseFloat(total).toFixed(2)}
             </Text>
           </View>
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '2%' }}>
+            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+              Delivery Fee:
+            </Text>
+            <Text style={[styles.subdetails, { marginRight: '0%' }]}>
+              TBD
+            </Text>
+          </View>
           <View style={{
             flexDirection: 'row', justifyContent: 'space-between', marginTop: '12%',
           }}

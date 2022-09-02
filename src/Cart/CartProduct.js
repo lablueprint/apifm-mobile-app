@@ -187,6 +187,7 @@ export default function CartProduct(props) {
       }
     });
     setItemRefresh(itemRefresh + 1);
+    setCalcRefresh(calcRefresh + 1);
   };
 
   return (
