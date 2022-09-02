@@ -569,7 +569,7 @@ export default function MarketplaceScreen({ navigation }) {
             <Modal
               visible={calendarVisibility && !closedMarket && !restrictedMarket}
               onDismiss={() => {
-                setCalendarVisibility(true);
+                setCalendarVisibility(false);
               }}
               contentContainerStyle={styles.calendarPopup}
             >

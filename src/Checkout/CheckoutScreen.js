@@ -201,7 +201,7 @@ export default function CheckoutScreen({ route, navigation }) {
           setShippingAddress({
             address: records[0].fields.address,
             zipcode: records[0].fields.zipcode,
-            apartmentLine: ` Apt ${records[0].fields['apartment number']}`,
+            apartmentLine: `, Apt ${records[0].fields['apartment number']}`,
           });
         } else {
           setShippingAddress({
@@ -286,7 +286,6 @@ export default function CheckoutScreen({ route, navigation }) {
             >
               <Text style={[styles.title, { fontWeight: '600' }]}>
                 {shippingAddress.address}
-                ,
                 {shippingAddress.apartmentLine}
               </Text>
               <Text style={styles.subdetails}>

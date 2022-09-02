@@ -68,7 +68,6 @@ function OrderCard({
   const dateObj = new Date(items[0]);
   const date = dateObj.toDateString();
   const deliveryDay = dateObj.getDay() === 1 ? 'Monday' : 'Friday';
-  const deliveryDate = `${String(dateObj.getMonth() + 1).padStart(2, '0')}/${String(dateObj.getDate()).padStart(2, '0')}/${String(dateObj.getFullYear())}`;
   const today = new Date();
   const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
   || today.getDay() === 6 || today.getDay() === 0
@@ -79,9 +78,8 @@ function OrderCard({
 
   const onPressCard = () => {
     if (!closedMarket && !restrictedMarket) {
-      const time = dateObj.toLocaleTimeString('en-US');
       navigation.navigate('OrderDetails', {
-        navigation, orderId, deliveryDay, deliveryDate, date, time, items,
+        navigation, orderId, deliveryDay, date, items,
       });
     }
   };
