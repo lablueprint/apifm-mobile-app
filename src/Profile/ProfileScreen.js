@@ -131,6 +131,29 @@ export default function ProfileScreen({ navigation }) {
 
   const [avatar, setAvatar] = useState(placeholder);
 
+  // email validation
+  const validateEmail = (text) => {
+    const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w\w+)+$/;
+    if (reg.test(text) === false) {
+      return false;
+    }
+    return true;
+  };
+
+  // phone number format function
+  const phoneFormat = (text) => {
+    if (text.length > 14) {
+      return;
+    }
+    const match = text.match(/(\d{3})(\d{3})(\d{4})$/);
+    if (match) {
+      const number = ['(', match[1], ') ', match[2], '-', match[3]].join('');
+      setPhoneNum(number);
+      return;
+    }
+    setPhoneNum(text);
+  };
+
   useEffect(() => {
     switch (currentUser.avatarNum) {
       case 1: setAvatar(pipa);
@@ -155,11 +178,11 @@ export default function ProfileScreen({ navigation }) {
   };
 
   const onSave = async () => {
-    if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
-      // TODO: add checker that the adjustments are different from what's already saved,
-      // that way users don't always have the alert
-      // TODO: add checker for email and phone number, can reuse checks from sign up screen
-      Alert.alert('Your changes have been saved.');
+    if ((email !== currentUser.email
+      || phoneNum !== currentUser.phoneNumber
+      || address !== currentUser.address)
+      && validateEmail(email) && phoneNum.length === 14 && address.length > 1) {
+      Alert.alert('Saved', 'Your changes have been saved.');
       setEditMode(false);
       setTitle('Edit');
       await base('Users').update([
@@ -180,14 +203,21 @@ export default function ProfileScreen({ navigation }) {
         ...currentUser, email, address, phoneNumber: phoneNum,
       };
       serviceUpdateUser(updatedUser);
+    } else if (!validateEmail(email)) {
+      Alert.alert('Invalid email submitted.');
+    } else if (phoneNum.length !== 14) {
+      Alert.alert('Invalid phone number submitted.');
     } else {
-      Alert.alert('Please fill out all fields.');
+      Alert.alert('Please fill out the address field.');
     }
   };
 
   const onCancel = () => {
     setEditMode(false);
     setTitle('Edit');
+    setEmail(currentUser.email);
+    setPhoneNum(currentUser.phoneNumber);
+    setAddress(currentUser.address);
   };
 
   return (
@@ -265,7 +295,7 @@ export default function ProfileScreen({ navigation }) {
             <TextInput
               style={styles.textInput}
               value={phoneNum}
-              onChangeText={setPhoneNum}
+              onChangeText={(text) => phoneFormat(text)}
               placeholderTextColor="#34221D"
               keyboardType="numeric"
               returnKeyType="next"
