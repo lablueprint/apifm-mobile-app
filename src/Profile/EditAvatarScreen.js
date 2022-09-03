@@ -4,7 +4,7 @@ import {
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import store from '../lib/redux/store';
+import { useSelector } from 'react-redux';
 import { serviceUpdateUser } from '../lib/redux/services';
 
 const Airtable = require('airtable');
@@ -107,10 +107,8 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-export default function EditAvatarScreen({ route, navigation }) {
-  const currentUser = store.getState().auth.user;
-
-  const { refresh, setRefresh } = route.params;
+export default function EditAvatarScreen({ navigation }) {
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [avatar, setAvatar] = useState(placeholderIMG);
   const [avatarNum, setAvatarNum] = useState(0);
@@ -168,7 +166,6 @@ export default function EditAvatarScreen({ route, navigation }) {
       ]);
       const updatedUser = { ...currentUser, avatarNum };
       serviceUpdateUser(updatedUser);
-      setRefresh(refresh + 1);
       navigation.goBack(null);
     } catch (err) {
       Alert.alert(err.error, err.message);
@@ -309,10 +306,4 @@ export default function EditAvatarScreen({ route, navigation }) {
 
 EditAvatarScreen.propTypes = {
   navigation: PropTypes.shape({ goBack: PropTypes.func }).isRequired,
-  route: PropTypes.shape({
-    params: PropTypes.shape({
-      refresh: PropTypes.number.isRequired,
-      setRefresh: PropTypes.func.isRequired,
-    }),
-  }).isRequired,
 };

@@ -10,7 +10,7 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import store from '../lib/redux/store';
+import { useSelector } from 'react-redux';
 import { serviceUpdateUser } from '../lib/redux/services';
 
 const Airtable = require('airtable');
@@ -120,11 +120,10 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
 export default function ProfileScreen({ navigation }) {
-  const currentUser = store.getState().auth.user;
+  const { user: currentUser } = useSelector((state) => state.auth);
 
   const [title, setTitle] = useState('Edit');
   const [isEditMode, setEditMode] = useState(false);
-  const [refresh, setRefresh] = useState(0);
 
   const [email, setEmail] = useState(currentUser.email);
   const [phoneNum, setPhoneNum] = useState(currentUser.phoneNumber);
@@ -148,7 +147,7 @@ export default function ProfileScreen({ navigation }) {
         break;
       default: setAvatar(placeholder);
     }
-  }, [refresh]);
+  }, [currentUser.avatarNum]);
 
   const onEdit = () => {
     setEditMode(true);
@@ -231,7 +230,7 @@ export default function ProfileScreen({ navigation }) {
               source={avatar}
             />
             {isEditMode && (
-            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar', { refresh, setRefresh }); }}>
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
               <Image
                 style={styles.edit}
                 source={editIcon}
