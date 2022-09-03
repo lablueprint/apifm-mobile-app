@@ -13,6 +13,7 @@ import { useSelector } from 'react-redux';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
+import { serviceSelectDeliveryDay } from '../lib/redux/services';
 
 const Airtable = require('airtable');
 
@@ -457,6 +458,13 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   useEffect(() => {
+    let dayString = null;
+    if (mondayDelivery && !fridayDelivery) {
+      dayString = 'Monday';
+    } else if (!mondayDelivery && fridayDelivery) {
+      dayString = 'Friday';
+    }
+    serviceSelectDeliveryDay(dayString);
     setUnsortedProduce(filterProduce(
       deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
       favoritesFilter,

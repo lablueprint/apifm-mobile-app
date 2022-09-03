@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, TouchableOpacity, Image,
+  View, StyleSheet, TouchableOpacity, Image, Alert,
 } from 'react-native';
 import { Text } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 
 const missingImage = require('../assets/imgs/square_logo.png');
 
@@ -62,6 +63,7 @@ const styles = StyleSheet.create({
 function OrderCard({
   navigation, orderId, items, itemsList, images,
 }) {
+  const { selectedDeliveryDay } = useSelector((state) => state.auth);
   const [itemList, setItemList] = useState(itemsList.get(new Date(items[0]).toString()));
   const [image, setImage] = useState(images.get(new Date(items[0]).toString()));
 
@@ -78,9 +80,18 @@ function OrderCard({
 
   const onPressCard = () => {
     if (!closedMarket && !restrictedMarket) {
-      navigation.navigate('OrderDetails', {
-        navigation, orderId, deliveryDay, date, items,
-      });
+      if (selectedDeliveryDay === deliveryDay) {
+        navigation.navigate('OrderDetails', {
+          navigation, orderId, deliveryDay, date, items,
+        });
+      } else {
+        Alert.alert(
+          'Mismatching Delivery Day',
+          'You cannot reorder this if your \n expected delivery day does not match the selected order.',
+        );
+      }
+    } else {
+      Alert.alert('Closed/Restricted Market', 'You cannot reorder when the marketplace is restricted or closed.');
     }
   };
 
