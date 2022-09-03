@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Alert, View, StyleSheet, TextInput, Platform,
   Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
@@ -101,11 +101,6 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 30,
   },
-  inner: {
-    padding: 24,
-    flex: 1,
-    justifyContent: 'space-around',
-  },
   menuIcon: {
     width: '10%',
   },
@@ -128,6 +123,9 @@ export default function ProfileScreen({ navigation }) {
   const [email, setEmail] = useState(currentUser.email);
   const [phoneNum, setPhoneNum] = useState(currentUser.phoneNumber);
   const [address, setAddress] = useState(currentUser.address);
+
+  const phoneInput = useRef();
+  const addressInput = useRef();
 
   const [avatar, setAvatar] = useState(placeholder);
 
@@ -221,101 +219,103 @@ export default function ProfileScreen({ navigation }) {
   };
 
   return (
-    // TODO: fix how the keyboard view blocks the text fields
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View className="box">
-          <Text
-            style={styles.buttonText}
-            onPress={() => {
-              if (isEditMode) onSave();
-              else onEdit();
-            }}
-          >
-            {title}
-          </Text>
-          {isEditMode ? (
-            <View className="boxContent">
-              <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
-            </View>
-          ) : (
-            <View className="boxContent">
-              <TouchableOpacity>
-                <Icon
-                  size={21}
-                  name="menu"
-                  color="#000000"
-                  style={styles.menuIcon}
-                  onPress={() => { navigation.toggleDrawer(); }}
-                />
-              </TouchableOpacity>
-            </View>
-          )}
-
-          <View style={styles.titleText}>
-            <Text style={styles.mainTitle}>Profile</Text>
-            <Image
-              style={styles.image}
-              source={avatar}
-            />
-            {isEditMode && (
-            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
-              <Image
-                style={styles.edit}
-                source={editIcon}
-              />
-            </TouchableOpacity>
+        <View>
+          <View className="box">
+            <Text
+              style={styles.buttonText}
+              onPress={() => {
+                if (isEditMode) onSave();
+                else onEdit();
+              }}
+            >
+              {title}
+            </Text>
+            {isEditMode ? (
+              <View className="boxContent">
+                <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
+              </View>
+            ) : (
+              <View className="boxContent">
+                <TouchableOpacity>
+                  <Icon
+                    size={21}
+                    name="menu"
+                    color="#000000"
+                    style={styles.menuIcon}
+                    onPress={() => { navigation.toggleDrawer(); }}
+                  />
+                </TouchableOpacity>
+              </View>
             )}
 
-            <Text style={styles.titleText}>
-              {currentUser.firstName}
-              {' '}
-              {currentUser.lastName}
-            </Text>
-            <Text style={styles.subtitleText}> Organization Name </Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>Email</Text>
-            <TextInput
-              style={styles.textInput}
-              value={email}
-              onChangeText={setEmail}
-              placeholder={email}
-              placeholderTextColor="#34221D"
-              keyboardType="email-address"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              width={330}
-              editable={isEditMode}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>Phone Number</Text>
-            <TextInput
-              style={styles.textInput}
-              value={phoneNum}
-              onChangeText={(text) => phoneFormat(text)}
-              placeholderTextColor="#34221D"
-              keyboardType="numeric"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              width={330}
-              editable={isEditMode}
-            />
-          </View>
-          <View style={styles.inputContainer}>
-            <Text style={styles.labelText}>Address</Text>
-            <TextInput
-              style={styles.textInput}
-              value={address}
-              onChangeText={setAddress}
-              placeholderTextColor="#34221D"
-              returnKeyType="next"
-              blurOnSubmit={false}
-              width={330}
-              editable={isEditMode}
-            />
+            <View style={styles.titleText}>
+              <Text style={styles.mainTitle}>Profile</Text>
+              <Image
+                style={styles.image}
+                source={avatar}
+              />
+              {isEditMode && (
+                <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+                  <Image
+                    style={styles.edit}
+                    source={editIcon}
+                  />
+                </TouchableOpacity>
+              )}
+              <Text style={styles.titleText}>
+                {currentUser.firstName}
+                {' '}
+                {currentUser.lastName}
+              </Text>
+              <Text style={styles.subtitleText}>
+                {currentUser.organization}
+              </Text>
+            </View>
+
+            <View style={styles.inputContainer}>
+              <Text style={styles.labelText}>Email</Text>
+              <TextInput
+                style={styles.textInput}
+                value={email}
+                onChangeText={setEmail}
+                keyboardType="email-address"
+                returnKeyType="next"
+                onSubmitEditing={() => { phoneInput.current.focus(); }}
+                blurOnSubmit={false}
+                width={330}
+                editable={isEditMode}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.labelText}>Phone Number</Text>
+              <TextInput
+                style={styles.textInput}
+                value={phoneNum}
+                onChangeText={(text) => phoneFormat(text)}
+                keyboardType="numeric"
+                returnKeyType="next"
+                onSubmitEditing={() => { addressInput.current.focus(); }}
+                blurOnSubmit={false}
+                width={330}
+                ref={phoneInput}
+                editable={isEditMode}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.labelText}>Address</Text>
+              <TextInput
+                style={styles.textInput}
+                value={address}
+                onChangeText={setAddress}
+                returnKeyType="done"
+                blurOnSubmit={false}
+                width={330}
+                ref={addressInput}
+                editable={isEditMode}
+              />
+            </View>
           </View>
         </View>
       </TouchableWithoutFeedback>
