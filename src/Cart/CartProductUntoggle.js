@@ -128,7 +128,7 @@ export default function CartProduct(props) {
           {`$${parseFloat((price) * quantity).toFixed(2)}`}
         </Text>
         <Text style={styles.itemPricePer}>
-          {`$${price} / ${type}`}
+          {`$${price}/${type}`}
         </Text>
       </View>
     </View>

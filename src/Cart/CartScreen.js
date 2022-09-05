@@ -203,7 +203,7 @@ export default function CartScreen({ navigation, route }) {
             Subtotal
           </Title>
           <Title style={styles.subtotal}>
-            {`$ ${parseFloat(subtotal).toFixed(2)}`}
+            {`$${parseFloat(subtotal).toFixed(2)}`}
           </Title>
         </View>
         <TouchableOpacity

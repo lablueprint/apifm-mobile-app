@@ -200,7 +200,7 @@ export default function CheckoutScreen({ route, navigation }) {
         if (records[0].fields['apartment number']) {
           setShippingAddress({
             address: records[0].fields.address,
-            zipcode: records[0].fields.zipcode,
+            zipcode: `, ${records[0].fields.zipcode}`,
             apartmentLine: `, Apt ${records[0].fields['apartment number']}`,
           });
         } else {
@@ -281,14 +281,16 @@ export default function CheckoutScreen({ route, navigation }) {
               <Icon size={25} color="#1D763C" name="location-sharp" />
             </View>
             <View style={{
-              marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
+              marginLeft: '0%', flexDirection: 'row', marginVertical: '2%', flexShrink: 1,
             }}
             >
-              <Text style={[styles.title, { fontWeight: '600' }]}>
+              <Text style={[styles.title, {
+                fontWeight: '600',
+                flexShrink: 1,
+              }]}
+              >
                 {shippingAddress.address}
                 {shippingAddress.apartmentLine}
-              </Text>
-              <Text style={styles.subdetails}>
                 {shippingAddress.zipcode}
               </Text>
             </View>
@@ -378,6 +380,7 @@ CheckoutScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
+      // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
     }).isRequired,
   }).isRequired,

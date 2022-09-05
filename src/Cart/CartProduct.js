@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     marginLeft: -5,
     marginTop: 10,
     marginRight: 8,
-    width: '25%',
+    flex: 1,
   },
   container3: {
     flex: 1,
@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
     color: '#34221D',
     width: '100%',
   },
-  quantityBox: {
+  textInput: {
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#C4C4C4',
-    fontFamily: 'JosefinSans-Regular',
+    fontFamily: 'JosefinSans-SemiBold',
     fontSize: 14,
     margin: '1%',
     marginTop: 10,
@@ -99,7 +99,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     marginBottom: '0%',
-    marginLeft: '45%',
     marginTop: 10,
     color: '#34221D',
   },
@@ -204,7 +203,7 @@ export default function CartProduct(props) {
         </Text>
         <View style={styles.quantityContainer}>
           <TextInput
-            style={styles.quantityBox}
+            style={styles.textInput}
             keyboardType="numeric"
             value={String(quantities[name])}
             onChangeText={handleQuantityChange}
