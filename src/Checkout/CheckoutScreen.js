@@ -206,7 +206,7 @@ export default function CheckoutScreen({ route, navigation }) {
         } else {
           setShippingAddress({
             address: records[0].fields.address,
-            zipcode: records[0].fields.zipcode,
+            zipcode: `, ${records[0].fields.zipcode}`,
             apartmentLine: '',
           });
         }
