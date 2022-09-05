@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Alert,
+  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Alert, Keyboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
@@ -153,9 +153,10 @@ export default function LoginScreen({ navigation }) {
             style={styles.textInput}
             value={password}
             onChangeText={setPassword}
+            onSubmitEditing={() => Keyboard.dismiss()}
             placeholder="Password"
             secureTextEntry={!!hidePass}
-            returnKeyType="next"
+            returnKeyType="done"
             blurOnSubmit={false}
             ref={passwordInput}
             width={280}

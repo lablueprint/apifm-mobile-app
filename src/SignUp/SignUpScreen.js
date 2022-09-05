@@ -12,6 +12,7 @@ import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { registerUser } from '../lib/airlock/airlock';
 
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
@@ -586,7 +587,6 @@ export default function SignUpScreen({ navigation }) {
           </TouchableOpacity>
 
         </View>
-
       </ImageBackground>
     );
   }
@@ -595,117 +595,119 @@ export default function SignUpScreen({ navigation }) {
   if (page === 2) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-        <TouchableOpacity onPress={() => { setPage(1); }}>
-          <ArrowIcon
-            style={styles.backArrow}
-            name="arrowleft"
-            size={34}
-            color="#FF9F00"
-          />
-        </TouchableOpacity>
-        <View style={styles.container}>
-          <Image style={styles.image} source={foodrootslogo} />
-
-          <Title style={styles.titleText}>Sign up</Title>
-
-          <Title style={styles.header}>Delivery address</Title>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={recipient}
-              onChangeText={setRecipient}
-              placeholder="Delivery recepient (first and last name)"
-              returnKeyType="next"
-              onSubmitEditing={() => { addrInput.current.focus(); }}
-              blurOnSubmit={false}
-              width={330}
+        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+          <TouchableOpacity onPress={() => { setPage(1); }}>
+            <ArrowIcon
+              style={styles.backArrow}
+              name="arrowleft"
+              size={34}
+              color="#FF9F00"
             />
-          </View>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={address}
-              onChangeText={setAddress}
-              placeholder="Street address"
-              returnKeyType="next"
-              onSubmitEditing={() => { aptInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={addrInput}
-              width={330}
-            />
-          </View>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={apt}
-              onChangeText={setApt}
-              textContentType="postalCode"
-              placeholder="Apt # (optional)"
-              returnKeyType="next"
-              onSubmitEditing={() => { zipInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={aptInput}
-              width={330}
-            />
-          </View>
-
-          <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
-            <TextInput
-              style={[styles.textInput]}
-              value={zip}
-              onChangeText={setZip}
-              placeholder="Zip code"
-              returnKeyType="next"
-              textAlign="left"
-              onSubmitEditing={() => { instrInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={zipInput}
-              width={121}
-            />
-          </View>
-
-          <View>
-            <TextInput
-              style={styles.multiline}
-              value={instr}
-              onChangeText={setInstr}
-              placeholder="  Instructions for delivery (optional)"
-              returnKeyType="done"
-              onSubmitEditing={() => { Keyboard.dismiss(); }}
-              blurOnSubmit={false}
-              ref={instrInput}
-              height={112}
-              multiline
-              numberOfLines={5}
-              width={340}
-            />
-
-          </View>
-
-          <View>
-            <Text style={styles.descriptext}>
-              The address will be used for delivery and to
-              calculate the order minimum for delivery.
-            </Text>
-          </View>
-
-          <TouchableOpacity
-            mode="contained"
-            style={styles.button}
-            onPress={() => {
-              if (checkDeliveryInputs()) {
-                Keyboard.dismiss();
-                setPage(3);
-              }
-            }}
-          >
-            <Text style={styles.buttonText}> Continue </Text>
           </TouchableOpacity>
+          <View style={styles.container}>
+            <Image style={styles.image} source={foodrootslogo} />
 
-        </View>
+            <Title style={styles.titleText}>Sign up</Title>
+
+            <Title style={styles.header}>Delivery address</Title>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={recipient}
+                onChangeText={setRecipient}
+                placeholder="Delivery recepient (first and last name)"
+                returnKeyType="next"
+                onSubmitEditing={() => { addrInput.current.focus(); }}
+                blurOnSubmit={false}
+                width={330}
+              />
+            </View>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={address}
+                onChangeText={setAddress}
+                placeholder="Street address"
+                returnKeyType="next"
+                onSubmitEditing={() => { aptInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={addrInput}
+                width={330}
+              />
+            </View>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={apt}
+                onChangeText={setApt}
+                textContentType="postalCode"
+                placeholder="Apt # (optional)"
+                returnKeyType="next"
+                onSubmitEditing={() => { zipInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={aptInput}
+                width={330}
+              />
+            </View>
+
+            <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
+              <TextInput
+                style={[styles.textInput]}
+                value={zip}
+                onChangeText={setZip}
+                placeholder="Zip code"
+                returnKeyType="next"
+                textAlign="left"
+                onSubmitEditing={() => { instrInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={zipInput}
+                width={121}
+              />
+            </View>
+
+            <View>
+              <TextInput
+                style={styles.multiline}
+                value={instr}
+                onChangeText={setInstr}
+                placeholder="  Instructions for delivery (optional)"
+                returnKeyType="done"
+                onEndEditing={() => { Keyboard.dismiss(); }}
+                blurOnSubmit={false}
+                ref={instrInput}
+                height={112}
+                multiline
+                numberOfLines={5}
+                width={340}
+              />
+
+            </View>
+
+            <View>
+              <Text style={styles.descriptext}>
+                The address will be used for delivery and to
+                calculate the order minimum for delivery.
+              </Text>
+            </View>
+
+            <TouchableOpacity
+              mode="contained"
+              style={styles.button}
+              onPress={() => {
+                if (checkDeliveryInputs()) {
+                  Keyboard.dismiss();
+                  setPage(3);
+                }
+              }}
+            >
+              <Text style={styles.buttonText}> Continue </Text>
+            </TouchableOpacity>
+
+          </View>
+        </TouchableWithoutFeedback>
       </ImageBackground>
     );
   }
@@ -713,137 +715,139 @@ export default function SignUpScreen({ navigation }) {
   if (page === 3) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-        <TouchableOpacity onPress={() => { setPage(2); }}>
-          <ArrowIcon
-            style={styles.backArrow}
-            name="arrowleft"
-            size={34}
-            color="#FF9F00"
-          />
-        </TouchableOpacity>
-        <View style={styles.container}>
-          <Image style={styles.image} source={foodrootslogo} />
-
-          <Text style={styles.titleText}>Sign up</Text>
-
-          <Title style={styles.header}>Billing address</Title>
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={fullName}
-              onChangeText={setFullName}
-              placeholder="First and last name"
-              returnKeyType="next"
-              onSubmitEditing={() => { billAddrInput.current.focus(); }}
-              blurOnSubmit={false}
-              width={330}
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <TouchableOpacity onPress={() => { setPage(2); }}>
+            <ArrowIcon
+              style={styles.backArrow}
+              name="arrowleft"
+              size={34}
+              color="#FF9F00"
             />
-          </View>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={billAddress}
-              onChangeText={setBillAddress}
-              placeholder="Street address"
-              returnKeyType="next"
-              onSubmitEditing={() => { billAptInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={billAddrInput}
-              width={330}
-            />
-          </View>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={billApt}
-              onChangeText={setBillApt}
-              textContentType="postalCode"
-              placeholder="Apt # (optional)"
-              returnKeyType="next"
-              onSubmitEditing={() => { billZipInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={billAptInput}
-              width={330}
-            />
-          </View>
-
-          <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
-            <TextInput
-              style={styles.textInput}
-              value={billZip}
-              onChangeText={setBillZip}
-              placeholder="Zip code"
-              returnKeyType="next"
-              onSubmitEditing={() => { accNameInput.current.focus(); }}
-              textAlign="left"
-              blurOnSubmit={false}
-              ref={billZipInput}
-              width={121}
-            />
-          </View>
-
-          <Title style={styles.header}>Accounting Contact</Title>
-          <Text style={styles.subheader}>If different from account information</Text>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={accFullName}
-              onChangeText={setAccFullName}
-              placeholder="First and last name"
-              returnKeyType="next"
-              onSubmitEditing={() => { accEmailInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={accNameInput}
-              width={330}
-            />
-          </View>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={accEmail}
-              onChangeText={setAccEmail}
-              placeholder="Email address"
-              keyboardType="email-address"
-              returnKeyType="next"
-              onSubmitEditing={() => { accNumberInput.current.focus(); }}
-              blurOnSubmit={false}
-              ref={accEmailInput}
-              width={330}
-            />
-          </View>
-
-          <View style={styles.inputs}>
-            <TextInput
-              style={styles.textInput}
-              value={accNumber}
-              onChangeText={(text) => onTextChange('accNum', text)}
-              placeholder="Phone number"
-              keyboardType="numeric"
-              returnKeyType="done"
-              onSubmitEditing={() => { Keyboard.dismiss(); }}
-              blurOnSubmit={false}
-              ref={accNumberInput}
-              width={330}
-            />
-          </View>
-
-          <TouchableOpacity
-            mode="contained"
-            style={styles.button}
-            onPress={() => {
-              if (checkBillingInputs()) {
-                setPage(4);
-              }
-            }}
-          >
-            <Text style={styles.buttonText}> Continue </Text>
           </TouchableOpacity>
+          <View style={styles.container}>
+            <Image style={styles.image} source={foodrootslogo} />
 
-        </View>
+            <Text style={styles.titleText}>Sign up</Text>
+
+            <Title style={styles.header}>Billing address</Title>
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={fullName}
+                onChangeText={setFullName}
+                placeholder="First and last name"
+                returnKeyType="next"
+                onSubmitEditing={() => { billAddrInput.current.focus(); }}
+                blurOnSubmit={false}
+                width={330}
+              />
+            </View>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={billAddress}
+                onChangeText={setBillAddress}
+                placeholder="Street address"
+                returnKeyType="next"
+                onSubmitEditing={() => { billAptInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={billAddrInput}
+                width={330}
+              />
+            </View>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={billApt}
+                onChangeText={setBillApt}
+                textContentType="postalCode"
+                placeholder="Apt # (optional)"
+                returnKeyType="next"
+                onSubmitEditing={() => { billZipInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={billAptInput}
+                width={330}
+              />
+            </View>
+
+            <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
+              <TextInput
+                style={styles.textInput}
+                value={billZip}
+                onChangeText={setBillZip}
+                placeholder="Zip code"
+                returnKeyType="next"
+                onSubmitEditing={() => { accNameInput.current.focus(); }}
+                textAlign="left"
+                blurOnSubmit={false}
+                ref={billZipInput}
+                width={121}
+              />
+            </View>
+
+            <Title style={styles.header}>Accounting Contact</Title>
+            <Text style={styles.subheader}>If different from account information</Text>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={accFullName}
+                onChangeText={setAccFullName}
+                placeholder="First and last name"
+                returnKeyType="next"
+                onSubmitEditing={() => { accEmailInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={accNameInput}
+                width={330}
+              />
+            </View>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={accEmail}
+                onChangeText={setAccEmail}
+                placeholder="Email address"
+                keyboardType="email-address"
+                returnKeyType="next"
+                onSubmitEditing={() => { accNumberInput.current.focus(); }}
+                blurOnSubmit={false}
+                ref={accEmailInput}
+                width={330}
+              />
+            </View>
+
+            <View style={styles.inputs}>
+              <TextInput
+                style={styles.textInput}
+                value={accNumber}
+                onChangeText={(text) => onTextChange('accNum', text)}
+                placeholder="Phone number"
+                keyboardType="numeric"
+                returnKeyType="done"
+                onSubmitEditing={() => { Keyboard.dismiss(); }}
+                blurOnSubmit={false}
+                ref={accNumberInput}
+                width={330}
+              />
+            </View>
+
+            <TouchableOpacity
+              mode="contained"
+              style={styles.button}
+              onPress={() => {
+                if (checkBillingInputs()) {
+                  setPage(4);
+                }
+              }}
+            >
+              <Text style={styles.buttonText}> Continue </Text>
+            </TouchableOpacity>
+
+          </View>
+        </TouchableWithoutFeedback>
       </ImageBackground>
     );
   }
