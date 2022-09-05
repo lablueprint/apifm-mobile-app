@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   headerImage: {
     marginTop: '7%',
     width: '50%',
-    height: 50,
+    height: '60%',
   },
   title: {
     marginTop: '5%',
@@ -652,7 +652,7 @@ export default function SignUpScreen({ navigation }) {
             />
           </View>
 
-          <View style={[styles.inputs, { alignSelf: 'flex-start', left: 20 }]}>
+          <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
             <TextInput
               style={[styles.textInput]}
               value={zip}
@@ -769,7 +769,7 @@ export default function SignUpScreen({ navigation }) {
             />
           </View>
 
-          <View style={[styles.inputs, { alignSelf: 'flex-start', left: 20 }]}>
+          <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
             <TextInput
               style={styles.textInput}
               value={billZip}
