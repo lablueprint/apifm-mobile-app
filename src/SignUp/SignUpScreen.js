@@ -25,15 +25,13 @@ Airtable.configure({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    justifyContent: 'center',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    height: 844,
-    width: '100%',
-    padding: '8%',
   },
   button: {
-    marginTop: 10,
+    marginTop: 60,
     width: 300,
     height: 40,
     alignItems: 'center',
@@ -42,17 +40,14 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
   },
   backArrow: {
-    paddingLeft: 15,
-  },
-  text: {
-    flex: 1,
-    flexDirection: 'row',
-    width: 350,
+    paddingLeft: 25,
+    position: 'absolute',
+    top: 10,
   },
   image: {
-    width: 201,
-    height: 55,
-    marginLeft: 25,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    marginBottom: 40,
   },
   backgroundimage: {
     flex: 1,
@@ -100,6 +95,14 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     color: '#1D763C',
   },
+  subheader: {
+    textAlign: 'left',
+    width: '100%',
+    fontSize: 12,
+    marginLeft: 60,
+    fontFamily: 'JosefinSans-Regular',
+    color: '#868686',
+  },
   descriptext: {
     textAlign: 'center',
     fontSize: 14,
@@ -112,13 +115,13 @@ const styles = StyleSheet.create({
 
   },
   titleText: {
-    marginLeft: 17,
     width: 330,
     flexDirection: 'row',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
     color: '#1D763C',
+    marginBottom: 20,
   },
   buttonText: {
     fontSize: 20,
@@ -183,7 +186,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: '-4%',
+    marginTop: '-12%',
     marginBottom: '5%',
   },
   checkbox: {
@@ -200,16 +203,16 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
   },
   signUpButtonUnchecked: {
-    marginTop: 5,
+    marginTop: 20,
     marginBottom: '15%',
-    borderRadius: 20,
+    borderRadius: 99,
     height: 50,
     backgroundColor: '#E5E5E5',
   },
   signUpButtonChecked: {
-    marginTop: 5,
+    marginTop: 20,
     marginBottom: '15%',
-    borderRadius: 20,
+    borderRadius: 99,
     height: 50,
     backgroundColor: '#1D763C',
   },
@@ -217,6 +220,7 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
+    textTransform: 'none',
   },
 });
 
@@ -425,22 +429,18 @@ export default function SignUpScreen({ navigation }) {
   if (page === 1) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+        <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+          <ArrowIcon
+            style={styles.backArrow}
+            name="arrowleft"
+            size={34}
+            color="#FF9F00"
+          />
+        </TouchableOpacity>
         <View style={styles.container}>
-          <View style={styles.text}>
+          <Image style={styles.image} source={foodrootslogo} />
 
-            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-              <ArrowIcon
-                style={styles.backArrow}
-                name="arrowleft"
-                size={34}
-                color="#FF9F00"
-              />
-            </TouchableOpacity>
-
-            <Image style={styles.image} source={foodrootslogo} />
-          </View>
-
-          <Text style={styles.titleText}>Sign Up</Text>
+          <Text style={styles.titleText}>Sign up</Text>
           <View style={styles.inputs}>
             <TextInput
               style={styles.textInput}
@@ -595,24 +595,20 @@ export default function SignUpScreen({ navigation }) {
   if (page === 2) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+        <TouchableOpacity onPress={() => { setPage(1); }}>
+          <ArrowIcon
+            style={styles.backArrow}
+            name="arrowleft"
+            size={34}
+            color="#FF9F00"
+          />
+        </TouchableOpacity>
         <View style={styles.container}>
+          <Image style={styles.image} source={foodrootslogo} />
 
-          <View style={styles.text}>
+          <Title style={styles.titleText}>Sign up</Title>
 
-            <TouchableOpacity onPress={() => { setPage(1); }}>
-              <ArrowIcon
-                style={styles.backArrow}
-                name="arrowleft"
-                size={34}
-                color="#FF9F00"
-              />
-            </TouchableOpacity>
-
-          </View>
-
-          <Title style={styles.titleText}>Sign Up</Title>
-
-          <Title style={styles.header}>Delivery Address</Title>
+          <Title style={styles.header}>Delivery address</Title>
 
           <View style={styles.inputs}>
             <TextInput
@@ -656,9 +652,9 @@ export default function SignUpScreen({ navigation }) {
             />
           </View>
 
-          <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
+          <View style={[styles.inputs, { alignSelf: 'flex-start', left: 20 }]}>
             <TextInput
-              style={styles.textInput}
+              style={[styles.textInput]}
               value={zip}
               onChangeText={setZip}
               placeholder="Zip code"
@@ -717,22 +713,20 @@ export default function SignUpScreen({ navigation }) {
   if (page === 3) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
+        <TouchableOpacity onPress={() => { setPage(2); }}>
+          <ArrowIcon
+            style={styles.backArrow}
+            name="arrowleft"
+            size={34}
+            color="#FF9F00"
+          />
+        </TouchableOpacity>
         <View style={styles.container}>
-          <View style={styles.text}>
-            <TouchableOpacity onPress={() => { setPage(2); }}>
-              <ArrowIcon
-                style={styles.backArrow}
-                name="arrowleft"
-                size={34}
-                color="#FF9F00"
-              />
-            </TouchableOpacity>
-            <Image style={styles.image} source={foodrootslogo} />
-          </View>
+          <Image style={styles.image} source={foodrootslogo} />
 
-          <Text style={styles.titleText}>Sign Up</Text>
+          <Text style={styles.titleText}>Sign up</Text>
 
-          <Title style={styles.header}>Billing Address</Title>
+          <Title style={styles.header}>Billing address</Title>
           <View style={styles.inputs}>
             <TextInput
               style={styles.textInput}
@@ -775,7 +769,7 @@ export default function SignUpScreen({ navigation }) {
             />
           </View>
 
-          <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
+          <View style={[styles.inputs, { alignSelf: 'flex-start', left: 20 }]}>
             <TextInput
               style={styles.textInput}
               value={billZip}
@@ -791,7 +785,7 @@ export default function SignUpScreen({ navigation }) {
           </View>
 
           <Title style={styles.header}>Accounting Contact</Title>
-          <Text>If different from account information</Text>
+          <Text style={styles.subheader}>If different from account information</Text>
 
           <View style={styles.inputs}>
             <TextInput
