@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, TextInput, Text,
-  ImageBackground, Image, Alert,
+  ImageBackground, Image, Alert, Keyboard,
 } from 'react-native';
 import {
   Provider, Portal, Modal,
@@ -147,6 +147,7 @@ export default function ForgotPassword({ navigation }) {
   const [page, setPage] = useState(1);
 
   const [userID, setUserID] = useState('');
+  const [resetID, setResetID] = useState('');
   const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
 
@@ -171,6 +172,22 @@ export default function ForgotPassword({ navigation }) {
       fetchNextPage();
     });
     if (isFound) {
+      // remove existing codes for a user in case they resend
+      const clearCodes = [];
+      await base('Password Reset').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
+        records.forEach((record) => {
+          clearCodes.push(record.id);
+        });
+        fetchNextPage();
+      });
+      if (clearCodes.length > 0) {
+        await base('Password Reset').destroy(clearCodes, (err) => {
+          if (err) {
+            Alert.alert(err.error, err.message);
+          }
+        });
+      }
+
       const resetCode = Math.floor(1000 + Math.random() * 9000);
       await base('Password Reset').create([
         {
@@ -179,10 +196,12 @@ export default function ForgotPassword({ navigation }) {
             code: resetCode,
           },
         },
-      ], (err) => {
+      ], (err, records) => {
         if (err) {
           Alert.alert(err.error, err.message);
         } else {
+          // saved to be deleted later when the reset is complete
+          setResetID(records[0].id);
           // only when the record is created can page be redirected
           setPage(2);
         }
@@ -226,6 +245,12 @@ export default function ForgotPassword({ navigation }) {
         if (err) {
           Alert.alert(err.error, err.message);
         } else {
+          // delete the reset confirmation code
+          base('Password Reset').destroy([resetID], (e) => {
+            if (e) {
+              Alert.alert(e.error, e.message);
+            }
+          });
           // shows alert that the password reset was successful
           setSuccessful(true);
           // automatically redirect the user
@@ -373,6 +398,7 @@ export default function ForgotPassword({ navigation }) {
                 style={styles.textInput}
                 value={confirmpass}
                 onChangeText={setConfirmPass}
+                onSubmitEditing={() => Keyboard.dismiss()}
                 placeholder="Confirm Password"
                 secureTextEntry={!!hidePass2}
                 returnKeyType="next"
@@ -395,7 +421,10 @@ export default function ForgotPassword({ navigation }) {
             <TouchableOpacity
               mode="contained"
               style={styles.button}
-              onPress={() => handleResetPassword()}
+              onPress={() => {
+                Keyboard.dismiss();
+                handleResetPassword();
+              }}
             >
               <Text
                 style={styles.buttonText}
