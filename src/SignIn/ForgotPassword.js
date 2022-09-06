@@ -11,6 +11,7 @@ import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 import Config from 'react-native-config';
 
+const bcrypt = require('react-native-bcrypt');
 const Airtable = require('airtable');
 const backgroundImage = require('../assets/imgs/signin.png');
 const foodrootslogo = require('../assets/imgs/frh.png');
@@ -143,9 +144,10 @@ const styles = StyleSheet.create({
 });
 
 export default function ForgotPassword({ navigation }) {
-  const [page, setPage] = useState(2);
+  const [page, setPage] = useState(1);
 
-  const [email, setEmail] = useState('james@ucla.edu');
+  const [userID, setUserID] = useState('');
+  const [email, setEmail] = useState('');
   const [code, setCode] = useState('');
 
   const [password, setPassword] = useState('');
@@ -164,6 +166,7 @@ export default function ForgotPassword({ navigation }) {
       // if the email is in the users table, then we can send a reset code
       if (records.length !== 0) {
         isFound = true;
+        setUserID(records[0].fields['user id']);
       }
       fetchNextPage();
     });
@@ -189,9 +192,11 @@ export default function ForgotPassword({ navigation }) {
     }
   };
 
+  // function that checks the code inputted matches the code sent to the user
   const checkCodeValid = async () => {
     let correctCode = false;
     await base('Password Reset').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
+      // if the code matches, then the user can reset their password on the next page
       if (records[0].fields.code === Number(code)) {
         correctCode = true;
       }
@@ -204,14 +209,40 @@ export default function ForgotPassword({ navigation }) {
     }
   };
 
-  const handleResetPassword = () => {
-    setSuccessful(true);
-    setTimeout(
-      () => {
-        navigation.navigate('Log In');
-      },
-      2000,
-    );
+  // function that converts the new password and updates the password field in the Users table
+  const handleResetPassword = async () => {
+    if (password.length >= 8 && password === confirmpass) {
+      const salt = bcrypt.genSaltSync(10);
+      // create a new hashed password to replace the existing hashed password
+      const newHashedPassword = bcrypt.hashSync(password, salt);
+      await base('Users').update([
+        {
+          id: userID,
+          fields: {
+            password: newHashedPassword,
+          },
+        },
+      ], (err) => {
+        if (err) {
+          Alert.alert(err.error, err.message);
+        } else {
+          // shows alert that the password reset was successful
+          setSuccessful(true);
+          // automatically redirect the user
+          setTimeout(
+            () => {
+              navigation.navigate('Log In');
+            },
+            3000,
+          );
+        }
+      });
+    } else if (password.length < 8) {
+      // check that the password is the correct length
+      Alert.alert('Password is not at least 8 characters long.');
+    } else {
+      Alert.alert('Password was not confirmed.');
+    }
   };
 
   if (page === 1) {
