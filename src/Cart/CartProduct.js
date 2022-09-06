@@ -145,7 +145,6 @@ export default function CartProduct(props) {
     price,
     type,
     image,
-    border,
     // eslint-disable-next-line react/prop-types
     quantities,
     // eslint-disable-next-line react/prop-types
@@ -195,7 +194,7 @@ export default function CartProduct(props) {
   };
 
   return (
-    <View style={border ? styles.container : styles.containerNoBorder}>
+    <View style={styles.container}>
       <Image style={styles.image} source={imageurl} />
       <View style={styles.container3}>
         <View style={styles.container4}>
@@ -244,5 +243,4 @@ CartProduct.propTypes = {
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
-  border: PropTypes.bool.isRequired,
 };

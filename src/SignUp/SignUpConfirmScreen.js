@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  View, StyleSheet, Text, ImageBackground, TouchableOpacity,
+  View, StyleSheet, Text, ImageBackground, TouchableOpacity, Alert,
 } from 'react-native';
 import PropTypes from 'prop-types';
+import { loginUser } from '../lib/airlock/airlock';
 
 const backgroundImage = require('../assets/imgs/confirmation.png');
 
@@ -50,9 +51,17 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function SignUpConfirmation({ navigation }) {
-  const handleBrowse = () => {
-    navigation.navigate('Marketplace');
+export default function SignUpConfirmation({ navigation, route }) {
+  const { username, password } = route.params;
+  const handleBrowse = async () => {
+    try {
+      const result = loginUser(username, password);
+      if (result) {
+        navigation.navigate('Marketplace');
+      }
+    } catch (err) {
+      Alert.alert(err.error, err.message);
+    }
   };
 
   return (
@@ -82,4 +91,10 @@ export default function SignUpConfirmation({ navigation }) {
 
 SignUpConfirmation.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
+  route: PropTypes.shape({
+    params: PropTypes.shape({
+      username: PropTypes.string.isRequired,
+      password: PropTypes.string.isRequired,
+    }).isRequired,
+  }).isRequired,
 };
