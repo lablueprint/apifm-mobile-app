@@ -55,12 +55,13 @@ export default function SignUpConfirmation({ navigation, route }) {
   const { username, password } = route.params;
   const handleBrowse = async () => {
     try {
-      const result = loginUser(username, password);
+      const result = await loginUser(username, password);
       if (result) {
         navigation.navigate('Marketplace');
       }
     } catch (err) {
       Alert.alert(err.error, err.message);
+      navigation.navigate('Log In');
     }
   };
 
