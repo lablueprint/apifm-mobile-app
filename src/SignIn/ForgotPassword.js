@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, TextInput, Text,
-  ImageBackground, Image, Alert, Keyboard,
+  ImageBackground, Image, Alert, Keyboard, Pressable,
 } from 'react-native';
 import {
   Provider, Portal, Modal,
@@ -40,6 +40,11 @@ const styles = StyleSheet.create({
     marginTop: 200,
 
   },
+  backArrow: {
+    paddingLeft: 25,
+    position: 'absolute',
+    top: 10,
+  },
   image: {
     width: 201,
     height: 55,
@@ -62,7 +67,6 @@ const styles = StyleSheet.create({
     color: 'white',
     marginTop: 3,
   },
-
   bigText: {
     fontSize: 30,
     fontFamily: 'JosefinSans-SemiBold',
@@ -81,24 +85,34 @@ const styles = StyleSheet.create({
     width: 225,
     marginBottom: '20%',
   },
+  digitsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  digitInput: {
+    borderColor: '#cccccc',
+    borderWidth: 2,
+    borderRadius: 4,
+    padding: 12,
+  },
+  hiddenCodeInput: {
+    position: 'absolute',
+    height: 0,
+    width: 0,
+    opacity: 0,
+  },
   icon: {
     paddingLeft: '5%',
     paddingBottom: '1%',
   },
-
   eye: {
     marginRight: 5,
-  },
-  backArrow: {
-    paddingLeft: 15,
-
   },
   text: {
     flex: 1,
     flexDirection: 'row',
     width: 350,
   },
-
   inputs: {
     borderWidth: 1,
     height: 38,
@@ -109,9 +123,7 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     borderColor: '#F0EFEF',
     backgroundColor: '#FFFFFA',
-
   },
-
   textInput: {
     marginLeft: 5,
     fontFamily: 'JosefinSans-SemiBold',
@@ -119,7 +131,6 @@ const styles = StyleSheet.create({
     color: '#868686',
     paddingTop: 1,
   },
-
   backgroundImage: {
     flex: 1,
     justifyContent: 'center',
@@ -149,7 +160,10 @@ export default function ForgotPassword({ navigation }) {
   const [userID, setUserID] = useState('');
   const [resetID, setResetID] = useState('');
   const [email, setEmail] = useState('');
+
   const [code, setCode] = useState('');
+  const codeDigitsArray = new Array(4).fill(0);
+  const ref = useRef(null);
 
   const [password, setPassword] = useState('');
   const [confirmpass, setConfirmPass] = useState('');
@@ -187,7 +201,6 @@ export default function ForgotPassword({ navigation }) {
           }
         });
       }
-
       const resetCode = Math.floor(1000 + Math.random() * 9000);
       await base('Password Reset').create([
         {
@@ -209,6 +222,22 @@ export default function ForgotPassword({ navigation }) {
     } else {
       Alert.alert('User email does not exist.');
     }
+  };
+
+  // function that allows users to repress the digits containers to focus
+  const handleDigitsPress = () => {
+    ref?.current?.focus();
+  };
+
+  // function that breaks down the input to digits
+  const digitInput = (index) => {
+    const digit = code[index] || ' ';
+
+    return (
+      <View key={index} style={styles.digitInput}>
+        <Text>{digit}</Text>
+      </View>
+    );
   };
 
   // function that checks the code inputted matches the code sent to the user
@@ -273,6 +302,15 @@ export default function ForgotPassword({ navigation }) {
   if (page === 1) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
+        <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+          <ArrowIcon
+            style={styles.backArrow}
+            name="arrowleft"
+            size={34}
+            color="#FF9F00"
+          />
+        </TouchableOpacity>
+
         <View style={styles.container}>
           <View>
             <Text>
@@ -297,9 +335,10 @@ export default function ForgotPassword({ navigation }) {
           </View>
           <View>
             <TouchableOpacity
+              style={styles.button}
               onPress={checkEmailExists}
             >
-              <Text>
+              <Text style={styles.buttonText}>
                 Send
               </Text>
             </TouchableOpacity>
@@ -312,6 +351,14 @@ export default function ForgotPassword({ navigation }) {
   if (page === 2) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
+        <TouchableOpacity onPress={() => { setPage(1); }}>
+          <ArrowIcon
+            style={styles.backArrow}
+            name="arrowleft"
+            size={34}
+            color="#FF9F00"
+          />
+        </TouchableOpacity>
         <View style={styles.container}>
           <View>
             <Text>
@@ -325,20 +372,26 @@ export default function ForgotPassword({ navigation }) {
             </Text>
           </View>
           <View>
+            <Pressable style={styles.digitsContainer} onPress={handleDigitsPress}>
+              {codeDigitsArray.map((element, index) => digitInput(index))}
+            </Pressable>
             <TextInput
+              ref={ref}
               value={code}
               onChangeText={setCode}
               keyboardType="number-pad"
               returnKeyType="done"
               textContentType="oneTimeCode"
               maxLength={4}
+              style={styles.hiddenCodeInput}
             />
           </View>
           <View>
             <TouchableOpacity
+              style={styles.button}
               onPress={checkCodeValid}
             >
-              <Text>
+              <Text style={styles.buttonText}>
                 Confirm
               </Text>
             </TouchableOpacity>
@@ -352,18 +405,16 @@ export default function ForgotPassword({ navigation }) {
     return (
       <Provider>
         <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
+          <TouchableOpacity onPress={() => { setPage(2); }}>
+            <ArrowIcon
+              style={styles.backArrow}
+              name="arrowleft"
+              size={34}
+              color="#FF9F00"
+            />
+          </TouchableOpacity>
           <View style={styles.container}>
             <View style={styles.text}>
-
-              <TouchableOpacity onPress={() => { setPage(2); }}>
-                <ArrowIcon
-                  style={styles.backArrow}
-                  name="arrowleft"
-                  size={34}
-                  color="#FF9F00"
-                />
-              </TouchableOpacity>
-
               <Image style={styles.image} source={foodrootslogo} />
             </View>
 
