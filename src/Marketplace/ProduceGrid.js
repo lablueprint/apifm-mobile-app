@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 });
 
 function ProduceGrid({
-  navigation, userId, showProduce, produceList, favorites, mondayDelivery,
+  navigation, userId, showProduce, produceList, favorites, deliveryDate,
 }) {
   const produceCards = produceList.map((produce) => (
     <ProduceCard
@@ -55,7 +55,7 @@ function ProduceGrid({
       seller={produce.Seller}
       maxQuantity={produce['Maximum Quantity']}
       minQuantity={produce['Minimum Quantity']}
-      mondayDelivery={mondayDelivery}
+      deliveryDate={deliveryDate}
     />
   ));
 
@@ -91,7 +91,7 @@ ProduceGrid.propTypes = {
   // eslint-disable-next-line react/forbid-prop-types
   produceList: PropTypes.array.isRequired,
   favorites: PropTypes.bool.isRequired,
-  mondayDelivery: PropTypes.bool.isRequired,
+  deliveryDate: PropTypes.string.isRequired,
 };
 
 export default ProduceGrid;

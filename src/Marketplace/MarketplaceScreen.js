@@ -253,6 +253,7 @@ export default function MarketplaceScreen({ navigation }) {
   const [unapprovedAlert, setUnapprovedAlert] = useState(false);
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
+  const [deliveryDate, setDeliveryDate] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [wednesdayAlert, setWednesdayAlert] = useState(false);
 
@@ -469,6 +470,8 @@ export default function MarketplaceScreen({ navigation }) {
       setShowAlert(true);
     } else {
       setShowAlert(false);
+      const orderDeliveryDate = mondayDelivery ? displayMonday : displayFriday;
+      setDeliveryDate(orderDeliveryDate);
     }
   }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 
@@ -767,11 +770,16 @@ export default function MarketplaceScreen({ navigation }) {
                 showProduce={showProduce}
                 produceList={produceList}
                 favorites={favoritesFilter}
-                mondayDelivery={mondayDelivery}
+                deliveryDate={deliveryDate}
               />
             )}
         </ScrollView>
-        <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
+        <TouchableOpacity onPress={() => {
+          if (!closedMarket && !restrictedMarket) {
+            navigation.navigate('Cart', { deliveryDate });
+          }
+        }}
+        >
           <View style={[styles.cartButtonCircle, styles.elevation]}>
             <Image source={cart} style={styles.cartButtonImage} />
           </View>

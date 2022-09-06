@@ -26,16 +26,6 @@ const styles = StyleSheet.create({
     height: 130,
     borderBottomWidth: 1,
     borderBottomColor: '#C4C4C4',
-    marginTop: -1,
-    marginBottom: 1,
-    width: '100%',
-    marginLeft: 0,
-  },
-  containerNoBorder: {
-    justifyContent: 'center',
-    flexDirection: 'row',
-    height: 130,
-    borderBottomColor: '#C4C4C4',
     marginTop: 1,
     marginBottom: 1,
     width: '100%',
@@ -145,46 +135,49 @@ export default function CartProduct(props) {
     price,
     type,
     image,
-    // eslint-disable-next-line react/prop-types
     quantities,
-    // eslint-disable-next-line react/prop-types
     setQuantities,
+    minQuantity,
+    maxQuantity,
   } = props;
 
   const imageurl = { uri: image };
 
-  const handleQuantityChange = async (newQuantity) => {
-    if (newQuantity === '') {
-      setQuantities(() => ({
-        ...quantities,
-        [name]: newQuantity,
-      }));
-    } else {
-      setQuantities(() => ({
-        ...quantities,
-        [name]: Number(newQuantity),
-      }));
-      await base('CART V3').update([
-        {
-          id: String(itemID),
-          fields: {
-            quantity: Number(newQuantity),
-          },
-        },
-      ], (err) => {
-        if (err) {
-          Alert.alert(err.error, err.message);
-        }
-      });
-      setCalcRefresh(calcRefresh + 1);
+  const handleQuantityChange = (newQuantity) => {
+    setQuantities(() => ({
+      ...quantities,
+      [name]: newQuantity,
+    }));
+    setCalcRefresh(calcRefresh + 1);
+  };
+
+  const submitQuantity = async () => {
+    let updatedQuantity = Number(quantities[name]);
+    if (updatedQuantity < minQuantity) {
+      updatedQuantity = minQuantity;
+    } else if (updatedQuantity > maxQuantity) {
+      updatedQuantity = maxQuantity;
     }
+    setQuantities(() => ({
+      ...quantities,
+      [name]: updatedQuantity,
+    }));
+    await base('CART V3').update([
+      {
+        id: String(itemID),
+        fields: {
+          quantity: updatedQuantity,
+        },
+      },
+    ], (err) => {
+      if (err) {
+        Alert.alert(err.error, err.message);
+      }
+    });
+    setCalcRefresh(calcRefresh + 1);
   };
 
   const deleteItem = () => {
-    setQuantities(() => ({
-      ...quantities,
-      [name]: undefined,
-    }));
     base('CART V3').destroy([itemID], (err) => {
       if (err) {
         Alert.alert(err);
@@ -211,6 +204,8 @@ export default function CartProduct(props) {
             keyboardType="numeric"
             value={String(quantities[name])}
             onChangeText={handleQuantityChange}
+            onSubmitEditing={submitQuantity}
+            onEndEditing={submitQuantity}
           />
           <Text style={styles.itemQuantityType}>
             {type}
@@ -243,4 +238,8 @@ CartProduct.propTypes = {
   price: PropTypes.number.isRequired,
   type: PropTypes.string.isRequired,
   image: PropTypes.string.isRequired,
+  quantities: PropTypes.object.isRequired,
+  setQuantities: PropTypes.func.isRequired,
+  minQuantity: PropTypes.number.isRequired,
+  maxQuantity: PropTypes.number.isRequired,
 };
