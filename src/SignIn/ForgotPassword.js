@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     height: 844,
     width: '100%',
     padding: '8%',
@@ -40,16 +40,6 @@ const styles = StyleSheet.create({
     marginTop: 200,
 
   },
-  backArrow: {
-    paddingLeft: 25,
-    position: 'absolute',
-    top: 10,
-  },
-  image: {
-    width: 201,
-    height: 55,
-    marginLeft: 25,
-  },
   button: {
     marginTop: 10,
     width: 300,
@@ -58,48 +48,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D763C',
     borderRadius: 30,
     fontFamily: 'JosefinSans-SemiBold',
-    marginBottom: '20%',
+    marginBottom: '30%',
+    paddingTop: 5,
+    marginLeft: 'auto',
+    marginRight: 'auto',
   },
   buttonText: {
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'center',
     color: 'white',
-    marginTop: 3,
-  },
-  bigText: {
-    fontSize: 30,
-    fontFamily: 'JosefinSans-SemiBold',
-    textAlign: 'center',
-    color: '#1D763C',
-    alignSelf: 'center',
-    width: 225,
-    marginBottom: 30,
   },
   smallText: {
     fontSize: 16,
-    fontFamily: 'JosefinSans',
+    fontFamily: 'JosefinSans-Regular',
     textAlign: 'center',
     color: '#868686',
     alignSelf: 'center',
     width: 225,
-    marginBottom: '20%',
-  },
-  digitsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  digitInput: {
-    borderColor: '#cccccc',
-    borderWidth: 2,
-    borderRadius: 4,
-    padding: 12,
-  },
-  hiddenCodeInput: {
-    position: 'absolute',
-    height: 0,
-    width: 0,
-    opacity: 0,
+    marginTop: '1%',
+    marginBottom: '40%',
   },
   icon: {
     paddingLeft: '5%',
@@ -116,13 +84,27 @@ const styles = StyleSheet.create({
   inputs: {
     borderWidth: 1,
     height: 38,
-    margin: 8.5,
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
-    borderRadius: 30,
+    borderRadius: 5,
     borderColor: '#F0EFEF',
     backgroundColor: '#FFFFFA',
+    marginTop: 20,
+    marginBottom: 10,
+  },
+  numInputs: {
+    borderWidth: 1,
+    width: 100,
+    height: 70,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    alignItems: 'center',
+    borderRadius: 5,
+    borderColor: '#F0EFEF',
+    backgroundColor: '#FFFFFA',
+    marginTop: 20,
+    marginBottom: 174,
   },
   textInput: {
     marginLeft: 5,
@@ -131,6 +113,7 @@ const styles = StyleSheet.create({
     color: '#868686',
     paddingTop: 1,
   },
+
   backgroundImage: {
     flex: 1,
     justifyContent: 'center',
@@ -151,6 +134,44 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginLeft: 'auto',
     marginRight: 'auto',
+  },
+  title: {
+    fontFamily: 'JosefinSans-SemiBold',
+    color: '#1D763C',
+    fontSize: 26,
+    maxWidth: '60%',
+    marginTop: 60,
+    marginBottom: 15,
+  },
+  body: {
+    fontFamily: 'JosefinSans-Regular',
+    color: '#34221D',
+    fontSize: 13,
+    maxWidth: '90%',
+  },
+  textInput: {
+    marginLeft: 7,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 14,
+  },
+  numTextInput: {
+    marginLeft: 19,
+    fontFamily: 'JosefinSans-SemiBold',
+    fontSize: 20,
+  },
+  top: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    paddingTop: 40,
+    width: '100%',
+  },
+  image: {
+    width: 155,
+    height: 45,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+    right: 25,
   },
 });
 
@@ -302,47 +323,49 @@ export default function ForgotPassword({ navigation }) {
   if (page === 1) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
-        <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-          <ArrowIcon
-            style={styles.backArrow}
-            name="arrowleft"
-            size={34}
-            color="#FF9F00"
-          />
-        </TouchableOpacity>
-
         <View style={styles.container}>
+          <View style={[styles.top, { marginBottom: 50 }]}>
+            <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
+              <ArrowIcon
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
+            </TouchableOpacity>
+            <Image style={styles.image} source={foodrootslogo} />
+          </View>
           <View>
-            <Text>
+            <Text style={styles.title}>
               Forgot your password?
             </Text>
           </View>
           <View>
-            <Text>
+            <Text style={styles.body}>
               That&apos;s okay! Enter the email address associated with your
               account and we&apos;ll send an email to reset your password.
             </Text>
           </View>
-          <View>
-            <Text>Email address</Text>
+          <View style={[styles.inputs, styles.elevation, { marginBottom: 200 }]}>
             <TextInput
               value={email}
               onChangeText={setEmail}
               placeholder="Email address"
               keyboardType="email-address"
               blurOnSubmit={false}
+              style={styles.textInput}
+              width={280}
             />
           </View>
-          <View>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={checkEmailExists}
-            >
-              <Text style={styles.buttonText}>
-                Send
-              </Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={checkEmailExists}
+          >
+            <Text style={styles.buttonText}>
+              Send
+            </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     );
@@ -351,30 +374,29 @@ export default function ForgotPassword({ navigation }) {
   if (page === 2) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
-        <TouchableOpacity onPress={() => { setPage(1); }}>
-          <ArrowIcon
-            style={styles.backArrow}
-            name="arrowleft"
-            size={34}
-            color="#FF9F00"
-          />
-        </TouchableOpacity>
         <View style={styles.container}>
+          <View style={[styles.top, { marginBottom: 56 }]}>
+            <TouchableOpacity onPress={() => { setPage(1); }}>
+              <ArrowIcon
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
+            </TouchableOpacity>
+            <Image style={styles.image} source={foodrootslogo} />
+          </View>
           <View>
-            <Text>
+            <Text style={styles.title}>
               Enter 4-digit recovery code
             </Text>
           </View>
           <View>
-            <Text>
+            <Text style={styles.body}>
               The recovery code was sent to your email.
               Please check your inbox and enter the recovery code.
             </Text>
           </View>
-          <View>
-            <Pressable style={styles.digitsContainer} onPress={handleDigitsPress}>
-              {codeDigitsArray.map((element, index) => digitInput(index))}
-            </Pressable>
+          <View style={styles.numInputs}>
             <TextInput
               ref={ref}
               value={code}
@@ -383,19 +405,19 @@ export default function ForgotPassword({ navigation }) {
               returnKeyType="done"
               textContentType="oneTimeCode"
               maxLength={4}
-              style={styles.hiddenCodeInput}
+              style={styles.numTextInput}
             />
           </View>
-          <View>
-            <TouchableOpacity
-              style={styles.button}
-              onPress={checkCodeValid}
-            >
-              <Text style={styles.buttonText}>
-                Confirm
-              </Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={checkCodeValid}
+          >
+            <Text style={styles.buttonText}>
+              Confirm
+            </Text>
+          </TouchableOpacity>
         </View>
       </ImageBackground>
     );
@@ -405,22 +427,21 @@ export default function ForgotPassword({ navigation }) {
     return (
       <Provider>
         <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
-          <TouchableOpacity onPress={() => { setPage(2); }}>
-            <ArrowIcon
-              style={styles.backArrow}
-              name="arrowleft"
-              size={34}
-              color="#FF9F00"
-            />
-          </TouchableOpacity>
           <View style={styles.container}>
-            <View style={styles.text}>
+            <View style={[styles.top, { marginBottom: 82 }]}>
+              <TouchableOpacity onPress={() => { setPage(2); }}>
+                <ArrowIcon
+                  name="arrowleft"
+                  size={34}
+                  color="#FF9F00"
+                />
+              </TouchableOpacity>
               <Image style={styles.image} source={foodrootslogo} />
             </View>
 
-            <Text style={styles.bigText}> Reset your password </Text>
+            <Text style={styles.title}>Reset your password</Text>
 
-            <View style={styles.inputs}>
+            <View style={[styles.inputs, { marginBottom: 0 }]}>
 
               <TextInput
                 style={styles.textInput}
@@ -444,7 +465,7 @@ export default function ForgotPassword({ navigation }) {
 
             </View>
 
-            <View style={styles.inputs}>
+            <View style={[styles.inputs, { marginTop: 10 }]}>
               <TextInput
                 style={styles.textInput}
                 value={confirmpass}
@@ -467,7 +488,9 @@ export default function ForgotPassword({ navigation }) {
               />
             </View>
 
-            <Text style={styles.smallText}> Password must be 8 or more characters in length. </Text>
+            <Text style={styles.smallText}>
+              Passwords must be 8 or more characters in length.
+            </Text>
 
             <TouchableOpacity
               mode="contained"

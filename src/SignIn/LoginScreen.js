@@ -69,12 +69,12 @@ const styles = StyleSheet.create({
 
   sideText: {
     left: '27%',
-    fontFamily: 'JosefinSans',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 12,
   },
 
   bottomTextFine: {
-    fontFamily: 'JosefinSans',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 16,
     marginTop: 80,
 
