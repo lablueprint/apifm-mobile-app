@@ -10,7 +10,6 @@ import PropTypes from 'prop-types';
 import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 import Config from 'react-native-config';
-import { SecurityDetails } from 'puppeteer';
 
 const bcrypt = require('react-native-bcrypt');
 const Airtable = require('airtable');
@@ -291,7 +290,7 @@ export default function ForgotPassword({ navigation }) {
       }
       fetchNextPage();
     });
-    if (!correctCode) {
+    if (correctCode) {
       setPage(3);
     } else {
       Alert.alert('Incorrect recovery code');
