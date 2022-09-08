@@ -41,12 +41,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
+  noticeText: {
+    fontSize: 16,
+    textAlign: 'center',
+    fontFamily: 'JosefinSans-Regular',
+  },
   inputContainer: {
     height: 50,
     marginBottom: 30,
     backgroundColor: '#FFFFFA',
     borderBottomWidth: 1,
     borderColor: '#868686',
+  },
+  noticeContainer: {
+    height: 50,
+    marginBottom: 30,
+    backgroundColor: '#FFFFFA',
   },
   labelText: {
     fontSize: 12,
@@ -103,6 +113,10 @@ const styles = StyleSheet.create({
   },
   menuIcon: {
     width: '10%',
+  },
+  pageContainer: {
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
   },
 });
 
@@ -206,7 +220,7 @@ export default function ProfileScreen({ navigation }) {
     } else if (phoneNum.length !== 14) {
       Alert.alert('Invalid phone number submitted.');
     } else {
-      Alert.alert('Please fill out the address field.');
+      Alert.alert('Please change a field before saving or hit cancel instead.');
     }
   };
 
@@ -221,7 +235,7 @@ export default function ProfileScreen({ navigation }) {
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View>
+        <View style={styles.pageContainer}>
           <View className="box">
             <Text
               style={styles.buttonText}
@@ -304,7 +318,7 @@ export default function ProfileScreen({ navigation }) {
               />
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>Address</Text>
+              <Text style={styles.labelText}>Delivery Address</Text>
               <TextInput
                 style={styles.textInput}
                 value={address}
@@ -315,6 +329,13 @@ export default function ProfileScreen({ navigation }) {
                 ref={addressInput}
                 editable={isEditMode}
               />
+            </View>
+            <View style={styles.noticeContainer}>
+              <Text style={styles.noticeText}>
+                If you want to change a field not listed above,
+                {'\n'}
+                reach out to us through our contact page!
+              </Text>
             </View>
           </View>
         </View>
