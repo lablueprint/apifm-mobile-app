@@ -10,6 +10,7 @@ import PropTypes from 'prop-types';
 import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 import Config from 'react-native-config';
+import { SecurityDetails } from 'puppeteer';
 
 const bcrypt = require('react-native-bcrypt');
 const Airtable = require('airtable');
@@ -93,27 +94,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-  numInputs: {
-    borderWidth: 1,
-    width: 100,
-    height: 70,
-    flexDirection: 'row',
-    alignSelf: 'flex-start',
-    alignItems: 'center',
-    borderRadius: 5,
-    borderColor: '#F0EFEF',
-    backgroundColor: '#FFFFFA',
-    marginTop: 20,
-    marginBottom: 174,
-  },
-  textInput: {
-    marginLeft: 5,
-    fontFamily: 'JosefinSans-SemiBold',
-    fontSize: 16,
-    color: '#868686',
-    paddingTop: 1,
-  },
-
   backgroundImage: {
     flex: 1,
     justifyContent: 'center',
@@ -153,6 +133,7 @@ const styles = StyleSheet.create({
     marginLeft: 7,
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 14,
+    color: '#34221D',
   },
   numTextInput: {
     marginLeft: 19,
@@ -172,6 +153,45 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     marginRight: 'auto',
     right: 25,
+  },
+  digitInput: {
+    borderColor: '#1D763C',
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderRadius: 8,
+    height: 70,
+    width: 65,
+    marginTop: 10,
+    marginBottom: 174,
+  },
+  digitInputEmpty: {
+    borderColor: '#e5e5e5',
+    backgroundColor: '#e5e5e5',
+    borderWidth: 1,
+    borderRadius: 8,
+    height: 70,
+    width: 65,
+    marginTop: 10,
+    marginBottom: 174,
+  },
+  digitTextInput: {
+    fontFamily: 'JosefinSans-Medium',
+    fontSize: 30,
+    textAlign: 'center',
+    color: '#34221D',
+    marginTop: 9,
+  },
+  digitsContainer: {
+    paddingTop: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  hiddenCodeInput: {
+    position: 'absolute',
+    height: 0,
+    width: 0,
+    opacity: 0,
   },
 });
 
@@ -255,8 +275,8 @@ export default function ForgotPassword({ navigation }) {
     const digit = code[index] || ' ';
 
     return (
-      <View key={index} style={styles.digitInput}>
-        <Text>{digit}</Text>
+      <View key={index} style={(digit === ' ') ? styles.digitInputEmpty : styles.digitInput}>
+        <Text style={styles.digitTextInput}>{digit}</Text>
       </View>
     );
   };
@@ -271,7 +291,7 @@ export default function ForgotPassword({ navigation }) {
       }
       fetchNextPage();
     });
-    if (correctCode) {
+    if (!correctCode) {
       setPage(3);
     } else {
       Alert.alert('Incorrect recovery code');
@@ -375,7 +395,7 @@ export default function ForgotPassword({ navigation }) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
         <View style={styles.container}>
-          <View style={[styles.top, { marginBottom: 56 }]}>
+          <View style={[styles.top, { marginBottom: 46 }]}>
             <TouchableOpacity onPress={() => { setPage(1); }}>
               <ArrowIcon
                 name="arrowleft"
@@ -396,7 +416,10 @@ export default function ForgotPassword({ navigation }) {
               Please check your inbox and enter the recovery code.
             </Text>
           </View>
-          <View style={styles.numInputs}>
+          <View>
+            <Pressable style={styles.digitsContainer} onPress={handleDigitsPress}>
+              {codeDigitsArray.map((element, index) => digitInput(index))}
+            </Pressable>
             <TextInput
               ref={ref}
               value={code}
@@ -405,7 +428,7 @@ export default function ForgotPassword({ navigation }) {
               returnKeyType="done"
               textContentType="oneTimeCode"
               maxLength={4}
-              style={styles.numTextInput}
+              style={styles.hiddenCodeInput}
             />
           </View>
         </View>
