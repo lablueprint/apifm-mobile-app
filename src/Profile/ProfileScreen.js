@@ -219,6 +219,8 @@ export default function ProfileScreen({ navigation }) {
       Alert.alert('Invalid email submitted.');
     } else if (phoneNum.length !== 14) {
       Alert.alert('Invalid phone number submitted.');
+    } else if (address.length <= 1) {
+      Alert.alert('Invalid address submitted.');
     } else {
       Alert.alert('Please change a field before saving or hit cancel instead.');
     }
