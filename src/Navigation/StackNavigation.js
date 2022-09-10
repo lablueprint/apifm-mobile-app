@@ -10,6 +10,7 @@ import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignUpScreen from '../SignUp/SignUpScreen';
 import SignUpConfirmation from '../SignUp/SignUpConfirmScreen';
 import LoginScreen from '../SignIn/LoginScreen';
+import ForgotPassword from '../SignIn/ForgotPassword';
 import ProfileScreen from '../Profile/ProfileScreen';
 import EditAvatarScreen from '../Profile/EditAvatarScreen';
 import CartScreen from '../Cart/CartScreen';
@@ -143,8 +144,9 @@ function DrawerRoutes() {
 export default function StackNavigation() {
   return (
     <stackNavig.Navigator initialRouteName="Log In">
-      <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen
