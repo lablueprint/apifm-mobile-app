@@ -16,8 +16,6 @@ import { registerUser } from '../lib/airlock/airlock';
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
-const headerImage = require('../assets/imgs/header.png');
-
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
