@@ -44,7 +44,6 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
   const { itemList } = route.params;
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryFee, setDeliveryFee] = useState(0);
 
   const products = itemList.map((item) => (
     <CartProduct
@@ -71,7 +70,6 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
 
   useEffect(() => {
     calcTotal();
-    setDeliveryFee(10);
   }, []);
 
   return (
@@ -100,10 +98,10 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
         }}
         >
           <Text style={styles.titleText}>
-            Total due at delivery:
+            Total Due at Delivery:
           </Text>
           <Text style={styles.titleText}>
-            {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
+            {`$${parseFloat(total).toFixed(2)}`}
           </Text>
         </View>
       </View>

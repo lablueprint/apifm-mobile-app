@@ -94,10 +94,9 @@ export default function CheckoutScreen({ route, navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate] = useState(route.params.deliveryDate);
-  const [deliveryFee, setDeliveryFee] = useState(0);
-  const [freeFee, setFreeFee] = useState(0);
+  // const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [itemList] = useState(route.params.itemList);
+  const [deliveryDate] = useState(route.params.deliveryDate);
 
   const calcTotal = () => {
     let sum = 0;
@@ -147,9 +146,6 @@ export default function CheckoutScreen({ route, navigation }) {
   useEffect(() => {
     setOrderDetails(currentUser.email);
     calcTotal();
-
-    setDeliveryFee(10);
-    setFreeFee(20);
   }, []);
 
   const pushToOrderTable = async (useremail) => {
@@ -163,8 +159,6 @@ export default function CheckoutScreen({ route, navigation }) {
             produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
             'delivery date': deliveryDate,
-            'delivery fee (temp)': deliveryFee,
-            'fee to be free (temp)': freeFee,
           }, (err) => {
             if (err) {
               Alert.alert(err.message);
@@ -178,6 +172,7 @@ export default function CheckoutScreen({ route, navigation }) {
       }
     });
   };
+
   return (
     <View>
       <ScrollView>
@@ -255,25 +250,12 @@ export default function CheckoutScreen({ route, navigation }) {
           }}
           >
             <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Delivery Fee:
+              Delivery Fee (Not included in subtotal):
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              $
-              {parseFloat(deliveryFee).toFixed(2)}
+              TBD
             </Text>
           </View>
-          {deliveryFee > 0
-        && (
-        <View style={styles.conditionalShippingFeeContainer}>
-          <Text style={[styles.subdetails, {
-            color: '#C4C4C4',
-            marginLeft: '0%',
-          }]}
-          >
-            {`Add $ ${parseFloat(freeFee).toFixed(2)} to qualify for free shipping!`}
-          </Text>
-        </View>
-        )}
           <View style={{
             flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
           }}
@@ -283,7 +265,7 @@ export default function CheckoutScreen({ route, navigation }) {
             </Text>
             <Text style={[styles.title, { marginRight: '0%' }]}>
               $
-              {parseFloat(total + deliveryFee).toFixed(2)}
+              {parseFloat(total).toFixed(2)}
             </Text>
           </View>
         </View>
