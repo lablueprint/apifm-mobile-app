@@ -1,25 +1,22 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 import store from './store';
-import {
-  login, logout, refresh, selectDeliveryDay, updateUser,
-} from './sliceAuth';
+import { login, logout, updateUser } from './sliceAuth';
 
 export const serviceLogin = (userData) => {
-  AsyncStorage.setItem('user', JSON.stringify(userData));
-  store.dispatch(login(userData));
+  try {
+    AsyncStorage.setItem('user', JSON.stringify(userData));
+    store.dispatch(login(userData));
+    return true;
+  } catch (err) {
+    Alert.alert(err.error, err.message);
+    return err;
+  }
 };
 
 export const serviceLogout = () => {
   AsyncStorage.removeItem('user');
   store.dispatch(logout());
-};
-
-export const serviceRefresh = () => {
-  store.dispatch(refresh());
-};
-
-export const serviceSelectDeliveryDay = (day) => {
-  store.dispatch(selectDeliveryDay(day));
 };
 
 export const serviceUpdateUser = (userData) => {

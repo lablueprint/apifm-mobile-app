@@ -133,6 +133,7 @@ export default function ContactScreen({ navigation }) { // unused navigation
         <Text style={styles.title}> Get In Touch! </Text>
         <Text style={styles.subTitle}>
           Have a question? Just fill out this contact form.
+          You can also reach us by phone or text at (213) 553-1800.
         </Text>
         <TextInput
           onChangeText={setName}

@@ -412,8 +412,6 @@ export default function SignUpScreen({ navigation }) {
             username: email,
             password,
           });
-        } else {
-          Alert.alert('An issue came up trying to register your account, please try again later');
         }
       } catch (err) {
         Alert.alert(err.error, err.message);

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, ScrollView, Alert, TouchableOpacity,
+  View, StyleSheet, ScrollView, Alert,
 } from 'react-native';
 import {
   Text, Button, Title,
@@ -60,10 +60,6 @@ const styles = StyleSheet.create({
   header: {
     marginBottom: '4%',
   },
-  backButton: {
-    color: 'black',
-    paddingBottom: '5%',
-  },
   subcontainer: {
     marginHorizontal: '8%',
   },
@@ -121,7 +117,7 @@ const base = new Airtable({ apiKey: airtableConfig.apiKey })
 
 export default function OrderDetailsScreen({ route }) {
   const {
-    navigation, orderId, deliveryDay, date, items,
+    navigation, orderId, date, time, items,
   } = route.params;
 
   const currentUser = store.getState().auth.user;
@@ -131,6 +127,8 @@ export default function OrderDetailsScreen({ route }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [freeFee, setFreeFee] = useState(0);
   const [productList, setProductList] = useState([]);
 
   const setOrderDetails = (useremail) => {
@@ -138,11 +136,11 @@ export default function OrderDetailsScreen({ route }) {
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
       .then((records) => {
-        if (records[0].fields['apartment number']) {
+        if (`${records[0].fields['apartment number']}` !== '') {
           setShippingAddress({
             address: records[0].fields.address,
             zipcode: records[0].fields.zipcode,
-            apartmentLine: `, Apt ${records[0].fields['apartment number']}`,
+            apartmentLine: ` Apt ${records[0].fields['apartment number']}`,
           });
         } else {
           setShippingAddress({
@@ -171,15 +169,6 @@ export default function OrderDetailsScreen({ route }) {
 
   // Add current items to airtable in the Cart table
   const orderAgain = async () => {
-    const today = new Date();
-    let newDeliveryDate = '';
-    if (deliveryDay === 'Monday') {
-      const nextMonday = new Date(today.setDate((today.getDate() + 8 - today.getDay())));
-      newDeliveryDate = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}/${String(nextMonday.getFullYear())}`;
-    } else {
-      const thisFriday = new Date(today.setDate((today.getDate() - today.getDay() + 5)));
-      newDeliveryDate = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}/${String(thisFriday.getFullYear())}`;
-    }
     const cartBatches = [];
     for (let j = 0; j < Math.floor(items[1].length / 10) + 1; j += 1) {
       const cartObj = [];
@@ -194,13 +183,10 @@ export default function OrderDetailsScreen({ route }) {
           Produce: items[1][i].produce_id,
           shopper: [CONST_USER_ID],
           quantity: items[1][i].Quantity,
-          'Delivery Day': deliveryDay,
-          'Delivery Date': newDeliveryDate,
         };
         cartObj.push(cartRow);
       }
       cartBatches.push(cartObj);
-      navigation.navigate('Cart', { deliveryDate: newDeliveryDate });
     }
 
     for (let i = 0; i < cartBatches.length; i += 1) {
@@ -210,7 +196,10 @@ export default function OrderDetailsScreen({ route }) {
   };
 
   useEffect(() => {
+    // TODO: replace hardcoded email with logged in user info
     setOrderDetails(CONST_USER);
+    setDeliveryFee(10);
+    setFreeFee(20);
     setCount(items[1].length);
     const regItemList = [];
     let totalPrice = 0;
@@ -246,14 +235,6 @@ export default function OrderDetailsScreen({ route }) {
     <ScrollView styles={styles.centeredContainer}>
       <View style={styles.background}>
         <View style={styles.shippingContainer}>
-          <TouchableOpacity>
-            <Icon
-              size={30}
-              name="arrow-back"
-              style={styles.backButton}
-              onPress={() => { navigation.navigate('Orders'); }}
-            />
-          </TouchableOpacity>
           <View style={styles.header}>
             <Title style={styles.titleText}>
               {` Order ID #${orderId}`}
@@ -265,7 +246,7 @@ export default function OrderDetailsScreen({ route }) {
             >
               <Icon size={15} color="black" name="time" />
               <Text style={styles.details}>
-                {`Delivered on ${date}`}
+                {`Delivered on ${date} at ${time}`}
               </Text>
             </View>
           </View>
@@ -281,7 +262,7 @@ export default function OrderDetailsScreen({ route }) {
             </View>
             <View style={styles.shippingSubcontainer}>
               <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-SemiBold' }]}>
-                {`${shippingAddress.address}${shippingAddress.apartmentLine}`}
+                {`${shippingAddress.address}, ${shippingAddress.apartmentLine}`}
               </Text>
               <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
                 {shippingAddress.zipcode}
@@ -294,7 +275,7 @@ export default function OrderDetailsScreen({ route }) {
             Review Items
           </Text>
           <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
-            {`Delivery Date: ${date}`}
+            Delivery Date: Mon, Sep 10, 2022
           </Text>
           <View>
             {productList}
@@ -317,9 +298,21 @@ export default function OrderDetailsScreen({ route }) {
               Delivery Fee:
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              TBD
+              {`$ ${parseFloat(deliveryFee).toFixed(2)}`}
             </Text>
           </View>
+          {deliveryFee > 0
+        && (
+        <View style={styles.conditionalShippingFeeContainer}>
+          <Text style={[styles.subdetails, {
+            color: '#C4C4C4',
+            marginLeft: '0%',
+          }]}
+          >
+            {`Add $ ${parseFloat(freeFee).toFixed(2)} to qualify for free shipping!`}
+          </Text>
+        </View>
+        )}
           <View style={{
             flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
           }}
@@ -328,7 +321,7 @@ export default function OrderDetailsScreen({ route }) {
               Order Total
             </Text>
             <Text style={[styles.title, { marginRight: '0%' }]}>
-              {`$ ${parseFloat(total).toFixed(2)}`}
+              {`$ ${parseFloat(total + deliveryFee).toFixed(2)}`}
             </Text>
           </View>
         </View>
@@ -339,6 +332,7 @@ export default function OrderDetailsScreen({ route }) {
             uppercase={false}
             onPress={() => {
               orderAgain();
+              navigation.navigate('Cart');
             }}
           >
             <Text style={styles.buttonText}>
@@ -354,10 +348,10 @@ export default function OrderDetailsScreen({ route }) {
 OrderDetailsScreen.propTypes = {
   route: PropTypes.shape({
     params: PropTypes.shape({
-      navigation: PropTypes.shape({ navigate: PropTypes.func, goBack: PropTypes.func }),
+      navigation: PropTypes.shape({ navigate: PropTypes.func }),
       orderId: PropTypes.string,
-      deliveryDay: PropTypes.string,
       date: PropTypes.string,
+      time: PropTypes.string,
       items: PropTypes.arrayOf(
         PropTypes.oneOfType([
           PropTypes.string,
