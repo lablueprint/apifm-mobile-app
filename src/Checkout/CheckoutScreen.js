@@ -94,7 +94,6 @@ export default function CheckoutScreen({ route, navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  // const [deliveryDate, setDeliveryDate] = useState('unavailable');
   const [itemList] = useState(route.params.itemList);
   const [deliveryDate] = useState(route.params.deliveryDate);
 

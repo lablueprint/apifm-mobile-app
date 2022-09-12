@@ -98,7 +98,7 @@ export default function OrderSuccessfulScreen({ route, navigation }) {
         }}
         >
           <Text style={styles.titleText}>
-            Total Due at Delivery:
+            Order Total:
           </Text>
           <Text style={styles.titleText}>
             {`$${parseFloat(total).toFixed(2)}`}
