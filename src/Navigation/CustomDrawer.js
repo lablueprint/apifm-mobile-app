@@ -2,12 +2,20 @@ import 'react-native-gesture-handler';
 import {
   View, Text, Image, TouchableOpacity, StyleSheet,
 } from 'react-native';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
-import store from '../lib/redux/store';
+import { useSelector } from 'react-redux';
 import { logoutUser } from '../lib/airlock/airlock';
+
+const placeholder = require('../assets/imgs/placeholder.png');
+const pipa = require('../assets/imgs/pipa.png');
+const eggplant = require('../assets/imgs/eggplant.png');
+const mango = require('../assets/imgs/mango.png');
+const dragonfruit = require('../assets/imgs/dragonfruit.png');
+const lychee = require('../assets/imgs/lychee.png');
+const bokchoy = require('../assets/imgs/bokchoy.png');
 
 const styles = StyleSheet.create({
   main: {
@@ -72,7 +80,27 @@ const styles = StyleSheet.create({
 
 function CustomDrawer(props) {
   const { navigation } = props;
-  const currentUser = store.getState().auth.user;
+  const { user: currentUser } = useSelector((state) => state.auth);
+
+  const [avatar, setAvatar] = useState(placeholder);
+
+  useEffect(() => {
+    switch (currentUser.avatarNum) {
+      case 1: setAvatar(pipa);
+        break;
+      case 2: setAvatar(eggplant);
+        break;
+      case 3: setAvatar(mango);
+        break;
+      case 4: setAvatar(dragonfruit);
+        break;
+      case 5: setAvatar(lychee);
+        break;
+      case 6: setAvatar(bokchoy);
+        break;
+      default: setAvatar(placeholder);
+    }
+  }, [currentUser.avatarNum]);
 
   return (
     <View style={styles.main}>
@@ -88,12 +116,11 @@ function CustomDrawer(props) {
         />
         <View style={styles.header}>
           <Image
-            // eslint-disable-next-line global-require
-            source={require('../assets/imgs/placeholder.png')}
+            source={avatar}
             style={styles.photo}
           />
           <Text style={styles.title}>
-            { currentUser.firstName}
+            {currentUser.firstName}
             {' '}
             {currentUser.lastName}
           </Text>
