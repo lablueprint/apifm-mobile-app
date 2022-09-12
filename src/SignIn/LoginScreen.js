@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import {
-  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground,
+  View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Alert, Keyboard,
 } from 'react-native';
 import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
+import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
+import { loginUser } from '../lib/airlock/airlock';
 
 const backgroundImage = require('../assets/imgs/login.png');
 
@@ -37,11 +39,15 @@ const styles = StyleSheet.create({
     paddingBottom: '1%',
   },
 
+  eye: {
+    marginRight: 5,
+  },
+
   inputs: {
     borderWidth: 1,
     height: 38,
     margin: 8.5,
-    marginLeft: 50,
+    left: '5%',
     flexDirection: 'row',
     alignSelf: 'flex-start',
     alignItems: 'center',
@@ -56,10 +62,11 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     color: '#868686',
+    paddingTop: 1,
   },
 
   sideText: {
-    marginLeft: 165,
+    left: '27%',
     fontFamily: 'JosefinSans',
     fontSize: 12,
   },
@@ -75,6 +82,7 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     color: '#1D763C',
+    margin: 20,
 
   },
 
@@ -85,18 +93,29 @@ const styles = StyleSheet.create({
 });
 
 export default function LoginScreen({ navigation }) {
-  const handleSignIn = () => {
-    navigation.navigate('Marketplace');
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [hidePass, setHidePass] = useState(true);
+  const passwordInput = useRef();
+
+  const handleSignIn = async () => {
+    try {
+      const result = await loginUser(username, password);
+      if (result) {
+        navigation.navigate('Marketplace');
+      }
+    } catch (err) {
+      Alert.alert(err.error, err.message);
+    }
   };
 
   const handleSignUp = () => {
     navigation.navigate('Sign Up');
   };
 
-  const [username, setUserName] = useState('');
-  const [password, setPassword] = useState('');
-
-  const passwordInput = useRef();
+  const handleForgotPassword = () => {
+    navigation.navigate('Forgot Password');
+  };
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
@@ -120,6 +139,7 @@ export default function LoginScreen({ navigation }) {
             blurOnSubmit={false}
             width={300}
           />
+
         </View>
 
         <View style={styles.inputs}>
@@ -133,15 +153,35 @@ export default function LoginScreen({ navigation }) {
             style={styles.textInput}
             value={password}
             onChangeText={setPassword}
+            onSubmitEditing={() => Keyboard.dismiss()}
             placeholder="Password"
-            returnKeyType="next"
+            secureTextEntry={!!hidePass}
+            returnKeyType="done"
             blurOnSubmit={false}
             ref={passwordInput}
-            width={300}
+            width={280}
+          />
+
+          <EyeIcon
+            style={styles.eye}
+            name={hidePass ? 'eye-slash' : 'eye'}
+            size={15}
+            color="grey"
+            onPress={() => setHidePass(!hidePass)}
           />
         </View>
 
-        <Text style={styles.sideText}>Forgot password?</Text>
+        <TouchableOpacity
+          mode="contained"
+          // style={styles.sideText}
+          onPress={() => handleForgotPassword()}
+        >
+          <Text
+            style={styles.sideText}
+          >
+            Forgot password?
+          </Text>
+        </TouchableOpacity>
 
         <TouchableOpacity
           mode="contained"
@@ -160,7 +200,7 @@ export default function LoginScreen({ navigation }) {
             style={styles.bottomTextBold}
             onPress={() => handleSignUp()}
           >
-            Sign Up
+            &nbsp;Sign Up
           </Text>
         </Text>
       </View>
