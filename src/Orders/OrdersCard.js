@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import {
-  View, StyleSheet, TouchableOpacity, Image, Alert,
+  View, StyleSheet, TouchableOpacity, Image,
 } from 'react-native';
 import { Text } from 'react-native-paper';
-import { useSelector } from 'react-redux';
 
 const missingImage = require('../assets/imgs/square_logo.png');
 
@@ -63,13 +62,11 @@ const styles = StyleSheet.create({
 function OrderCard({
   navigation, orderId, items, itemsList, images,
 }) {
-  const { selectedDeliveryDay } = useSelector((state) => state.auth);
   const [itemList, setItemList] = useState(itemsList.get(new Date(items[0]).toString()));
   const [image, setImage] = useState(images.get(new Date(items[0]).toString()));
 
   const dateObj = new Date(items[0]);
   const date = dateObj.toDateString();
-  const deliveryDay = dateObj.getDay() === 1 ? 'Monday' : 'Friday';
   const today = new Date();
   const closedMarket = ((today.getDay() === 5 && today.getHours() >= 15)
   || today.getDay() === 6 || today.getDay() === 0
@@ -80,18 +77,10 @@ function OrderCard({
 
   const onPressCard = () => {
     if (!closedMarket && !restrictedMarket) {
-      if (selectedDeliveryDay === deliveryDay) {
-        navigation.navigate('OrderDetails', {
-          navigation, orderId, deliveryDay, date, items,
-        });
-      } else {
-        Alert.alert(
-          'Mismatching Delivery Day',
-          'You cannot reorder this if your \n expected delivery day does not match the selected order.',
-        );
-      }
-    } else {
-      Alert.alert('Closed/Restricted Market', 'You cannot reorder when the marketplace is restricted or closed.');
+      const time = dateObj.toLocaleTimeString('en-US');
+      navigation.navigate('OrderDetails', {
+        navigation, orderId, date, time, items,
+      });
     }
   };
 
@@ -122,12 +111,13 @@ function OrderCard({
 OrderCard.propTypes = {
   navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
   orderId: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/require-default-props
   items: PropTypes.arrayOf(
     PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.arrayOf(PropTypes.object),
     ]),
-  ).isRequired,
+  ),
   itemsList: PropTypes.instanceOf(Map).isRequired,
   images: PropTypes.string.isRequired,
 };

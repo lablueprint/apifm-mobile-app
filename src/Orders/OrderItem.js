@@ -95,7 +95,7 @@ export default function OrderItem(props) {
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          {`$${parseFloat((price) * quantity).toFixed(2)}`}
+          {`$ ${Math.trunc((price * quantity) * 100) / 100}`}
         </Text>
         <Text style={styles.itemPricePer}>
           {`$ ${price} ${type}`}

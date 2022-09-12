@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     marginLeft: -5,
     marginTop: 10,
     marginRight: 8,
-    flex: 1,
+    width: '25%',
   },
   container3: {
     flex: 1,
@@ -65,11 +65,11 @@ const styles = StyleSheet.create({
     color: '#34221D',
     width: '100%',
   },
-  textInput: {
+  quantityBox: {
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#C4C4C4',
-    fontFamily: 'JosefinSans-SemiBold',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 14,
     margin: '1%',
     marginTop: 10,
@@ -82,13 +82,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFA',
   },
   itemQuantityType: {
-    fontFamily: 'JosefinSans-Regular',
+    fontFamily: 'JosefinSans-Light',
     fontStyle: 'normal',
     fontSize: 14,
     marginBottom: 5,
-    marginLeft: 5,
+    marginLeft: 10,
     marginTop: 15,
-    color: '#868686',
   },
   itemQuantity: {
     fontFamily: 'JosefinSans-Regular',
@@ -99,16 +98,16 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 16,
     marginBottom: '0%',
+    marginLeft: '45%',
     marginTop: 10,
     color: '#34221D',
   },
   itemPricePer: {
-    fontFamily: 'JosefinSans-Regular',
+    fontFamily: 'JosefinSans-Light',
     fontSize: 14,
     marginBottom: 0,
     marginLeft: 15,
     marginTop: 7,
-    color: '#868686',
   },
   removeItemButton: {
     padding: 0,
@@ -143,7 +142,6 @@ export default function CartProduct(props) {
   } = props;
 
   const imageurl = { uri: image };
-  const totalUnits = type === 'each' ? '' : type;
 
   const handleQuantityChange = (newQuantity) => {
     setQuantities(() => ({
@@ -186,7 +184,6 @@ export default function CartProduct(props) {
       }
     });
     setItemRefresh(itemRefresh + 1);
-    setCalcRefresh(calcRefresh + 1);
   };
 
   return (
@@ -199,11 +196,11 @@ export default function CartProduct(props) {
           </Text>
         </View>
         <Text style={styles.itemPricePer}>
-          {`$${price}/${type}`}
+          {`$${price} ${type}`}
         </Text>
         <View style={styles.quantityContainer}>
           <TextInput
-            style={styles.textInput}
+            style={styles.quantityBox}
             keyboardType="numeric"
             value={String(quantities[name])}
             onChangeText={handleQuantityChange}
@@ -211,7 +208,7 @@ export default function CartProduct(props) {
             onEndEditing={submitQuantity}
           />
           <Text style={styles.itemQuantityType}>
-            {totalUnits}
+            {type}
           </Text>
         </View>
       </View>
