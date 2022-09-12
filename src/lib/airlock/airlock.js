@@ -8,54 +8,53 @@ Airtable.configure({
   // this must be updated by the tester
   endpointUrl: Config.ENDPOINT_URL,
 });
-
 const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
+
+const wait = (ms, message) => new Promise((_, reject) => {
+  setTimeout(() => reject(new Error(message)), ms);
+});
 
 const registerUser = async (userData) => {
   try {
-    const response = await base.register({
-      username: userData.email,
-      password: userData.password,
-      fields: {
-        'password copy': userData.password,
-        'first name': userData.firstName,
-        'last name': userData.lastName,
-        organization: userData.organization,
-        'personal phone': userData.number,
-        'business phone': userData.busPhone,
-        'delivery recipient': userData.recipient,
-        address: userData.address,
-        'apartment number': userData.apt,
-        zipcode: userData.zip,
-        instructions: userData.instr,
-        'billing name': userData.fullName,
-        'billing address': userData.billAddress,
-        'billing apartment number': userData.billApt,
-        'billing zipcode': userData.billZip,
-        'accounting name': userData.accFullName,
-        'accounting email': userData.accEmail,
-        'accounting phone': userData.accNumber,
-      },
-    });
-    if (!response.body.success) {
-      return false;
-    }
+    await Promise.race([wait(5000, 'An account with your email already exists'),
+      base.register({
+        username: userData.email,
+        password: userData.password,
+        fields: {
+          'password copy': userData.password,
+          'first name': userData.firstName,
+          'last name': userData.lastName,
+          organization: userData.organization,
+          'personal phone': userData.number,
+          'business phone': userData.busPhone,
+          'delivery recipient': userData.recipient,
+          address: userData.address,
+          'apartment number': userData.apt,
+          zipcode: userData.zip,
+          instructions: userData.instr,
+          'billing name': userData.fullName,
+          'billing address': userData.billAddress,
+          'billing apartment number': userData.billApt,
+          'billing zipcode': userData.billZip,
+          'accounting name': userData.accFullName,
+          'accounting email': userData.accEmail,
+          'accounting phone': userData.accNumber,
+        },
+      })]);
     return true;
   } catch (err) {
-    Alert.alert(err.error, err.message);
+    Alert.alert(err.message);
     return false;
   }
 };
 
 const loginUser = async (username, password) => {
   try {
-    const response = await base.login({
-      username,
-      password,
-    });
-    if (!response.body.success) {
-      return false;
-    }
+    const response = await Promise.race([wait(5000, 'Incorrect email or password.'),
+      base.login({
+        username,
+        password,
+      })]);
     const result = response.body.user.fields;
     const userData = {
       id: result['user id'],
@@ -65,12 +64,13 @@ const loginUser = async (username, password) => {
       organization: result.organization,
       phoneNumber: result['personal phone'],
       address: result.address,
+      avatarNum: result.avatarNum,
       approved: result['account approved'],
     };
     serviceLogin(userData);
     return true;
   } catch (err) {
-    Alert.alert(err.error, err.message);
+    Alert.alert(err.message);
     return false;
   }
 };

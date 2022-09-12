@@ -30,6 +30,9 @@ const authSlice = createSlice({
     selectDeliveryDay: (state, action) => {
       state.selectedDeliveryDay = action.payload;
     },
+    updateUser: (state, action) => {
+      state.user = action.payload;
+    },
   },
 });
 
@@ -38,6 +41,7 @@ export const {
   logout,
   refresh,
   selectDeliveryDay,
+  updateUser,
 } = authSlice.actions;
 const { reducer } = authSlice;
 export default reducer;

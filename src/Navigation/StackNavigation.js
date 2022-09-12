@@ -10,7 +10,9 @@ import MarketplaceScreen from '../Marketplace/MarketplaceScreen';
 import SignUpScreen from '../SignUp/SignUpScreen';
 import SignUpConfirmation from '../SignUp/SignUpConfirmScreen';
 import LoginScreen from '../SignIn/LoginScreen';
+import ForgotPassword from '../SignIn/ForgotPassword';
 import ProfileScreen from '../Profile/ProfileScreen';
+import EditAvatarScreen from '../Profile/EditAvatarScreen';
 import CartScreen from '../Cart/CartScreen';
 import CheckoutScreen from '../Checkout/CheckoutScreen';
 import ContactScreen from '../ContactScreen';
@@ -97,6 +99,10 @@ function DrawerRoutes() {
         options={{
           title: 'Profile',
           drawerIcon: profileIcon,
+          headerShown: false,
+          headerStyle: {
+            height: 0,
+          },
         }}
       />
       <Drawer.Screen
@@ -138,14 +144,48 @@ function DrawerRoutes() {
 export default function StackNavigation() {
   return (
     <stackNavig.Navigator initialRouteName="Log In">
-      <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up" component={SignUpScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Log In" component={LoginScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
       <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
-      <stackNavig.Screen name="Profile" component={ProfileScreen} />
       <stackNavig.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Checkout" component={CheckoutScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen
+        name="Profile"
+        component={DrawerRoutes}
+        options={{ headerShown: false }}
+      />
+      {/* <stackNavig.Screen
+        name="EditAvatar"
+        component={EditAvatarScreen}
+        options={{ headerShown: false }}
+      />
+      <stackNavig.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          title: 'Cart',
+          fontFamily: 'JosefinSans-Regular',
+          headerTitleAlign: 'center',
+          headerStyle: {
+            backgroundColor: '#FFFFFA',
+            borderBottomWidth: 0,
+            elevation: 0,
+          },
+          headerTitleStyle: {
+            fontFamily: 'JosefinSans-Regular',
+            fontSize: 24,
+            color: '#34221D',
+          },
+        }}
+      /> */}
+      {/* <stackNavig.Screen
+        name="Checkout"
+        component={CheckoutScreen}
+        options={{ headerShown: false }}
+      /> */}
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Orders" component={DrawerRoutes} options={{ headerShown: false }} />
