@@ -1,26 +1,10 @@
+/* eslint-disable global-require */
 import React, { useState, useEffect } from 'react';
 import {
-  Text, View, Image, StyleSheet, TouchableOpacity, Alert,
+  Text, View, Image, StyleSheet, TouchableOpacity,
 } from 'react-native';
-import PropTypes from 'prop-types';
-import Config from 'react-native-config';
-import { useSelector } from 'react-redux';
-import { serviceUpdateUser } from '../lib/redux/services';
 
-const Airtable = require('airtable');
-const placeholderIMG = require('../assets/imgs/placeholder.png');
-const pipaIMG = require('../assets/imgs/pipa.png');
-const pipaSelected = require('../assets/imgs/pipaselected.png');
-const eggplantIMG = require('../assets/imgs/eggplant.png');
-const eggplantSelected = require('../assets/imgs/eggplantselected.png');
-const mangoIMG = require('../assets/imgs/mango.png');
-const mangoSelected = require('../assets/imgs/mangoselected.png');
-const dragonfruitIMG = require('../assets/imgs/dragonfruit.png');
-const dragonfruitSelected = require('../assets/imgs/dragonfruitselected.png');
-const lycheeIMG = require('../assets/imgs/lychee.png');
-const lycheeSelected = require('../assets/imgs/lycheeselected.png');
-const bokchoyIMG = require('../assets/imgs/bokchoy.png');
-const bokchoySelected = require('../assets/imgs/bokchoyselected.png');
+import Config from 'react-native-config';
 
 const styles = StyleSheet.create({
   master: {
@@ -69,35 +53,9 @@ const styles = StyleSheet.create({
     width: 125,
     margin: 10,
   },
-  buttonTextOne: {
-    fontSize: 16,
-    fontFamily: 'JosefinSans-SemiBold',
-    color: '#34221D',
-    textAlign: 'right',
-    marginLeft: 'auto',
-    top: 22,
-    right: 310,
-  },
-  buttonTextTwoInactive: {
-    fontSize: 16,
-    fontFamily: 'JosefinSans-SemiBold',
-    color: '#868686',
-    textAlign: 'right',
-    marginLeft: 'auto',
-    right: 32,
-    zIndex: 99,
-  },
-  buttonTextTwoActive: {
-    fontSize: 16,
-    fontFamily: 'JosefinSans-SemiBold',
-    color: '#34221D',
-    textAlign: 'right',
-    marginLeft: 'auto',
-    right: 32,
-    zIndex: 99,
-  },
-
 });
+
+const Airtable = require('airtable');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -107,10 +65,8 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-export default function EditAvatarScreen({ navigation }) {
-  const { user: currentUser } = useSelector((state) => state.auth);
-
-  const [avatar, setAvatar] = useState(placeholderIMG);
+export default function EditAvatarScreen({ route, navigation }) {
+  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
   const [avatarNum, setAvatarNum] = useState(0);
 
   const [pipa, setPipa] = useState(avatarNum === 1);
@@ -121,81 +77,83 @@ export default function EditAvatarScreen({ navigation }) {
   const [bokchoy, setBokchoy] = useState(avatarNum === 6);
 
   useEffect(() => {
-    switch (currentUser.avatarNum) {
-      case 1: setAvatar(pipaIMG);
-        setAvatarNum(0);
-        setPipa(true);
-        break;
-      case 2: setAvatar(eggplantIMG);
-        setAvatarNum(1);
-        setEggplant(true);
-        break;
-      case 3: setAvatar(mangoIMG);
-        setAvatarNum(2);
-        setMango(true);
-        break;
-      case 4: setAvatar(dragonfruitIMG);
-        setAvatarNum(3);
-        setDragonfruit(true);
-        break;
-      case 5: setAvatar(lycheeIMG);
-        setAvatarNum(4);
-        setLychee(true);
-        break;
-      case 6: setAvatar(bokchoyIMG);
-        setAvatarNum(5);
-        setBokchoy(true);
-        break;
-      default: setAvatar(placeholderIMG);
-    }
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      switch (record[0].fields.avatarNum) {
+        case 1: setAvatar(require('../assets/imgs/pipa.png'));
+          setAvatarNum(0);
+          setPipa(true);
+          break;
+        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
+          setAvatarNum(1);
+          setEggplant(true);
+          break;
+        case 3: setAvatar(require('../assets/imgs/mango.png'));
+          setAvatarNum(2);
+          setMango(true);
+          break;
+        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
+          setAvatarNum(3);
+          setDragonfruit(true);
+          break;
+        case 5: setAvatar(require('../assets/imgs/lychee.png'));
+          setAvatarNum(4);
+          setLychee(true);
+          break;
+        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
+          setAvatarNum(5);
+          setBokchoy(true);
+          break;
+        default: setAvatar(require('../assets/imgs/placeholder.png'));
+      }
+    });
   }, []);
 
-  const cancelAvatar = () => {
-    navigation.goBack(null);
+  const sendUpdate = async () => {
+    const user = 'recIpBFqr2EXNbS7d';
+    await base('Users').update([
+      {
+        id: user,
+        fields: {
+          avatarNum,
+        },
+      },
+    ]);
+
+    route.params.setRefresh(route.params.refresh + 1);
+    navigation.goBack();
   };
 
   const saveAvatar = async () => {
-    try {
-      await base('Users').update([
-        {
-          id: currentUser.id,
-          fields: {
-            avatarNum,
-          },
-        },
-      ]);
-      const updatedUser = { ...currentUser, avatarNum };
-      serviceUpdateUser(updatedUser);
-      navigation.goBack(null);
-    } catch (err) {
-      Alert.alert(err.error, err.message);
-    }
+    const user = 'recIpBFqr2EXNbS7d';
+    await base('Users').find(user, (err, record) => {
+      if (err) {
+        return;
+      }
+
+      sendUpdate();
+    });
   };
 
   return (
     <View style={styles.master}>
-      <View>
-        <Text onPress={cancelAvatar} style={styles.buttonTextOne}>Cancel</Text>
-        <Text
-          onPress={saveAvatar}
-          style={styles.buttonTextTwoActive}
-        >
-          Save
-        </Text>
-      </View>
       <Text style={styles.text}>Select an avatar</Text>
       <View style={[styles.viewport, styles.elevation]}>
-        <Image
-          source={avatar}
-          style={styles.mainPhoto}
-        />
+        <TouchableOpacity activeOpacity={0.5} onPress={() => { saveAvatar(); }}>
+          <Image
+            source={avatar}
+            style={styles.mainPhoto}
+          />
+        </TouchableOpacity>
       </View>
       <View style={styles.container}>
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={() => {
             setAvatarNum(1);
-            setAvatar(pipaIMG);
+            setAvatar(require('../assets/imgs/pipa.png'));
             setPipa(true);
             setEggplant(false);
             setMango(false);
@@ -205,7 +163,7 @@ export default function EditAvatarScreen({ navigation }) {
           }}
         >
           <Image
-            source={!pipa ? pipaIMG : pipaSelected}
+            source={!pipa ? require('../assets/imgs/pipa.png') : require('../assets/imgs/pipaselected.png')}
             style={styles.photo}
           />
         </TouchableOpacity>
@@ -213,7 +171,7 @@ export default function EditAvatarScreen({ navigation }) {
           activeOpacity={0.5}
           onPress={() => {
             setAvatarNum(2);
-            setAvatar(eggplantIMG);
+            setAvatar(require('../assets/imgs/eggplant.png'));
             setPipa(false);
             setEggplant(true);
             setMango(false);
@@ -223,7 +181,7 @@ export default function EditAvatarScreen({ navigation }) {
           }}
         >
           <Image
-            source={!eggplant ? eggplantIMG : eggplantSelected}
+            source={!eggplant ? require('../assets/imgs/eggplant.png') : require('../assets/imgs/eggplantselected.png')}
             style={styles.photo}
           />
         </TouchableOpacity>
@@ -231,7 +189,7 @@ export default function EditAvatarScreen({ navigation }) {
           activeOpacity={0.5}
           onPress={() => {
             setAvatarNum(3);
-            setAvatar(mangoIMG);
+            setAvatar(require('../assets/imgs/mango.png'));
             setPipa(false);
             setEggplant(false);
             setMango(true);
@@ -241,7 +199,7 @@ export default function EditAvatarScreen({ navigation }) {
           }}
         >
           <Image
-            source={!mango ? mangoIMG : mangoSelected}
+            source={!mango ? require('../assets/imgs/mango.png') : require('../assets/imgs/mangoselected.png')}
             style={styles.photo}
           />
         </TouchableOpacity>
@@ -249,7 +207,7 @@ export default function EditAvatarScreen({ navigation }) {
           activeOpacity={0.5}
           onPress={() => {
             setAvatarNum(4);
-            setAvatar(dragonfruitIMG);
+            setAvatar(require('../assets/imgs/dragonfruit.png'));
             setPipa(false);
             setEggplant(false);
             setMango(false);
@@ -259,7 +217,7 @@ export default function EditAvatarScreen({ navigation }) {
           }}
         >
           <Image
-            source={!dragonfruit ? dragonfruitIMG : dragonfruitSelected}
+            source={!dragonfruit ? require('../assets/imgs/dragonfruit.png') : require('../assets/imgs/dragonfruitselected.png')}
             style={styles.photo}
           />
         </TouchableOpacity>
@@ -267,7 +225,7 @@ export default function EditAvatarScreen({ navigation }) {
           activeOpacity={0.5}
           onPress={() => {
             setAvatarNum(5);
-            setAvatar(lycheeIMG);
+            setAvatar(require('../assets/imgs/lychee.png'));
             setPipa(false);
             setEggplant(false);
             setMango(false);
@@ -277,7 +235,7 @@ export default function EditAvatarScreen({ navigation }) {
           }}
         >
           <Image
-            source={!lychee ? lycheeIMG : lycheeSelected}
+            source={!lychee ? require('../assets/imgs/lychee.png') : require('../assets/imgs/lycheeselected.png')}
             style={styles.photo}
           />
         </TouchableOpacity>
@@ -285,7 +243,7 @@ export default function EditAvatarScreen({ navigation }) {
           activeOpacity={0.5}
           onPress={() => {
             setAvatarNum(6);
-            setAvatar(bokchoyIMG);
+            setAvatar(require('../assets/imgs/bokchoy.png'));
             setPipa(false);
             setEggplant(false);
             setMango(false);
@@ -295,7 +253,7 @@ export default function EditAvatarScreen({ navigation }) {
           }}
         >
           <Image
-            source={!bokchoy ? bokchoyIMG : bokchoySelected}
+            source={!bokchoy ? require('../assets/imgs/bokchoy.png') : require('../assets/imgs/bokchoyselected.png')}
             style={styles.photo}
           />
         </TouchableOpacity>
@@ -303,7 +261,3 @@ export default function EditAvatarScreen({ navigation }) {
     </View>
   );
 }
-
-EditAvatarScreen.propTypes = {
-  navigation: PropTypes.shape({ goBack: PropTypes.func }).isRequired,
-};

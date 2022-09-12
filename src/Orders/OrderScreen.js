@@ -7,7 +7,6 @@ import { Title } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import OrderCard from './OrdersCard';
-import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 
@@ -19,9 +18,8 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
-const currentUser = store.getState().auth.user;
-const CONST_USER = currentUser.email;
-const MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const CONST_USER = 'helen@gmail.com';
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const styles = StyleSheet.create({
   container: {
@@ -66,21 +64,15 @@ export default function OrderScreen({ navigation }) {
     let itemsListVar = new Map();
     let itemsListCount = new Map();
     let imagesVar = new Map();
-    // This should be a map pointing from "month_year" to an array
-    // of order cards for all the orders in that month
-    // Each order card should be a map pointing from month to the
-    // dates of the orders in that month to the actual order cards
-    const monthCondenseOrders = new Map();
+    // This should be a map pointing from "month_year" to an array of order cards for all the orders in that month
+    // Each order card should be a map pointing from month to the dates of the orders in that month to the actual order cards
+    let monthCondenseOrders = new Map();
     base('Orders').select({ filterByFormula: `({user_id}='${CONST_USER}')` }).eachPage((records, fetchNextPage) => {
       records.forEach((record) => {
         const order = record;
         const currDateObj = new Date(order.fields['delivery date (temp)']);
         const currDate = new Date(order.fields['delivery date (temp)']).toString();
-        const currMonthYear = new Date(
-          currDateObj.getFullYear(),
-          currDateObj.getMonth(),
-          1,
-        ).toString();
+        const currMonthYear = new Date(currDateObj.getFullYear(), currDateObj.getMonth(), 1).toString();
         order.fields.orderId = order.id;
 
         if (!('delivery date (temp)' in record.fields)) {
@@ -91,7 +83,7 @@ export default function OrderScreen({ navigation }) {
         }
         if (('produce_id' in record.fields)) {
           base('Produce').find(record.fields.produce_id, ((err, prodRecord) => {
-            if (err) { Alert.alert(err); return; }
+            if (err) { console.error(err); return; }
             order.fields.produceItem = prodRecord;
             if (!itemsListVar.has(currDate)) {
               itemsListVar.set(currDate, prodRecord.fields.Name);
@@ -116,20 +108,18 @@ export default function OrderScreen({ navigation }) {
             setFlag((f) => !f);
           }));
         } else {
-          Alert.alert('ERR: misssing produce id in orders record');
+          console.log('ERR: misssing produce id in orders record');
         }
 
         if (!monthCondenseOrders.has(currMonthYear)) {
           monthCondenseOrders.set(currMonthYear, new Map([[currDate, [order.fields]]]));
-        } else if (!monthCondenseOrders.get(currMonthYear).has(currDate)) {
+        } else if(!monthCondenseOrders.get(currMonthYear).has(currDate)) {
           monthCondenseOrders.get(currMonthYear).set(currDate, [order.fields]);
         } else {
           monthCondenseOrders.get(currMonthYear).get(currDate).push(order.fields);
         }
       });
-      setOrderMap(new Map(
-        [...monthCondenseOrders].sort((a, b) => new Date(a[0]) - new Date(b[0])),
-      ));
+      setOrderMap(new Map([...monthCondenseOrders].sort((a, b) => new Date(a[0]) - new Date(b[0]))));
       fetchNextPage();
     }, (err) => {
       if (err) {
@@ -146,20 +136,14 @@ export default function OrderScreen({ navigation }) {
   // items are fully downloaded from the airtable api call
   useEffect(() => {
     let i = 0;
-    const OrderCards = (Array.from(orderMap)).map((items) => (
+    const OrderCards = (Array.from(orderMap)).map((items) => {
+    return (
       <>
-        <Title style={styles.subtitleText}>
-          {' '}
-          {MONTHS[new Date(items[0]).getMonth()]}
-          {' '}
-          Orders
-          {' '}
-        </Title>
-        <View style={styles.orderCardsContainer}>
-          {
-        (Array.from(new Map(
-          [...items[1]].sort((a, b) => new Date(a[0]) - new Date(b[0])),
-        ))).map((card) => (
+      <Title style={styles.subtitleText}> {MONTHS[new Date(items[0]).getMonth()]} Orders </Title>
+      <View style={styles.orderCardsContainer}>
+        {
+        (Array.from(new Map([...items[1]].sort((a, b) => new Date(a[0]) - new Date(b[0]))))).map((card) => {
+          return (
           <OrderCard
             style={styles.orderCard}
             navigation={navigation}
@@ -169,11 +153,13 @@ export default function OrderScreen({ navigation }) {
             itemsList={itemsList}
             images={images}
           />
-        ))
+          )
+        })
         }
-        </View>
+      </View>
       </>
-    ));
+      )
+    });
     setCardList(OrderCards);
   }, [itemsList, flag]);
 

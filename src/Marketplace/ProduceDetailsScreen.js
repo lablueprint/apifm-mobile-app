@@ -184,7 +184,7 @@ function ProduceDetailsScreen({ navigation, route }) {
   const {
     userId, produceId, favorite, setFavorite,
     image, name, tags, price, unit, seller, maxQuantity, minQuantity,
-    deliveryDate,
+    mondayDelivery,
   } = route.params;
 
   const produceTags = tags.map((tag) => (
@@ -232,17 +232,20 @@ function ProduceDetailsScreen({ navigation, route }) {
 
   const [orderQuantity, setOrderQuantity] = useState(minQuantity.toString());
 
+  const onChangeQuantity = (e) => {
+    if (e === '') {
+      setOrderQuantity('');
+    } else {
+      const value = Number(e);
+      if (value > 0 && value <= maxQuantity) {
+        setOrderQuantity(value.toString());
+      }
+    }
+  };
+
   const onSubmitQuantity = () => {
     if (orderQuantity === '') {
       setOrderQuantity(minQuantity.toString());
-    } else {
-      let value = Number(orderQuantity);
-      if (value < minQuantity) {
-        value = minQuantity;
-      } else if (value > maxQuantity) {
-        value = maxQuantity;
-      }
-      setOrderQuantity(value.toString());
     }
   };
 
@@ -250,6 +253,10 @@ function ProduceDetailsScreen({ navigation, route }) {
 
   const onAddToCart = async () => {
     try {
+      let deliveryDate = 'Friday';
+      if (mondayDelivery) {
+        deliveryDate = 'Monday';
+      }
       setVisible(true);
       const quantityToUpdate = [];
       await base('CART V3').select({
@@ -267,20 +274,13 @@ function ProduceDetailsScreen({ navigation, route }) {
         );
       });
       if (quantityToUpdate.length) {
-        let newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
-        if (newQuantity < minQuantity) {
-          newQuantity = minQuantity;
-        } else if (newQuantity > maxQuantity) {
-          newQuantity = maxQuantity;
-        }
+        const newQuantity = quantityToUpdate[0].fields.quantity + Number(orderQuantity);
         await base('CART V3').update([
           {
             id: quantityToUpdate[0].id,
             fields: {
               quantity: newQuantity,
               'Delivery Date': deliveryDate,
-              'minimum quantity': minQuantity,
-              'maximum quantity': maxQuantity,
             },
           },
         ], (err) => {
@@ -296,8 +296,6 @@ function ProduceDetailsScreen({ navigation, route }) {
               quantity: Number(orderQuantity),
               shopper: [userId],
               'Delivery Date': deliveryDate,
-              'minimum quantity': minQuantity,
-              'maximum quantity': maxQuantity,
             },
           },
         ], (err) => {
@@ -372,7 +370,7 @@ function ProduceDetailsScreen({ navigation, route }) {
                 <TextInput
                   style={styles.textInput}
                   value={orderQuantity}
-                  onChangeText={setOrderQuantity}
+                  onChangeText={onChangeQuantity}
                   onSubmitEditing={onSubmitQuantity}
                   onEndEditing={onSubmitQuantity}
                   placeholder={orderQuantity}
@@ -430,7 +428,7 @@ ProduceDetailsScreen.propTypes = {
       seller: PropTypes.string.isRequired,
       maxQuantity: PropTypes.number.isRequired,
       minQuantity: PropTypes.number.isRequired,
-      deliveryDate: PropTypes.string.isRequired,
+      mondayDelivery: PropTypes.bool.isRequired,
     }),
   }).isRequired,
 };

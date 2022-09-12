@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
 function ProduceCard({
   navigation, userId, showProduce, produceId, favorited,
   image, name, tags, price, unit, seller, maxQuantity, minQuantity,
-  deliveryDate,
+  mondayDelivery,
 }) {
   const [favorite, setFavorite] = useState(favorited);
 
@@ -129,7 +129,7 @@ function ProduceCard({
         seller,
         maxQuantity,
         minQuantity,
-        deliveryDate,
+        mondayDelivery,
       });
     }
   };
@@ -173,7 +173,7 @@ ProduceCard.propTypes = {
   seller: PropTypes.string.isRequired,
   maxQuantity: PropTypes.number.isRequired,
   minQuantity: PropTypes.number.isRequired,
-  deliveryDate: PropTypes.string.isRequired,
+  mondayDelivery: PropTypes.bool.isRequired,
 };
 
 export default ProduceCard;

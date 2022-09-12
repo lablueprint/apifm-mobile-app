@@ -1,27 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
-  Alert, View, StyleSheet, TextInput, Platform,
-  Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
+  Alert, View, StyleSheet, TextInput, Platform, Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
 } from 'react-native';
 import {
-  Text,
+  Text, Button,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
+import { mdiSourcePull } from '@mdi/js';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useSelector } from 'react-redux';
-import { serviceUpdateUser } from '../lib/redux/services';
-
-const Airtable = require('airtable');
-const editIcon = require('../assets/imgs/edit.png');
-const placeholder = require('../assets/imgs/placeholder.png');
-const pipa = require('../assets/imgs/pipa.png');
-const eggplant = require('../assets/imgs/eggplant.png');
-const mango = require('../assets/imgs/mango.png');
-const dragonfruit = require('../assets/imgs/dragonfruit.png');
-const lychee = require('../assets/imgs/lychee.png');
-const bokchoy = require('../assets/imgs/bokchoy.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -41,22 +28,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
   },
-  noticeText: {
-    fontSize: 16,
-    textAlign: 'center',
-    fontFamily: 'JosefinSans-Regular',
-  },
   inputContainer: {
     height: 50,
     marginBottom: 30,
     backgroundColor: '#FFFFFA',
     borderBottomWidth: 1,
     borderColor: '#868686',
-  },
-  noticeContainer: {
-    height: 50,
-    marginBottom: 30,
-    backgroundColor: '#FFFFFA',
   },
   labelText: {
     fontSize: 12,
@@ -86,13 +63,13 @@ const styles = StyleSheet.create({
     marginLeft: 'auto',
     top: 22,
     right: 0,
-    zIndex: 99,
   },
   buttonTextTwo: {
     fontSize: 16,
     fontFamily: 'JosefinSans-SemiBold',
     textAlign: 'right',
     marginLeft: 'auto',
+    botton: 215,
     right: 280,
   },
   image: {
@@ -111,14 +88,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 30,
   },
-  menuIcon: {
-    width: '10%',
-  },
-  pageContainer: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
+  inner: {
+    padding: 24,
+    flex: 1,
+    justifyContent: 'space-around',
   },
 });
+
+const Airtable = require('airtable');
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -128,78 +105,60 @@ const airtableConfig = {
 const base = new Airtable({ apiKey: airtableConfig.apiKey })
   .base(airtableConfig.baseKey);
 
+// eslint-disable-next-line no-unused-vars
 export default function ProfileScreen({ navigation }) {
-  const { user: currentUser } = useSelector((state) => state.auth);
+  const DUMMY_USER_ID = 'rec0hmO4UPOvtI3vA';
+  const DUMMY_NAME = 'Joe Bruin';
 
-  const [title, setTitle] = useState('Edit');
-  const [isEditMode, setEditMode] = useState(false);
+  const [email, setEmail] = useState('');
+  const [phoneNum, setPhoneNum] = useState('');
+  const [address, setAddress] = useState('');
 
-  const [email, setEmail] = useState(currentUser.email);
-  const [phoneNum, setPhoneNum] = useState(currentUser.phoneNumber);
-  const [address, setAddress] = useState(currentUser.address);
-
-  const phoneInput = useRef();
-  const addressInput = useRef();
-
-  const [avatar, setAvatar] = useState(placeholder);
-
-  // email validation
-  const validateEmail = (text) => {
-    const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w\w+)+$/;
-    if (reg.test(text) === false) {
-      return false;
-    }
-    return true;
-  };
-
-  // phone number format function
-  const phoneFormat = (text) => {
-    if (text.length > 14) {
-      return;
-    }
-    const match = text.match(/(\d{3})(\d{3})(\d{4})$/);
-    if (match) {
-      const number = ['(', match[1], ') ', match[2], '-', match[3]].join('');
-      setPhoneNum(number);
-      return;
-    }
-    setPhoneNum(text);
-  };
+  const [avatar, setAvatar] = useState(require('../assets/imgs/placeholder.png'));
 
   useEffect(() => {
-    switch (currentUser.avatarNum) {
-      case 1: setAvatar(pipa);
-        break;
-      case 2: setAvatar(eggplant);
-        break;
-      case 3: setAvatar(mango);
-        break;
-      case 4: setAvatar(dragonfruit);
-        break;
-      case 5: setAvatar(lychee);
-        break;
-      case 6: setAvatar(bokchoy);
-        break;
-      default: setAvatar(placeholder);
-    }
-  }, [currentUser.avatarNum]);
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      switch (record[0].fields.avatarNum) {
+        case 1: setAvatar(require('../assets/imgs/pipa.png'));
+          break;
+        case 2: setAvatar(require('../assets/imgs/eggplant.png'));
+          break;
+        case 3: setAvatar(require('../assets/imgs/mango.png'));
+          break;
+        case 4: setAvatar(require('../assets/imgs/dragonfruit.png'));
+          break;
+        case 5: setAvatar(require('../assets/imgs/lychee.png'));
+          break;
+        case 6: setAvatar(require('../assets/imgs/bokchoy.png'));
+          break;
+        default: setAvatar(require('../assets/imgs/placeholder.png'));
+      }
 
-  const onEdit = () => {
+      const userEmailTwo = 'happyhippo@gmail.com';
+      setEmail(record[0].fields.email);
+      setAddress(record[0].fields.address);
+      setPhoneNum(record[0].fields['business phone']);
+    });
+  }, []);
+
+  const [isEditMode, setEditMode] = useState(false);
+
+  function onEdit() {
     setEditMode(true);
     setTitle('Save');
-  };
+  }
 
-  const onSave = async () => {
-    if ((email !== currentUser.email
-      || phoneNum !== currentUser.phoneNumber
-      || address !== currentUser.address)
-      && validateEmail(email) && phoneNum.length === 14 && address.length > 1) {
-      Alert.alert('Saved', 'Your changes have been saved.');
+  function onSave() {
+    if (email.length > 1 && phoneNum.length > 1 && address.length > 1) {
+      Alert.alert('Your changes have been saved.');
       setEditMode(false);
       setTitle('Edit');
-      await base('Users').update([
+      base('Users').update([
         {
-          id: currentUser.id,
+          id: DUMMY_USER_ID,
           fields: {
             email,
             address,
@@ -211,134 +170,104 @@ export default function ProfileScreen({ navigation }) {
           Alert.alert(err.error, err.message);
         }
       });
-      const updatedUser = {
-        ...currentUser, email, address, phoneNumber: phoneNum,
-      };
-      serviceUpdateUser(updatedUser);
-    } else if (!validateEmail(email)) {
-      Alert.alert('Invalid email submitted.');
-    } else if (phoneNum.length !== 14) {
-      Alert.alert('Invalid phone number submitted.');
-    } else if (address.length <= 1) {
-      Alert.alert('Invalid address submitted.');
     } else {
-      Alert.alert('Please change a field before saving or hit cancel instead.');
+      Alert.alert('Please fill out all fields.');
     }
-  };
+  }
 
-  const onCancel = () => {
+  function onCancel() {
+    console.log('cancel');
     setEditMode(false);
     setTitle('Edit');
-    setEmail(currentUser.email);
-    setPhoneNum(currentUser.phoneNumber);
-    setAddress(currentUser.address);
-  };
+  }
+
+  const [shouldShow, setShouldShow] = useState(true);
+
+  const [title, setTitle] = useState('Edit');
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.pageContainer}>
-          <View className="box">
-            <Text
-              style={styles.buttonText}
-              onPress={() => {
-                if (isEditMode) onSave();
-                else onEdit();
-              }}
-            >
-              {title}
-            </Text>
-            {isEditMode ? (
-              <View className="boxContent">
-                <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
-              </View>
-            ) : (
-              <View className="boxContent">
-                <TouchableOpacity>
-                  <Icon
-                    size={21}
-                    name="menu"
-                    color="#000000"
-                    style={styles.menuIcon}
-                    onPress={() => { navigation.toggleDrawer(); }}
-                  />
-                </TouchableOpacity>
-              </View>
+
+        <View className="box">
+          <Text
+            style={styles.buttonText}
+            onPress={() => {
+              if (isEditMode) onSave();
+              else onEdit();
+            }}
+          >
+
+            {title}
+
+          </Text>
+          {isEditMode && (
+            <View className="boxContent">
+              <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
+            </View>
+          )}
+
+          <View style={styles.titleText}>
+            <Text style={styles.mainTitle}>Profile</Text>
+            <Image
+              style={styles.image}
+              source={avatar}
+            />
+            {!isEditMode && (
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+              <Image
+                style={styles.edit}
+                source={require('../assets/imgs/edit.png')}
+              />
+            </TouchableOpacity>
             )}
 
-            <View style={styles.titleText}>
-              <Text style={styles.mainTitle}>Profile</Text>
-              <Image
-                style={styles.image}
-                source={avatar}
-              />
-              {isEditMode && (
-                <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
-                  <Image
-                    style={styles.edit}
-                    source={editIcon}
-                  />
-                </TouchableOpacity>
-              )}
-              <Text style={styles.titleText}>
-                {currentUser.firstName}
-                {' '}
-                {currentUser.lastName}
-              </Text>
-              <Text style={styles.subtitleText}>
-                {currentUser.organization}
-              </Text>
-            </View>
-
-            <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>Email</Text>
-              <TextInput
-                style={styles.textInput}
-                value={email}
-                onChangeText={setEmail}
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() => { phoneInput.current.focus(); }}
-                blurOnSubmit={false}
-                width={330}
-                editable={isEditMode}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>Phone Number</Text>
-              <TextInput
-                style={styles.textInput}
-                value={phoneNum}
-                onChangeText={(text) => phoneFormat(text)}
-                keyboardType="numeric"
-                returnKeyType="next"
-                onSubmitEditing={() => { addressInput.current.focus(); }}
-                blurOnSubmit={false}
-                width={330}
-                ref={phoneInput}
-                editable={isEditMode}
-              />
-            </View>
-            <View style={styles.inputContainer}>
-              <Text style={styles.labelText}>Delivery Address</Text>
-              <TextInput
-                style={styles.textInput}
-                value={address}
-                onChangeText={setAddress}
-                returnKeyType="done"
-                blurOnSubmit={false}
-                width={330}
-                ref={addressInput}
-                editable={isEditMode}
-              />
-            </View>
-            <View style={styles.noticeContainer}>
-              <Text style={styles.noticeText}>
-                If you want to change a field not listed above,
-                {'\n'}
-                reach out to us through our contact page!
-              </Text>
-            </View>
+            <Text style={styles.titleText}>
+              {DUMMY_NAME}
+            </Text>
+            <Text style={styles.subtitleText}> Organization Name </Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Email</Text>
+            <TextInput
+              style={styles.textInput}
+              value={email}
+              onChangeText={setEmail}
+              placeholder={email}
+              placeholderTextColor="#34221D"
+              keyboardType="email-address"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Phone Number</Text>
+            <TextInput
+              style={styles.textInput}
+              value={phoneNum}
+              onChangeText={setPhoneNum}
+              placeholderTextColor="#34221D"
+              keyboardType="numeric"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.labelText}>Address</Text>
+            <TextInput
+              style={styles.textInput}
+              value={address}
+              onChangeText={setAddress}
+              placeholderTextColor="#34221D"
+              returnKeyType="next"
+              blurOnSubmit={false}
+              width={330}
+              editable={isEditMode}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -347,8 +276,5 @@ export default function ProfileScreen({ navigation }) {
 }
 
 ProfileScreen.propTypes = {
-  navigation: PropTypes.shape({
-    navigate: PropTypes.func,
-    toggleDrawer: PropTypes.func,
-  }).isRequired,
+  navigation: PropTypes.shape({ navigate: PropTypes.func }).isRequired,
 };

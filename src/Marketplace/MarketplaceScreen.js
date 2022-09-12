@@ -12,7 +12,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
-import store from '../lib/redux/store';
 
 const Airtable = require('airtable');
 
@@ -26,6 +25,9 @@ const exclamation = require('../assets/exclamation.png');
 const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
+
+// constant user id to test for all features
+const userId = 'rec8yzLkLY6VrCKOX';
 
 const airtableConfig = {
   apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
@@ -220,11 +222,10 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
-  const state = store.getState().auth;
-  if (!state.isLoggedIn) {
-    navigation.navigate('Login');
-  }
-  const currentUser = state.user;
+  // temporary for approved users, will be replaced by 'redux' branch merge
+  const currentUser = {
+    approved: true,
+  };
 
   const today = new Date();
   const tempToday = new Date();
@@ -253,7 +254,6 @@ export default function MarketplaceScreen({ navigation }) {
   const [unapprovedAlert, setUnapprovedAlert] = useState(false);
   const [mondayDelivery, setMondayDelivery] = useState(false);
   const [fridayDelivery, setFridayDelivery] = useState(false);
-  const [deliveryDate, setDeliveryDate] = useState('');
   const [showAlert, setShowAlert] = useState(false);
   const [wednesdayAlert, setWednesdayAlert] = useState(false);
 
@@ -289,7 +289,7 @@ export default function MarketplaceScreen({ navigation }) {
       setWednesdayAlert(true);
     }
     const fridayState = false;
-    await base('Users').find(currentUser.id, (err, record) => {
+    await base('Users').find(userId, (err, record) => {
       if (err) {
         Alert.alert(err.error, err.message);
         return;
@@ -417,7 +417,7 @@ export default function MarketplaceScreen({ navigation }) {
   const filterFavorites = () => {
     const showFavorites = !favoritesFilter;
     setFavoritesFilter(showFavorites);
-    base('Users').find(currentUser.id, (err, record) => {
+    base('Users').find(userId, (err, record) => {
       if (err) {
         Alert.alert(err.error, err.message);
         return;
@@ -470,14 +470,23 @@ export default function MarketplaceScreen({ navigation }) {
       setShowAlert(true);
     } else {
       setShowAlert(false);
-      const orderDeliveryDate = mondayDelivery ? displayMonday : displayFriday;
-      setDeliveryDate(orderDeliveryDate);
     }
   }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 
   useEffect(() => {
     setProduceList(sortProduce(filterProduce(unsortedProduce, favoritesFilter)));
   }, [aZSort, zASort, lowHighSort, highLowSort]);
+
+  const [firstName, setFirstName] = useState('');
+
+  useEffect(() => {
+    const useremail = 'helen@gmail.com';
+    base('Users').select({
+      filterByFormula: `({email}='${useremail}')`,
+    }).firstPage().then((record) => {
+      setFirstName(record[0].fields.firstName);
+    });
+  }, []);
 
   return (
     <Provider>
@@ -512,9 +521,7 @@ export default function MarketplaceScreen({ navigation }) {
             <Text style={styles.welcomeText}>
               Hello
               {' '}
-              {currentUser.firstName}
-              {' '}
-              {currentUser.lastName}
+              {firstName}
               ,
             </Text>
             <Text style={styles.welcomeText}>Order your produce here!</Text>
@@ -766,20 +773,15 @@ export default function MarketplaceScreen({ navigation }) {
             : (
               <ProduceGrid
                 navigation={navigation}
-                userId={currentUser.id}
+                userId={userId}
                 showProduce={showProduce}
                 produceList={produceList}
                 favorites={favoritesFilter}
-                deliveryDate={deliveryDate}
+                mondayDelivery={mondayDelivery}
               />
             )}
         </ScrollView>
-        <TouchableOpacity onPress={() => {
-          if (!closedMarket && !restrictedMarket) {
-            navigation.navigate('Cart', { deliveryDate });
-          }
-        }}
-        >
+        <TouchableOpacity onPress={() => { navigation.navigate('Cart'); }}>
           <View style={[styles.cartButtonCircle, styles.elevation]}>
             <Image source={cart} style={styles.cartButtonImage} />
           </View>

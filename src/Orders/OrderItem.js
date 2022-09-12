@@ -12,6 +12,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     flexDirection: 'row',
     height: 125,
+//    marginTop: 5,
     marginBottom: 0,
   },
   container2: {

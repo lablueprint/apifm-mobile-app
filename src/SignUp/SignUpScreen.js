@@ -6,25 +6,36 @@ import {
 import {
   Title, Checkbox, Button,
 } from 'react-native-paper';
+import Config from 'react-native-config';
 import PropTypes from 'prop-types';
 
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { registerUser } from '../lib/airlock/airlock';
 
+const Airtable = require('airtable');
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
 const backgroundImage = require('../assets/imgs/signin.png');
 
+const airtableConfig = {
+  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
+  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
+};
+const base = new Airtable({ apiKey: airtableConfig.apiKey })
+  .base(airtableConfig.baseKey);
+
+const headerImage = require('../assets/imgs/header.png');
+
 const styles = StyleSheet.create({
   container: {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    height: 844,
+    width: '100%',
+    padding: '8%',
   },
   button: {
-    marginTop: 60,
+    marginTop: 10,
     width: 300,
     height: 40,
     alignItems: 'center',
@@ -33,14 +44,17 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
   },
   backArrow: {
-    paddingLeft: 25,
-    position: 'absolute',
-    top: 10,
+    paddingLeft: 15,
+  },
+  text: {
+    flex: 1,
+    flexDirection: 'row',
+    width: 350,
   },
   image: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    marginBottom: 40,
+    width: 201,
+    height: 55,
+    marginLeft: 25,
   },
   backgroundimage: {
     flex: 1,
@@ -88,14 +102,6 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     color: '#1D763C',
   },
-  subheader: {
-    textAlign: 'left',
-    width: '100%',
-    fontSize: 12,
-    marginLeft: 60,
-    fontFamily: 'JosefinSans-Regular',
-    color: '#868686',
-  },
   descriptext: {
     textAlign: 'center',
     fontSize: 14,
@@ -108,13 +114,13 @@ const styles = StyleSheet.create({
 
   },
   titleText: {
+    marginLeft: 17,
     width: 330,
     flexDirection: 'row',
     textAlign: 'center',
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 28,
     color: '#1D763C',
-    marginBottom: 20,
   },
   buttonText: {
     fontSize: 20,
@@ -147,7 +153,7 @@ const styles = StyleSheet.create({
   headerImage: {
     marginTop: '7%',
     width: '50%',
-    height: '60%',
+    height: 50,
   },
   title: {
     marginTop: '5%',
@@ -179,7 +185,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: '-12%',
+    marginTop: '-4%',
     marginBottom: '5%',
   },
   checkbox: {
@@ -196,16 +202,16 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
   },
   signUpButtonUnchecked: {
-    marginTop: 20,
+    marginTop: 5,
     marginBottom: '15%',
-    borderRadius: 99,
+    borderRadius: 20,
     height: 50,
     backgroundColor: '#E5E5E5',
   },
   signUpButtonChecked: {
-    marginTop: 20,
+    marginTop: 5,
     marginBottom: '15%',
-    borderRadius: 99,
+    borderRadius: 20,
     height: 50,
     backgroundColor: '#1D763C',
   },
@@ -213,7 +219,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 20,
     fontFamily: 'JosefinSans-SemiBold',
-    textTransform: 'none',
   },
 });
 
@@ -380,60 +385,75 @@ export default function SignUpScreen({ navigation }) {
   };
 
   // add the new inputs
-  const handleSignUp = async () => {
+  const handleSignUp = () => {
     if (!agree) {
       Alert.alert('Please read and agree with the Terms and Conditions to proceed');
     } else {
-      try {
-        const userData = {
-          email,
-          password,
-          firstName,
-          lastName,
-          organization,
-          number,
-          busPhone,
-          recipient,
-          address,
-          apt,
-          zip,
-          instr,
-          fullName,
-          billAddress,
-          billApt,
-          billZip,
-          accFullName,
-          accEmail,
-          accNumber,
-        };
-        const result = await registerUser(userData);
-        if (result) {
-          navigation.navigate('Sign Up Confirmation', {
-            username: email,
+      base('Users').create([
+        {
+          fields: {
+            email,
             password,
-          });
+            'first name': firstName,
+            'last name': lastName,
+            organization,
+            'personal phone': number,
+            'business phone': busPhone,
+            'delivery recipient': recipient,
+            address,
+            'apartment number': apt,
+            zipcode: zip,
+            instructions: instr,
+            'billing name': fullName,
+            'billing address': billAddress,
+            'billing apartment number': billApt,
+            'billing zipcode': billZip,
+            'accounting name': accFullName,
+            'accounting email': accEmail,
+            'accounting phone': accNumber,
+          },
+        },
+      ], (error) => {
+        if (error) {
+          Alert.alert('Error!', error.message);
         }
-      } catch (err) {
-        Alert.alert(err.error, err.message);
-      }
+      });
+      setFirstName('');
+      setLastName('');
+      setOrganization('');
+      setEmail('');
+      setConfirmPassword('');
+      setPassword('');
+      setNumber('');
+      setBusPhone('');
+      setAddress('');
+      setApt('');
+      setZip('');
+      setInstr('');
+      // might need to set the new inputs to empty strings but likely not?
+      navigation.navigate('Sign Up Confirmation');
     }
   };
 
   if (page === 1) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-        <TouchableOpacity onPress={() => { navigation.navigate('Log In'); }}>
-          <ArrowIcon
-            style={styles.backArrow}
-            name="arrowleft"
-            size={34}
-            color="#FF9F00"
-          />
-        </TouchableOpacity>
         <View style={styles.container}>
-          <Image style={styles.image} source={foodrootslogo} />
+          <View style={styles.text}>
 
-          <Text style={styles.titleText}>Sign up</Text>
+            <TouchableOpacity onPress={() => { navigation.navigate('Terms'); }}>
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
+              />
+            </TouchableOpacity>
+
+            <Image style={styles.image} source={headerImage} />
+          </View>
+
+          <Text style={styles.titleText}>Sign Up</Text>
           <View style={styles.inputs}>
             <TextInput
               style={styles.textInput}
@@ -579,6 +599,7 @@ export default function SignUpScreen({ navigation }) {
           </TouchableOpacity>
 
         </View>
+
       </ImageBackground>
     );
   }
@@ -587,119 +608,122 @@ export default function SignUpScreen({ navigation }) {
   if (page === 2) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
-          <TouchableOpacity onPress={() => { setPage(1); }}>
-            <ArrowIcon
-              style={styles.backArrow}
-              name="arrowleft"
-              size={34}
-              color="#FF9F00"
-            />
-          </TouchableOpacity>
-          <View style={styles.container}>
-            <Image style={styles.image} source={foodrootslogo} />
+        <View style={styles.container}>
 
-            <Title style={styles.titleText}>Sign up</Title>
+          <View style={styles.text}>
 
-            <Title style={styles.header}>Delivery address</Title>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={recipient}
-                onChangeText={setRecipient}
-                placeholder="Delivery recepient (first and last name)"
-                returnKeyType="next"
-                onSubmitEditing={() => { addrInput.current.focus(); }}
-                blurOnSubmit={false}
-                width={330}
+            <TouchableOpacity onPress={() => { setPage(1); }}>
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
               />
-            </View>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={address}
-                onChangeText={setAddress}
-                placeholder="Street address"
-                returnKeyType="next"
-                onSubmitEditing={() => { aptInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={addrInput}
-                width={330}
-              />
-            </View>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={apt}
-                onChangeText={setApt}
-                textContentType="postalCode"
-                placeholder="Apt # (optional)"
-                returnKeyType="next"
-                onSubmitEditing={() => { zipInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={aptInput}
-                width={330}
-              />
-            </View>
-
-            <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
-              <TextInput
-                style={[styles.textInput]}
-                value={zip}
-                onChangeText={setZip}
-                placeholder="Zip code"
-                returnKeyType="next"
-                textAlign="left"
-                onSubmitEditing={() => { instrInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={zipInput}
-                width={121}
-              />
-            </View>
-
-            <View>
-              <TextInput
-                style={styles.multiline}
-                value={instr}
-                onChangeText={setInstr}
-                placeholder="  Instructions for delivery (optional)"
-                returnKeyType="done"
-                onEndEditing={() => { Keyboard.dismiss(); }}
-                blurOnSubmit={false}
-                ref={instrInput}
-                height={112}
-                multiline
-                numberOfLines={5}
-                width={340}
-              />
-
-            </View>
-
-            <View>
-              <Text style={styles.descriptext}>
-                The address will be used for delivery and to
-                calculate the order minimum for delivery.
-              </Text>
-            </View>
-
-            <TouchableOpacity
-              mode="contained"
-              style={styles.button}
-              onPress={() => {
-                if (checkDeliveryInputs()) {
-                  Keyboard.dismiss();
-                  setPage(3);
-                }
-              }}
-            >
-              <Text style={styles.buttonText}> Continue </Text>
             </TouchableOpacity>
 
+            <Image style={styles.image} source={headerImage} />
           </View>
-        </TouchableWithoutFeedback>
+
+          <Title style={styles.titleText}>Sign Up</Title>
+
+          <Title style={styles.header}>Delivery Address</Title>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={recipient}
+              onChangeText={setRecipient}
+              placeholder="Delivery recepient (first and last name)"
+              returnKeyType="next"
+              onSubmitEditing={() => { addrInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={address}
+              onChangeText={setAddress}
+              placeholder="Street address"
+              returnKeyType="next"
+              onSubmitEditing={() => { aptInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={addrInput}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={apt}
+              onChangeText={setApt}
+              textContentType="postalCode"
+              placeholder="Apt # (optional)"
+              returnKeyType="next"
+              onSubmitEditing={() => { zipInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={aptInput}
+              width={330}
+            />
+          </View>
+
+          <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
+            <TextInput
+              style={styles.textInput}
+              value={zip}
+              onChangeText={setZip}
+              placeholder="Zip code"
+              returnKeyType="next"
+              textAlign="left"
+              onSubmitEditing={() => { instrInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={zipInput}
+              width={121}
+            />
+          </View>
+
+          <View>
+            <TextInput
+              style={styles.multiline}
+              value={instr}
+              onChangeText={setInstr}
+              placeholder="  Instructions for delivery (optional)"
+              returnKeyType="done"
+              onSubmitEditing={() => { Keyboard.dismiss(); }}
+              blurOnSubmit={false}
+              ref={instrInput}
+              height={112}
+              multiline
+              numberOfLines={5}
+              width={340}
+            />
+
+          </View>
+
+          <View>
+            <Text style={styles.descriptext}>
+              The address will be used for delivery and to
+              calculate the order minimum for delivery.
+            </Text>
+          </View>
+
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              if (checkDeliveryInputs()) {
+                Keyboard.dismiss();
+                setPage(3);
+              }
+            }}
+          >
+            <Text style={styles.buttonText}> Continue </Text>
+          </TouchableOpacity>
+
+        </View>
       </ImageBackground>
     );
   }
@@ -707,139 +731,138 @@ export default function SignUpScreen({ navigation }) {
   if (page === 3) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <TouchableOpacity onPress={() => { setPage(2); }}>
-            <ArrowIcon
-              style={styles.backArrow}
-              name="arrowleft"
-              size={34}
-              color="#FF9F00"
-            />
-          </TouchableOpacity>
-          <View style={styles.container}>
-            <Image style={styles.image} source={foodrootslogo} />
-
-            <Text style={styles.titleText}>Sign up</Text>
-
-            <Title style={styles.header}>Billing address</Title>
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={fullName}
-                onChangeText={setFullName}
-                placeholder="First and last name"
-                returnKeyType="next"
-                onSubmitEditing={() => { billAddrInput.current.focus(); }}
-                blurOnSubmit={false}
-                width={330}
+        <View style={styles.container}>
+          <View style={styles.text}>
+            <TouchableOpacity onPress={() => { setPage(2); }}>
+              <ArrowIcon
+                style={styles.backArrow}
+                name="arrowleft"
+                size={34}
+                color="#FF9F00"
               />
-            </View>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={billAddress}
-                onChangeText={setBillAddress}
-                placeholder="Street address"
-                returnKeyType="next"
-                onSubmitEditing={() => { billAptInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={billAddrInput}
-                width={330}
-              />
-            </View>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={billApt}
-                onChangeText={setBillApt}
-                textContentType="postalCode"
-                placeholder="Apt # (optional)"
-                returnKeyType="next"
-                onSubmitEditing={() => { billZipInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={billAptInput}
-                width={330}
-              />
-            </View>
-
-            <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
-              <TextInput
-                style={styles.textInput}
-                value={billZip}
-                onChangeText={setBillZip}
-                placeholder="Zip code"
-                returnKeyType="next"
-                onSubmitEditing={() => { accNameInput.current.focus(); }}
-                textAlign="left"
-                blurOnSubmit={false}
-                ref={billZipInput}
-                width={121}
-              />
-            </View>
-
-            <Title style={styles.header}>Accounting Contact</Title>
-            <Text style={styles.subheader}>If different from account information</Text>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={accFullName}
-                onChangeText={setAccFullName}
-                placeholder="First and last name"
-                returnKeyType="next"
-                onSubmitEditing={() => { accEmailInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={accNameInput}
-                width={330}
-              />
-            </View>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={accEmail}
-                onChangeText={setAccEmail}
-                placeholder="Email address"
-                keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() => { accNumberInput.current.focus(); }}
-                blurOnSubmit={false}
-                ref={accEmailInput}
-                width={330}
-              />
-            </View>
-
-            <View style={styles.inputs}>
-              <TextInput
-                style={styles.textInput}
-                value={accNumber}
-                onChangeText={(text) => onTextChange('accNum', text)}
-                placeholder="Phone number"
-                keyboardType="numeric"
-                returnKeyType="done"
-                onSubmitEditing={() => { Keyboard.dismiss(); }}
-                blurOnSubmit={false}
-                ref={accNumberInput}
-                width={330}
-              />
-            </View>
-
-            <TouchableOpacity
-              mode="contained"
-              style={styles.button}
-              onPress={() => {
-                if (checkBillingInputs()) {
-                  setPage(4);
-                }
-              }}
-            >
-              <Text style={styles.buttonText}> Continue </Text>
             </TouchableOpacity>
-
+            <Image style={styles.image} source={headerImage} />
           </View>
-        </TouchableWithoutFeedback>
+
+          <Text style={styles.titleText}>Sign Up</Text>
+
+          <Title style={styles.header}>Billing Address</Title>
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={fullName}
+              onChangeText={setFullName}
+              placeholder="First and last name"
+              returnKeyType="next"
+              onSubmitEditing={() => { billAddrInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={billAddress}
+              onChangeText={setBillAddress}
+              placeholder="Street address"
+              returnKeyType="next"
+              onSubmitEditing={() => { billAptInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={billAddrInput}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={billApt}
+              onChangeText={setBillApt}
+              textContentType="postalCode"
+              placeholder="Apt # (optional)"
+              returnKeyType="next"
+              onSubmitEditing={() => { billZipInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={billAptInput}
+              width={330}
+            />
+          </View>
+
+          <View style={[styles.inputs, { alignSelf: 'flex-start' }]}>
+            <TextInput
+              style={styles.textInput}
+              value={billZip}
+              onChangeText={setBillZip}
+              placeholder="Zip code"
+              returnKeyType="next"
+              onSubmitEditing={() => { accNameInput.current.focus(); }}
+              textAlign="left"
+              blurOnSubmit={false}
+              ref={billZipInput}
+              width={121}
+            />
+          </View>
+
+          <Title style={styles.header}>Accounting Contact</Title>
+          <Text>If different from account information</Text>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={accFullName}
+              onChangeText={setAccFullName}
+              placeholder="First and last name"
+              returnKeyType="next"
+              onSubmitEditing={() => { accEmailInput.current.focus(); }}
+              blurOnSubmit={false}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={accEmail}
+              onChangeText={setAccEmail}
+              placeholder="Email address"
+              keyboardType="email-address"
+              returnKeyType="next"
+              onSubmitEditing={() => { accNumberInput.current.focus(); }}
+              blurOnSubmit={false}
+              ref={accEmailInput}
+              width={330}
+            />
+          </View>
+
+          <View style={styles.inputs}>
+            <TextInput
+              style={styles.textInput}
+              value={accNumber}
+              onChangeText={(text) => onTextChange('accNum', text)}
+              placeholder="Phone number"
+              keyboardType="numeric"
+              returnKeyType="done"
+              onSubmitEditing={() => { Keyboard.dismiss(); }}
+              blurOnSubmit={false}
+              ref={accNumberInput}
+              width={330}
+            />
+          </View>
+
+          <TouchableOpacity
+            mode="contained"
+            style={styles.button}
+            onPress={() => {
+              if (checkBillingInputs()) {
+                setPage(4);
+              }
+            }}
+          >
+            <Text style={styles.buttonText}> Continue </Text>
+          </TouchableOpacity>
+
+        </View>
       </ImageBackground>
     );
   }

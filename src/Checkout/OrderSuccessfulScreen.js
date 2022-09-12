@@ -126,7 +126,6 @@ OrderSuccessfulScreen.propTypes = {
   }).isRequired,
   route: PropTypes.shape({
     params: PropTypes.shape({
-      // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
     }).isRequired,
   }).isRequired,
