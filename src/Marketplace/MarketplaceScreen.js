@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
 export default function MarketplaceScreen({ navigation }) {
   const state = store.getState().auth;
   if (!state.isLoggedIn) {
-    navigation.navigate('Login');
+    navigation.navigate('Log In');
   }
   const currentUser = state.user;
 
