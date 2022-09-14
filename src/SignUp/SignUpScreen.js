@@ -597,7 +597,7 @@ export default function SignUpScreen({ navigation }) {
   if (page === 2) {
     return (
       <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundimage}>
-        <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+        <ScrollView>
           <TouchableOpacity onPress={() => { setPage(1); }}>
             <ArrowIcon
               style={styles.backArrow}
@@ -709,7 +709,7 @@ export default function SignUpScreen({ navigation }) {
             </TouchableOpacity>
 
           </View>
-        </TouchableWithoutFeedback>
+        </ScrollView>
       </ImageBackground>
     );
   }
