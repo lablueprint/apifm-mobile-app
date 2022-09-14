@@ -11,7 +11,6 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { add, set } from 'lodash';
 import { registerUser } from '../lib/airlock/airlock';
 
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
