@@ -11,6 +11,7 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import ArrowIcon from 'react-native-vector-icons/AntDesign';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { add, set } from 'lodash';
 import { registerUser } from '../lib/airlock/airlock';
 
 const foodrootslogo = require('../assets/imgs/foodrootsharvest.png');
@@ -87,14 +88,6 @@ const styles = StyleSheet.create({
     marginLeft: 60,
     fontFamily: 'JosefinSans-SemiBold',
     color: '#1D763C',
-  },
-  subheader: {
-    textAlign: 'left',
-    width: '100%',
-    fontSize: 12,
-    marginLeft: 60,
-    fontFamily: 'JosefinSans-Regular',
-    color: '#868686',
   },
   descriptext: {
     textAlign: 'center',
@@ -408,6 +401,24 @@ export default function SignUpScreen({ navigation }) {
         };
         const result = await registerUser(userData);
         if (result) {
+          setEmail('');
+          setPassword('');
+          setFirstName('');
+          setLastName('');
+          setOrganization('');
+          setNumber('');
+          setBusPhone('');
+          setRecipient('');
+          setAddress('');
+          setApt('');
+          setZip('');
+          setInstr('');
+          setFullName('');
+          setBillAddress('');
+          setBillZip('');
+          setAccFullName('');
+          setAccEmail('');
+          setAccNumber('');
           navigation.navigate('Sign Up Confirmation', {
             username: email,
             password,
@@ -780,7 +791,6 @@ export default function SignUpScreen({ navigation }) {
             </View>
 
             <Title style={styles.header}>Accounting Contact</Title>
-            <Text style={styles.subheader}>If different from account information</Text>
 
             <View style={styles.inputs}>
               <TextInput
