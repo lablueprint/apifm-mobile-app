@@ -21,7 +21,6 @@ const registerUser = async (userData) => {
         username: userData.email,
         password: userData.password,
         fields: {
-          'password copy': userData.password,
           'first name': userData.firstName,
           'last name': userData.lastName,
           organization: userData.organization,
