@@ -405,6 +405,9 @@ export default function MarketplaceScreen({ navigation }) {
       if (favorites) {
         filteredList = filteredList.filter((item) => item.Favorited);
       }
+      filteredList = filteredList.filter(
+        (v, i, a) => a.findIndex((v2) => v.Name === v2.Name) === i,
+      );
       return filteredList;
     }
     if (filteredList.length === 0 && favorites) {
