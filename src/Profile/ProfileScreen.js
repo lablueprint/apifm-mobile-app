@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
   Alert, View, StyleSheet, TextInput, Platform,
-  Image, TouchableOpacity, Keyboard, KeyboardAvoidingView,
+  Image, TouchableOpacity, KeyboardAvoidingView, Keyboard,
 } from 'react-native';
 import {
   Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector } from 'react-redux';
 import { serviceUpdateUser } from '../lib/redux/services';
@@ -45,6 +45,9 @@ const styles = StyleSheet.create({
     fontSize: 16,
     textAlign: 'center',
     fontFamily: 'JosefinSans-Regular',
+  },
+  inputsContainer: {
+    height: 250,
   },
   inputContainer: {
     height: 50,
@@ -236,60 +239,58 @@ export default function ProfileScreen({ navigation }) {
 
   return (
     <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.pageContainer}>
-          <View className="box">
-            <Text
-              style={styles.buttonText}
-              onPress={() => {
-                if (isEditMode) onSave();
-                else onEdit();
-              }}
-            >
-              {title}
-            </Text>
-            {isEditMode ? (
-              <View className="boxContent">
-                <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
-              </View>
-            ) : (
-              <View className="boxContent">
-                <TouchableOpacity>
-                  <Icon
-                    size={21}
-                    name="menu"
-                    color="#000000"
-                    style={styles.menuIcon}
-                    onPress={() => { navigation.toggleDrawer(); }}
-                  />
-                </TouchableOpacity>
-              </View>
-            )}
-
-            <View style={styles.titleText}>
-              <Text style={styles.mainTitle}>Profile</Text>
-              <Image
-                style={styles.image}
-                source={avatar}
-              />
-              {isEditMode && (
-                <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
-                  <Image
-                    style={styles.edit}
-                    source={editIcon}
-                  />
-                </TouchableOpacity>
-              )}
-              <Text style={styles.titleText}>
-                {currentUser.firstName}
-                {' '}
-                {currentUser.lastName}
-              </Text>
-              <Text style={styles.subtitleText}>
-                {currentUser.organization}
-              </Text>
+      <View style={styles.pageContainer}>
+        <View className="box">
+          <Text
+            style={styles.buttonText}
+            onPress={() => {
+              if (isEditMode) onSave();
+              else onEdit();
+            }}
+          >
+            {title}
+          </Text>
+          {isEditMode ? (
+            <View className="boxContent">
+              <Text style={styles.buttonTextTwo} onPress={onCancel}>Cancel</Text>
             </View>
+          ) : (
+            <View className="boxContent">
+              <TouchableOpacity>
+                <Icon
+                  size={21}
+                  name="menu"
+                  color="#000000"
+                  style={styles.menuIcon}
+                  onPress={() => { navigation.toggleDrawer(); }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
 
+          <View style={styles.titleText}>
+            <Text style={styles.mainTitle}>Profile</Text>
+            <Image
+              style={styles.image}
+              source={avatar}
+            />
+            <TouchableOpacity onPress={() => { navigation.navigate('EditAvatar'); }}>
+              <Image
+                style={styles.edit}
+                source={editIcon}
+              />
+            </TouchableOpacity>
+            <Text style={styles.titleText}>
+              {currentUser.firstName}
+              {' '}
+              {currentUser.lastName}
+            </Text>
+            <Text style={styles.subtitleText}>
+              {currentUser.organization}
+            </Text>
+          </View>
+
+          <ScrollView style={styles.inputsContainer}>
             <View style={styles.inputContainer}>
               <Text style={styles.labelText}>Email</Text>
               <TextInput
@@ -297,8 +298,8 @@ export default function ProfileScreen({ navigation }) {
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
-                returnKeyType="next"
-                onSubmitEditing={() => { phoneInput.current.focus(); }}
+                returnKeyType="done"
+                onSubmitEditing={() => { Keyboard.dismiss(); }}
                 blurOnSubmit={false}
                 width={330}
                 editable={isEditMode}
@@ -311,8 +312,8 @@ export default function ProfileScreen({ navigation }) {
                 value={phoneNum}
                 onChangeText={(text) => phoneFormat(text)}
                 keyboardType="numeric"
-                returnKeyType="next"
-                onSubmitEditing={() => { addressInput.current.focus(); }}
+                returnKeyType="done"
+                onSubmitEditing={() => { Keyboard.dismiss(); }}
                 blurOnSubmit={false}
                 width={330}
                 ref={phoneInput}
@@ -326,22 +327,24 @@ export default function ProfileScreen({ navigation }) {
                 value={address}
                 onChangeText={setAddress}
                 returnKeyType="done"
+                onSubmitEditing={() => { Keyboard.dismiss(); }}
                 blurOnSubmit={false}
                 width={330}
                 ref={addressInput}
                 editable={isEditMode}
               />
             </View>
-            <View style={styles.noticeContainer}>
-              <Text style={styles.noticeText}>
-                If you want to change a field not listed above,
-                {'\n'}
-                reach out to us through our contact page!
-              </Text>
-            </View>
+          </ScrollView>
+
+          <View style={styles.noticeContainer}>
+            <Text style={styles.noticeText}>
+              If you want to change a field not listed above,
+              {'\n'}
+              reach out to us through our contact page!
+            </Text>
           </View>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     </KeyboardAvoidingView>
   );
 }
