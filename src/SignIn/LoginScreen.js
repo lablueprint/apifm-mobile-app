@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import {
   View, StyleSheet, TouchableOpacity, TextInput, Text, ImageBackground, Alert, Keyboard,
 } from 'react-native';
@@ -6,8 +6,10 @@ import PropTypes from 'prop-types';
 import Icon from 'react-native-vector-icons/Feather';
 import EyeIcon from 'react-native-vector-icons/FontAwesome5';
 import LockIcon from 'react-native-vector-icons/SimpleLineIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginUser } from '../lib/airlock/airlock';
-
+import store from '../lib/redux/store';
+import { login } from '../lib/redux/sliceAuth';
 const backgroundImage = require('../assets/imgs/login.png');
 
 const styles = StyleSheet.create({
@@ -98,6 +100,20 @@ export default function LoginScreen({ navigation }) {
   const [hidePass, setHidePass] = useState(true);
   const passwordInput = useRef();
 
+  // This function checks if app storage contains a logged in user
+  // if so, it stores the user data into redux store and logs in the user
+  const updateUserStorage = async () => {
+    try {
+      const value = await AsyncStorage.getItem('user');
+      if (value !== null) {
+        store.dispatch(login(JSON.parse(value)));
+        navigation.navigate('Marketplace');
+      }
+    } catch (e) {
+      alert(e);
+    }
+  };
+
   const handleSignIn = async () => {
     try {
       const result = await loginUser(username, password);
@@ -116,6 +132,10 @@ export default function LoginScreen({ navigation }) {
   const handleForgotPassword = () => {
     navigation.navigate('Forgot Password');
   };
+
+  useEffect(() => {
+      updateUserStorage();
+  }, []);
 
   return (
     <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
