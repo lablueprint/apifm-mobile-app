@@ -65,6 +65,12 @@ const styles = StyleSheet.create({
     fontFamily: 'JosefinSans-SemiBold',
     fontSize: 14,
   },
+  sameLineInput: {
+    flex: 1,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    marginLeft: 13,
+  },
   multiline: {
     marginLeft: 17,
     fontFamily: 'JosefinSans-SemiBold',
@@ -238,11 +244,15 @@ export default function SignUpScreen({ navigation }) {
   const [recipient, setRecipient] = useState('');
   const [address, setAddress] = useState('');
   const [apt, setApt] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
   const [zip, setZip] = useState('');
   const [instr, setInstr] = useState('');
 
   const addrInput = useRef();
   const aptInput = useRef();
+  const cityInput = useRef();
+  const stateInput = useRef();
   const zipInput = useRef();
   const instrInput = useRef();
 
@@ -343,7 +353,11 @@ export default function SignUpScreen({ navigation }) {
     } else if (address === '') {
       Alert.alert('Please enter the Address to proceed');
     // eslint-disable-next-line no-restricted-globals
-    } else if (zip === '' || isNaN(zip) || (zip.length !== 5)) {
+    } else if (city === '') {
+      Alert.alert('Please enter the City to proceed');
+    } else if (state === '' || state.length > 2) {
+      Alert.alert('Please enter the State to proceed');
+    } else if (zip === '' || Number.isNaN(zip) || (zip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
     } else {
       return true;
@@ -388,6 +402,8 @@ export default function SignUpScreen({ navigation }) {
           recipient,
           address,
           apt,
+          city,
+          state,
           zip,
           instr,
           fullName,
@@ -410,6 +426,8 @@ export default function SignUpScreen({ navigation }) {
           setRecipient('');
           setAddress('');
           setApt('');
+          setCity('');
+          setState('');
           setZip('');
           setInstr('');
           setFullName('');
@@ -648,26 +666,56 @@ export default function SignUpScreen({ navigation }) {
                 textContentType="postalCode"
                 placeholder="Apt # (optional)"
                 returnKeyType="next"
-                onSubmitEditing={() => { zipInput.current.focus(); }}
+                onSubmitEditing={() => { cityInput.current.focus(); }}
                 blurOnSubmit={false}
                 ref={aptInput}
                 width={330}
               />
             </View>
 
-            <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
+            <View style={styles.inputs}>
               <TextInput
-                style={[styles.textInput]}
-                value={zip}
-                onChangeText={setZip}
-                placeholder="Zip code"
+                style={styles.textInput}
+                value={city}
+                onChangeText={setCity}
+                placeholder="City"
                 returnKeyType="next"
-                textAlign="left"
-                onSubmitEditing={() => { instrInput.current.focus(); }}
+                onSubmitEditing={() => { stateInput.current.focus(); }}
                 blurOnSubmit={false}
-                ref={zipInput}
-                width={121}
+                ref={cityInput}
+                width={330}
               />
+            </View>
+
+            <View style={styles.sameLineInput}>
+              <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
+                <TextInput
+                  style={styles.textInput}
+                  value={state}
+                  onChangeText={setState}
+                  placeholder="State"
+                  returnKeyType="next"
+                  onSubmitEditing={() => { zipInput.current.focus(); }}
+                  blurOnSubmit={false}
+                  ref={stateInput}
+                  width={76}
+                />
+              </View>
+
+              <View style={[styles.inputs, { alignSelf: 'flex-start', left: '4.5%' }]}>
+                <TextInput
+                  style={styles.textInput}
+                  value={zip}
+                  onChangeText={setZip}
+                  placeholder="Zip code"
+                  returnKeyType="next"
+                  textAlign="left"
+                  onSubmitEditing={() => { instrInput.current.focus(); }}
+                  blurOnSubmit={false}
+                  ref={zipInput}
+                  width={121}
+                />
+              </View>
             </View>
 
             <View>
