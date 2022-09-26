@@ -118,6 +118,8 @@ export default function LoginScreen({ navigation }) {
     try {
       const result = await loginUser(username, password);
       if (result) {
+        setUserName('');
+        setPassword('');
         navigation.navigate('Marketplace');
       }
     } catch (err) {
