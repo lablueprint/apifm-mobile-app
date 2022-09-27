@@ -124,6 +124,16 @@ export default function OrderDetailsScreen({ route }) {
     navigation, orderId, deliveryDay, date, items,
   } = route.params;
 
+  const today = new Date();
+  let newDeliveryDate = '';
+  if (deliveryDay === 'Monday') {
+    const nextMonday = new Date(today.setDate((today.getDate() + 8 - today.getDay())));
+    newDeliveryDate = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}/${String(nextMonday.getFullYear())}`;
+  } else {
+    const thisFriday = new Date(today.setDate((today.getDate() - today.getDay() + 5)));
+    newDeliveryDate = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}/${String(thisFriday.getFullYear())}`;
+  }
+
   const currentUser = store.getState().auth.user;
   const CONST_USER = currentUser.email;
   const CONST_USER_ID = currentUser.id;
@@ -138,19 +148,17 @@ export default function OrderDetailsScreen({ route }) {
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
       .then((records) => {
+        const addressDetails = {
+          address: records[0].fields.address,
+          zipcode: records[0].fields.zipcode,
+          apartmentLine: '',
+          city: `${records[0].fields.city},`,
+          state: ` ${records[0].fields.state} `,
+        };
         if (records[0].fields['apartment number']) {
-          setShippingAddress({
-            address: records[0].fields.address,
-            zipcode: records[0].fields.zipcode,
-            apartmentLine: `, Apt ${records[0].fields['apartment number']}`,
-          });
-        } else {
-          setShippingAddress({
-            address: records[0].fields.address,
-            zipcode: records[0].fields.zipcode,
-            apartmentLine: '',
-          });
+          addressDetails.apartmentLine = `, Apt ${records[0].fields['apartment number']}`;
         }
+        setShippingAddress(addressDetails);
       });
   };
 
@@ -171,15 +179,6 @@ export default function OrderDetailsScreen({ route }) {
 
   // Add current items to airtable in the Cart table
   const orderAgain = async () => {
-    const today = new Date();
-    let newDeliveryDate = '';
-    if (deliveryDay === 'Monday') {
-      const nextMonday = new Date(today.setDate((today.getDate() + 8 - today.getDay())));
-      newDeliveryDate = `${String(nextMonday.getMonth() + 1).padStart(2, '0')}/${String(nextMonday.getDate()).padStart(2, '0')}/${String(nextMonday.getFullYear())}`;
-    } else {
-      const thisFriday = new Date(today.setDate((today.getDate() - today.getDay() + 5)));
-      newDeliveryDate = `${String(thisFriday.getMonth() + 1).padStart(2, '0')}/${String(thisFriday.getDate()).padStart(2, '0')}/${String(thisFriday.getFullYear())}`;
-    }
     const cartBatches = [];
     for (let j = 0; j < Math.floor(items[1].length / 10) + 1; j += 1) {
       const cartObj = [];
@@ -277,13 +276,16 @@ export default function OrderDetailsScreen({ route }) {
           }}
           >
             <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
-              <Icon size={25} color="grey" name="location-sharp" />
+              <Icon size={25} color="#1D763C" name="location-sharp" />
             </View>
             <View style={styles.shippingSubcontainer}>
               <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-SemiBold' }]}>
-                {`${shippingAddress.address}${shippingAddress.apartmentLine}`}
+                {shippingAddress.address}
+                {shippingAddress.apartmentLine}
               </Text>
               <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
+                {shippingAddress.city}
+                {shippingAddress.state}
                 {shippingAddress.zipcode}
               </Text>
             </View>
@@ -294,7 +296,7 @@ export default function OrderDetailsScreen({ route }) {
             Review Items
           </Text>
           <Text style={[styles.subdetails, { fontFamily: 'JosefinSans-Regular' }]}>
-            {`Delivery Date: ${date}`}
+            {`Delivery Date: ${newDeliveryDate}`}
           </Text>
           <View>
             {productList}
