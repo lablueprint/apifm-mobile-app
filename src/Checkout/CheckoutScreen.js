@@ -147,19 +147,17 @@ export default function CheckoutScreen({ route, navigation }) {
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
       .then((records) => {
+        const addressDetails = {
+          address: records[0].fields.address,
+          zipcode: records[0].fields.zipcode,
+          apartmentLine: '',
+          city: `${records[0].fields.city},`,
+          state: ` ${records[0].fields.state} `,
+        };
         if (records[0].fields['apartment number']) {
-          setShippingAddress({
-            address: records[0].fields.address,
-            zipcode: `, ${records[0].fields.zipcode}`,
-            apartmentLine: `, Apt ${records[0].fields['apartment number']}`,
-          });
-        } else {
-          setShippingAddress({
-            address: records[0].fields.address,
-            zipcode: `, ${records[0].fields.zipcode}`,
-            apartmentLine: '',
-          });
+          addressDetails.apartmentLine = `, Apt ${records[0].fields['apartment number']}`;
         }
+        setShippingAddress(addressDetails);
       });
   };
 
@@ -231,7 +229,7 @@ export default function CheckoutScreen({ route, navigation }) {
               <Icon size={25} color="#1D763C" name="location-sharp" />
             </View>
             <View style={{
-              marginLeft: '0%', flexDirection: 'row', marginVertical: '2%', flexShrink: 1,
+              marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
             }}
             >
               <Text style={[styles.title, {
@@ -241,6 +239,10 @@ export default function CheckoutScreen({ route, navigation }) {
               >
                 {shippingAddress.address}
                 {shippingAddress.apartmentLine}
+              </Text>
+              <Text style={styles.subdetails}>
+                {shippingAddress.city}
+                {shippingAddress.state}
                 {shippingAddress.zipcode}
               </Text>
             </View>
