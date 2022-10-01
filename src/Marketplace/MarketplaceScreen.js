@@ -222,9 +222,12 @@ const styles = StyleSheet.create({
 
 export default function MarketplaceScreen({ navigation }) {
   const { user: currentUser, isLoggedIn } = useSelector((state) => state.auth);
-  if (!isLoggedIn) {
-    navigation.navigate('Log In');
-  }
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigation.navigate('Log In');
+    }
+  }, []);
 
   const today = new Date();
   const tempToday = new Date();

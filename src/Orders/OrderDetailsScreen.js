@@ -11,7 +11,7 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import store from '../lib/redux/store';
 
 import OrderItem from './OrderItem';
-// TODO: Delivery date in css is hardcoded rn
+
 const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
@@ -124,6 +124,7 @@ export default function OrderDetailsScreen({ route }) {
     navigation, orderId, deliveryDay, date, items,
   } = route.params;
 
+  // new delivery date calculated to match the marketplace delivery day selected
   const today = new Date();
   let newDeliveryDate = '';
   if (deliveryDay === 'Monday') {
