@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginUser } from '../lib/airlock/airlock';
 import store from '../lib/redux/store';
 import { login } from '../lib/redux/sliceAuth';
+
 const backgroundImage = require('../assets/imgs/login.png');
 
 const styles = StyleSheet.create({
@@ -136,7 +137,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   useEffect(() => {
-      updateUserStorage();
+    updateUserStorage();
   }, []);
 
   return (

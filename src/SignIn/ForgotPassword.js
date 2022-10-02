@@ -307,7 +307,7 @@ export default function ForgotPassword({ navigation }) {
   // function that converts the new password and updates the password field in the Users table
   const handleResetPassword = async () => {
     if (password.length >= 8 && password === confirmpass) {
-      const salt = bcrypt.genSaltSync(5);
+      const salt = bcrypt.genSaltSync(10);
       // create a new hashed password to replace the existing hashed password
       const newHashedPassword = bcrypt.hashSync(password, salt);
       await base('Users').update([

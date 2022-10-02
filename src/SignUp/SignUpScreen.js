@@ -376,9 +376,9 @@ export default function SignUpScreen({ navigation }) {
     } else if (billAddress === '') {
       Alert.alert('Please enter the Street Address to proceed');
     } else if (billCity === '') {
-      Alert.alert('Please enter the Street Address to proceed');
+      Alert.alert('Please enter the City to proceed');
     } else if (billState === '' || billState.length > 2) {
-      Alert.alert('Please enter the Street Address to proceed');
+      Alert.alert('Please enter the State to proceed');
     } else if (billZip === '' || Number.isNaN(billZip) || (billZip.length !== 5)) {
       Alert.alert('Please enter a valid Zipcode to proceed');
     } else if (accFullName === '') {
