@@ -3,6 +3,7 @@ import {
   View, StyleSheet, TouchableOpacity, TextInput, Text,
   ImageBackground, Image, Alert, Keyboard, Pressable,
 } from 'react-native';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import {
   Provider, Portal, Modal,
 } from 'react-native-paper';
@@ -48,7 +49,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#1D763C',
     borderRadius: 30,
     fontFamily: 'JosefinSans-SemiBold',
-    marginBottom: '30%',
     paddingTop: 5,
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -197,9 +197,8 @@ const styles = StyleSheet.create({
 export default function ForgotPassword({ navigation }) {
   const [page, setPage] = useState(1);
 
-  const [userID, setUserID] = useState('');
-  const [resetID, setResetID] = useState('');
   const [email, setEmail] = useState('');
+  const [userID, setUserID] = useState('');
 
   const [code, setCode] = useState('');
   const codeDigitsArray = new Array(4).fill(0);
@@ -216,51 +215,59 @@ export default function ForgotPassword({ navigation }) {
 
   // function that submits an email to the user if the email exists in the users table
   const checkEmailExists = async () => {
-    let isFound = false;
+    const results = {
+      isFound: false,
+      resetCodeExists: false,
+    };
     await base('Users').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
       // if the email is in the users table, then we can send a reset code
       if (records.length !== 0) {
-        isFound = true;
+        results.isFound = true;
         setUserID(records[0].fields['user id']);
+        if (records[0].fields['Reset Code']) {
+          results.resetCodeExists = true;
+        }
       }
       fetchNextPage();
     });
-    if (isFound) {
-      // remove existing codes for a user in case they resend
-      const clearCodes = [];
-      await base('Password Reset').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
-        records.forEach((record) => {
-          clearCodes.push(record.id);
-        });
-        fetchNextPage();
-      });
-      if (clearCodes.length > 0) {
-        await base('Password Reset').destroy(clearCodes, (err) => {
-          if (err) {
-            Alert.alert(err.error, err.message);
-          }
-        });
-      }
+    return results;
+  };
+
+  const sendEmail = async () => {
+    const results = await checkEmailExists();
+    if (results.isFound && !results.resetCodeExists) {
       const resetCode = Math.floor(1000 + Math.random() * 9000);
-      await base('Password Reset').create([
+      await base('Users').update([
         {
+          id: String(userID),
           fields: {
-            email,
-            code: resetCode,
+            'Reset Code': resetCode,
           },
         },
-      ], (err, records) => {
+      ], (err) => {
         if (err) {
           Alert.alert(err.error, err.message);
+          console.log('here');
         } else {
-          // saved to be deleted later when the reset is complete
-          setResetID(records[0].id);
           // only when the record is created can page be redirected
           setPage(2);
         }
       });
+    } else if (results.isFound && results.resetCodeExists) {
+      Alert.alert('Please wait', 'The team has already been notified. Please wait patiently for them to send you your reset code.');
     } else {
-      Alert.alert('User email does not exist.');
+      Alert.alert('User email does not exist.', 'Enter a correct email.');
+    }
+  };
+
+  const checkResetCode = async () => {
+    const results = await checkEmailExists();
+    if (results.isFound && results.resetCodeExists) {
+      setPage(2);
+    } else if (results.isFound && !results.resetCodeExists) {
+      Alert.alert('Missing code', 'You do not have a reset code, please click the Send Email instead');
+    } else {
+      Alert.alert('User email does not exist.', 'Enter a correct email.');
     }
   };
 
@@ -283,9 +290,9 @@ export default function ForgotPassword({ navigation }) {
   // function that checks the code inputted matches the code sent to the user
   const checkCodeValid = async () => {
     let correctCode = false;
-    await base('Password Reset').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
+    await base('Users').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
       // if the code matches, then the user can reset their password on the next page
-      if (records[0].fields.code === Number(code)) {
+      if (records[0].fields['Reset Code'] === Number(code)) {
         correctCode = true;
       }
       fetchNextPage();
@@ -300,26 +307,21 @@ export default function ForgotPassword({ navigation }) {
   // function that converts the new password and updates the password field in the Users table
   const handleResetPassword = async () => {
     if (password.length >= 8 && password === confirmpass) {
-      const salt = bcrypt.genSaltSync(10);
+      const salt = bcrypt.genSaltSync(5);
       // create a new hashed password to replace the existing hashed password
       const newHashedPassword = bcrypt.hashSync(password, salt);
       await base('Users').update([
         {
-          id: userID,
+          id: String(userID),
           fields: {
             password: newHashedPassword,
+            'Reset Code': null,
           },
         },
       ], (err) => {
         if (err) {
           Alert.alert(err.error, err.message);
         } else {
-          // delete the reset confirmation code
-          base('Password Reset').destroy([resetID], (e) => {
-            if (e) {
-              Alert.alert(e.error, e.message);
-            }
-          });
           // shows alert that the password reset was successful
           setSuccessful(true);
           // automatically redirect the user
@@ -362,6 +364,8 @@ export default function ForgotPassword({ navigation }) {
             <Text style={styles.body}>
               That&apos;s okay! Enter the email address associated with your
               account and we&apos;ll send an email to reset your password.
+              If you already received an email, enter your reset code in the next
+              page.
             </Text>
           </View>
           <View style={[styles.inputs, styles.elevation, { marginBottom: 200 }]}>
@@ -370,19 +374,29 @@ export default function ForgotPassword({ navigation }) {
               onChangeText={setEmail}
               placeholder="Email address"
               keyboardType="email-address"
+              returnKeyType="done"
+              onSubmitEditing={() => Keyboard.dismiss()}
               blurOnSubmit={false}
               style={styles.textInput}
               width={280}
             />
           </View>
         </View>
-        <View>
+        <View style={{ marginBottom: '20%' }}>
           <TouchableOpacity
             style={styles.button}
-            onPress={checkEmailExists}
+            onPress={sendEmail}
           >
             <Text style={styles.buttonText}>
-              Send
+              Send Email
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={checkResetCode}
+          >
+            <Text style={styles.buttonText}>
+              Enter Reset Code
             </Text>
           </TouchableOpacity>
         </View>
@@ -425,22 +439,24 @@ export default function ForgotPassword({ navigation }) {
               onChangeText={setCode}
               keyboardType="number-pad"
               returnKeyType="done"
+              onSubmitEditing={() => Keyboard.dismiss()}
               textContentType="oneTimeCode"
               maxLength={4}
               style={styles.hiddenCodeInput}
             />
           </View>
+          <View style={{ marginBottom: '20%' }}>
+            <TouchableOpacity
+              style={styles.button}
+              onPress={checkCodeValid}
+            >
+              <Text style={styles.buttonText}>
+                Confirm
+              </Text>
+            </TouchableOpacity>
+          </View>
         </View>
-        <View>
-          <TouchableOpacity
-            style={styles.button}
-            onPress={checkCodeValid}
-          >
-            <Text style={styles.buttonText}>
-              Confirm
-            </Text>
-          </TouchableOpacity>
-        </View>
+
       </ImageBackground>
     );
   }
@@ -449,86 +465,90 @@ export default function ForgotPassword({ navigation }) {
     return (
       <Provider>
         <ImageBackground source={backgroundImage} resizeMode="cover" style={styles.backgroundImage}>
+
           <View style={styles.container}>
-            <View style={[styles.top, { marginBottom: 82 }]}>
-              <TouchableOpacity onPress={() => { setPage(2); }}>
-                <ArrowIcon
-                  name="arrowleft"
-                  size={34}
-                  color="#FF9F00"
+            <TouchableWithoutFeedback onPress={() => { Keyboard.dismiss(); }}>
+              <View style={[styles.top, { marginBottom: 82 }]}>
+                <TouchableOpacity onPress={() => { setPage(2); }}>
+                  <ArrowIcon
+                    name="arrowleft"
+                    size={34}
+                    color="#FF9F00"
+                  />
+                </TouchableOpacity>
+                <Image style={styles.image} source={foodrootslogo} />
+              </View>
+
+              <Text style={styles.title}>Reset your password</Text>
+
+              <View style={[styles.inputs, { marginBottom: 0 }]}>
+
+                <TextInput
+                  style={styles.textInput}
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Password"
+                  secureTextEntry={!!hidePass1}
+                  returnKeyType="next"
+                  onSubmitEditing={() => { passwordInput.current.focus(); }}
+                  blurOnSubmit={false}
+                  width={280}
                 />
-              </TouchableOpacity>
-              <Image style={styles.image} source={foodrootslogo} />
-            </View>
 
-            <Text style={styles.title}>Reset your password</Text>
+                <EyeIcon
+                  style={styles.eye}
+                  name={hidePass1 ? 'eye-slash' : 'eye'}
+                  size={15}
+                  color="grey"
+                  onPress={() => setHidePass1(!hidePass1)}
+                />
 
-            <View style={[styles.inputs, { marginBottom: 0 }]}>
+              </View>
 
-              <TextInput
-                style={styles.textInput}
-                value={password}
-                onChangeText={setPassword}
-                placeholder="Password"
-                secureTextEntry={!!hidePass1}
-                returnKeyType="next"
-                onSubmitEditing={() => { passwordInput.current.focus(); }}
-                blurOnSubmit={false}
-                width={280}
-              />
+              <View style={[styles.inputs, { marginTop: 10 }]}>
+                <TextInput
+                  style={styles.textInput}
+                  value={confirmpass}
+                  onChangeText={setConfirmPass}
+                  onSubmitEditing={() => Keyboard.dismiss()}
+                  placeholder="Confirm Password"
+                  secureTextEntry={!!hidePass2}
+                  returnKeyType="done"
+                  blurOnSubmit={false}
+                  ref={passwordInput}
+                  width={280}
+                />
 
-              <EyeIcon
-                style={styles.eye}
-                name={hidePass1 ? 'eye-slash' : 'eye'}
-                size={15}
-                color="grey"
-                onPress={() => setHidePass1(!hidePass1)}
-              />
+                <EyeIcon
+                  style={styles.eye}
+                  name={hidePass2 ? 'eye-slash' : 'eye'}
+                  size={15}
+                  color="grey"
+                  onPress={() => setHidePass2(!hidePass2)}
+                />
+              </View>
 
-            </View>
-
-            <View style={[styles.inputs, { marginTop: 10 }]}>
-              <TextInput
-                style={styles.textInput}
-                value={confirmpass}
-                onChangeText={setConfirmPass}
-                onSubmitEditing={() => Keyboard.dismiss()}
-                placeholder="Confirm Password"
-                secureTextEntry={!!hidePass2}
-                returnKeyType="next"
-                blurOnSubmit={false}
-                ref={passwordInput}
-                width={280}
-              />
-
-              <EyeIcon
-                style={styles.eye}
-                name={hidePass2 ? 'eye-slash' : 'eye'}
-                size={15}
-                color="grey"
-                onPress={() => setHidePass2(!hidePass2)}
-              />
-            </View>
-
-            <Text style={styles.smallText}>
-              Passwords must be 8 or more characters in length.
-            </Text>
-
-            <TouchableOpacity
-              mode="contained"
-              style={styles.button}
-              onPress={() => {
-                Keyboard.dismiss();
-                handleResetPassword();
-              }}
-            >
-              <Text
-                style={styles.buttonText}
-              >
-                Reset Password
+              <Text style={styles.smallText}>
+                Passwords must be 8 or more characters in length.
               </Text>
-            </TouchableOpacity>
+
+              <TouchableOpacity
+                mode="contained"
+                style={styles.button}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  handleResetPassword();
+                }}
+              >
+                <Text
+                  style={styles.buttonText}
+                >
+                  Reset Password
+                </Text>
+              </TouchableOpacity>
+            </TouchableWithoutFeedback>
           </View>
+
           <View>
             <Portal>
               <Modal
@@ -545,7 +565,6 @@ export default function ForgotPassword({ navigation }) {
             </Portal>
 
           </View>
-
         </ImageBackground>
       </Provider>
     );
