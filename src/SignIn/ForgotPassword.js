@@ -218,12 +218,14 @@ export default function ForgotPassword({ navigation }) {
     const results = {
       isFound: false,
       resetCodeExists: false,
+      userID: '',
     };
     await base('Users').select({ filterByFormula: `({email}='${email}')` }).eachPage((records, fetchNextPage) => {
       // if the email is in the users table, then we can send a reset code
       if (records.length !== 0) {
         results.isFound = true;
         setUserID(records[0].fields['user id']);
+        results.userID = records[0].fields['user id'];
         if (records[0].fields['Reset Code']) {
           results.resetCodeExists = true;
         }
@@ -239,7 +241,7 @@ export default function ForgotPassword({ navigation }) {
       const resetCode = Math.floor(1000 + Math.random() * 9000);
       await base('Users').update([
         {
-          id: String(userID),
+          id: results.userID,
           fields: {
             'Reset Code': resetCode,
           },
@@ -247,7 +249,6 @@ export default function ForgotPassword({ navigation }) {
       ], (err) => {
         if (err) {
           Alert.alert(err.error, err.message);
-          console.log('here');
         } else {
           // only when the record is created can page be redirected
           setPage(2);
@@ -312,10 +313,11 @@ export default function ForgotPassword({ navigation }) {
       const newHashedPassword = bcrypt.hashSync(password, salt);
       await base('Users').update([
         {
-          id: String(userID),
+          id: userID,
           fields: {
             password: newHashedPassword,
             'Reset Code': null,
+            Notified: false,
           },
         },
       ], (err) => {
