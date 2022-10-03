@@ -10,6 +10,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { loginUser } from '../lib/airlock/airlock';
 import store from '../lib/redux/store';
 import { login } from '../lib/redux/sliceAuth';
+
 const backgroundImage = require('../assets/imgs/login.png');
 
 const styles = StyleSheet.create({
@@ -69,12 +70,12 @@ const styles = StyleSheet.create({
 
   sideText: {
     left: '27%',
-    fontFamily: 'JosefinSans',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 12,
   },
 
   bottomTextFine: {
-    fontFamily: 'JosefinSans',
+    fontFamily: 'JosefinSans-Regular',
     fontSize: 16,
     marginTop: 80,
 
@@ -136,7 +137,7 @@ export default function LoginScreen({ navigation }) {
   };
 
   useEffect(() => {
-      updateUserStorage();
+    updateUserStorage();
   }, []);
 
   return (
