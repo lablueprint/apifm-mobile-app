@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Alert, View, StyleSheet, TextInput, Platform,
   Image, TouchableOpacity, KeyboardAvoidingView, Keyboard,
@@ -140,9 +140,8 @@ export default function ProfileScreen({ navigation }) {
   const [email, setEmail] = useState(currentUser.email);
   const [phoneNum, setPhoneNum] = useState(currentUser.phoneNumber);
   const [address, setAddress] = useState(currentUser.address);
-
-  const phoneInput = useRef();
-  const addressInput = useRef();
+  const [aptNum, setAptNum] = useState(currentUser.aptNum);
+  const [city, setCity] = useState(currentUser.city);
 
   const [avatar, setAvatar] = useState(placeholder);
 
@@ -195,7 +194,9 @@ export default function ProfileScreen({ navigation }) {
   const onSave = async () => {
     if ((email !== currentUser.email
       || phoneNum !== currentUser.phoneNumber
-      || address !== currentUser.address)
+      || address !== currentUser.address
+      || aptNum !== currentUser.aptNum
+      || city !== currentUser.city)
       && validateEmail(email) && phoneNum.length === 14 && address.length > 1) {
       Alert.alert('Saved', 'Your changes have been saved.');
       setEditMode(false);
@@ -207,6 +208,8 @@ export default function ProfileScreen({ navigation }) {
             email,
             address,
             'personal phone': phoneNum,
+            'apartment number': aptNum,
+            city,
           },
         },
       ], (err) => {
@@ -215,7 +218,7 @@ export default function ProfileScreen({ navigation }) {
         }
       });
       const updatedUser = {
-        ...currentUser, email, address, phoneNumber: phoneNum,
+        ...currentUser, email, address, phoneNumber: phoneNum, aptNum, city,
       };
       serviceUpdateUser(updatedUser);
     } else if (!validateEmail(email)) {
@@ -224,6 +227,8 @@ export default function ProfileScreen({ navigation }) {
       Alert.alert('Invalid phone number submitted.');
     } else if (address.length <= 1) {
       Alert.alert('Invalid address submitted.');
+    } else if (city.length <= 1) {
+      Alert.alert('Invalid city submitted.');
     } else {
       Alert.alert('Please change a field before saving or hit cancel instead.');
     }
@@ -316,7 +321,6 @@ export default function ProfileScreen({ navigation }) {
                 onSubmitEditing={() => { Keyboard.dismiss(); }}
                 blurOnSubmit={false}
                 width={330}
-                ref={phoneInput}
                 editable={isEditMode}
               />
             </View>
@@ -330,7 +334,32 @@ export default function ProfileScreen({ navigation }) {
                 onSubmitEditing={() => { Keyboard.dismiss(); }}
                 blurOnSubmit={false}
                 width={330}
-                ref={addressInput}
+                editable={isEditMode}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.labelText}>Delivery Apartment Number</Text>
+              <TextInput
+                style={styles.textInput}
+                value={aptNum}
+                onChangeText={setAptNum}
+                returnKeyType="done"
+                onSubmitEditing={() => { Keyboard.dismiss(); }}
+                blurOnSubmit={false}
+                width={330}
+                editable={isEditMode}
+              />
+            </View>
+            <View style={styles.inputContainer}>
+              <Text style={styles.labelText}>Delivery City</Text>
+              <TextInput
+                style={styles.textInput}
+                value={city}
+                onChangeText={setCity}
+                returnKeyType="done"
+                onSubmitEditing={() => { Keyboard.dismiss(); }}
+                blurOnSubmit={false}
+                width={330}
                 editable={isEditMode}
               />
             </View>

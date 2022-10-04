@@ -67,6 +67,8 @@ const loginUser = async (username, password) => {
       organization: result.organization,
       phoneNumber: result['personal phone'],
       address: result.address,
+      aptNum: result['apartment number'],
+      city: result.city,
       avatarNum: result.avatarNum,
       approved: result['account approved'],
     };
