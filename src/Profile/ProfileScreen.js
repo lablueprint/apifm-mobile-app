@@ -197,7 +197,7 @@ export default function ProfileScreen({ navigation }) {
       || address !== currentUser.address
       || aptNum !== currentUser.aptNum
       || city !== currentUser.city)
-      && validateEmail(email) && phoneNum.length === 14 && address.length > 1) {
+      && validateEmail(email) && phoneNum.length === 14 && address.length > 1 && city.length > 1) {
       Alert.alert('Saved', 'Your changes have been saved.');
       setEditMode(false);
       setTitle('Edit');
@@ -230,7 +230,7 @@ export default function ProfileScreen({ navigation }) {
     } else if (city.length <= 1) {
       Alert.alert('Invalid city submitted.');
     } else {
-      Alert.alert('Please change a field before saving or hit cancel instead.');
+      Alert.alert('No changes to make.', 'Please change a field before saving or hit cancel instead.');
     }
   };
 
