@@ -147,7 +147,7 @@ export default function OrderScreen({ navigation }) {
   useEffect(() => {
     let i = 0;
     const OrderCards = (Array.from(orderMap)).map((items) => (
-      <>
+      <View key={(i).toString()}>
         <Title style={styles.subtitleText}>
           {' '}
           {MONTHS[new Date(items[0]).getMonth()]}
@@ -167,12 +167,12 @@ export default function OrderScreen({ navigation }) {
             key={(i).toString()}
             items={card}
             itemsList={itemsList}
-            images={images}
+            tempImages={images}
           />
         ))
         }
         </View>
-      </>
+      </View>
     ));
     setCardList(OrderCards);
   }, [itemsList, flag]);

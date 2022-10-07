@@ -5,7 +5,7 @@ import {
 import { Text } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 
-const missingImage = require('../assets/imgs/square_logo.png');
+const missingImage = require('../assets/missingImage.png');
 
 const styles = StyleSheet.create({
   container: {

@@ -198,7 +198,7 @@ function CalendarPopup({
   const updateDelivery = () => {
     setMondayDelivery(monday);
     setFridayDelivery(friday);
-    if (monday || friday) {
+    if (!monday && !friday) {
       setShowAlert(true);
     }
     setVisibility(false);
