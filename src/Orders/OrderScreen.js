@@ -95,7 +95,11 @@ export default function OrderScreen({ navigation }) {
             order.fields.produceItem = prodRecord;
             if (!itemsListVar.has(currDate)) {
               itemsListVar.set(currDate, prodRecord.fields.Name);
-              imagesVar = imagesVar.set(currDate, prodRecord.fields.Image[0].url);
+              let imageUrl = '';
+              if (prodRecord.fields.Image[0].url != null) {
+                imageUrl = prodRecord.fields.Image[0].url;
+              }
+              imagesVar = imagesVar.set(currDate, imageUrl);
             } else if (itemsListVar.get(currDate).indexOf(',') === -1) {
               itemsListVar.set(currDate, `${itemsListVar.get(currDate)}, ${prodRecord.fields.Name}`);
             } else {
@@ -167,7 +171,7 @@ export default function OrderScreen({ navigation }) {
             key={(i).toString()}
             items={card}
             itemsList={itemsList}
-            tempImages={images}
+            images={images}
           />
         ))
         }

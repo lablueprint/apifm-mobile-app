@@ -129,7 +129,8 @@ OrderCard.propTypes = {
     ]),
   ).isRequired,
   itemsList: PropTypes.instanceOf(Map).isRequired,
-  images: PropTypes.string.isRequired,
+  // eslint-disable-next-line react/forbid-prop-types
+  images: PropTypes.object.isRequired,
 };
 
 export default OrderCard;
