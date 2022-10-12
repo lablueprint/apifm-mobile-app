@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react';
 import {
-  View, StyleSheet, Alert, ScrollView,
+  View, StyleSheet, Alert, ScrollView, TouchableOpacity,
 } from 'react-native';
 import {
-  Text, Button,
+  Text,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
 import Config from 'react-native-config';
@@ -17,6 +17,13 @@ const styles = StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  backButton: {
+    color: 'black',
+    paddingLeft: 30,
+    paddingTop: 40,
+    position: 'absolute',
+    zIndex: 99,
   },
   titleText: {
     marginBottom: 10,
@@ -31,24 +38,23 @@ const styles = StyleSheet.create({
     marginRight: 5,
     fontSize: 20,
   },
-  button: {
-    width: '30%',
-    marginTop: 10,
-    backgroundColor: '#0492c2',
-  },
   title: {
     fontSize: 18,
     marginBottom: '2%',
-    color: 'black',
+    color: '#34221D',
+    fontFamily: 'JosefinSans-SemiBold',
   },
   subdetails: {
     fontSize: 14,
     marginTop: '.5%',
     marginBottom: '.5%',
     color: '#636363',
+    fontFamily: 'JosefinSans-Regular',
   },
   subcontainer: {
     marginHorizontal: '8%',
+    paddingTop: 10,
+    paddingBottom: 20,
   },
   shippingContainer: {
     marginTop: '8%',
@@ -76,6 +82,33 @@ const styles = StyleSheet.create({
     marginRight: '30%',
     marginBottom: '3%',
   },
+  mainTitle: {
+    marginTop: 40,
+    marginBottom: 10,
+    fontSize: 22,
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    width: '50%',
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  button: {
+    width: '60%',
+    marginTop: 40,
+    marginBottom: 40,
+    backgroundColor: '#1D763C',
+    borderRadius: 99,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginLeft: 'auto',
+    marginRight: 'auto',
+  },
+  buttonText: {
+    fontFamily: 'JosefinSans-SemiBold',
+    textAlign: 'center',
+    color: '#FFFFFF',
+    fontSize: 18,
+  },
 });
 
 const Airtable = require('airtable');
@@ -94,10 +127,8 @@ export default function CheckoutScreen({ route, navigation }) {
   const [shippingAddress, setShippingAddress] = useState([]);
   const [total, setTotal] = useState(0);
   const [count, setCount] = useState(0);
-  const [deliveryDate] = useState(route.params.deliveryDate);
-  const [deliveryFee, setDeliveryFee] = useState(0);
-  const [freeFee, setFreeFee] = useState(0);
   const [itemList] = useState(route.params.itemList);
+  const [deliveryDate] = useState(route.params.deliveryDate);
 
   const calcTotal = () => {
     let sum = 0;
@@ -105,8 +136,7 @@ export default function CheckoutScreen({ route, navigation }) {
     itemList.forEach((item) => {
       const { price, quantity } = item;
       sum += quantity * price;
-      c += 1; // not confirmed if its +1 or +quantity by designers
-      // if for instance some one buys 5 lbs of peanuts, I imagine it'd be one item
+      c += 1;
     });
     setTotal(sum);
     setCount(c);
@@ -117,19 +147,17 @@ export default function CheckoutScreen({ route, navigation }) {
       filterByFormula: `({email}='${useremail}')`,
     }).firstPage()
       .then((records) => {
-        if (`${records[0].fields['apartment number']}` !== '') {
-          setShippingAddress({
-            address: records[0].fields.address,
-            zipcode: records[0].fields.zipcode,
-            apartmentLine: ` Apt ${records[0].fields['apartment number']}`,
-          });
-        } else {
-          setShippingAddress({
-            address: records[0].fields.address,
-            zipcode: records[0].fields.zipcode,
-            apartmentLine: '',
-          });
+        const addressDetails = {
+          address: records[0].fields.address,
+          zipcode: records[0].fields.zipcode,
+          apartmentLine: '',
+          city: `${records[0].fields.city},`,
+          state: ` ${records[0].fields.state} `,
+        };
+        if (records[0].fields['apartment number']) {
+          addressDetails.apartmentLine = `, Apt ${records[0].fields['apartment number']}`;
         }
+        setShippingAddress(addressDetails);
       });
   };
 
@@ -147,24 +175,19 @@ export default function CheckoutScreen({ route, navigation }) {
   useEffect(() => {
     setOrderDetails(currentUser.email);
     calcTotal();
-
-    setDeliveryFee(10);
-    setFreeFee(20);
   }, []);
 
-  const pushToOrderTable = async (useremail) => {
+  const pushToOrderTable = async (userid, useremail) => {
     const cartIDs = [];
     await base('CART V3').select({ filterByFormula: `({shopper}='${useremail}')` }).all()
       .then((items) => {
         items.forEach((item) => {
           cartIDs.push(item.get('item_id'));
           base('Orders').create({
-            user_id: useremail,
+            Shopper: [userid],
             produce_id: item.get('Produce'),
             Quantity: item.get('quantity'),
-            'delivery date': deliveryDate,
-            'delivery fee (temp)': deliveryFee,
-            'fee to be free (temp)': freeFee,
+            'Est. Delivery Date': item.get('Delivery Date'),
           }, (err) => {
             if (err) {
               Alert.alert(err.message);
@@ -172,53 +195,65 @@ export default function CheckoutScreen({ route, navigation }) {
           });
         });
       });
-    base('CART V3').destroy(cartIDs, (err) => {
+    await base('CART V3').destroy(cartIDs, (err) => {
       if (err) {
         Alert.alert(err.message);
       }
     });
   };
+
   return (
-    <View>
+    <View style={{ backgroundColor: '#FFFFFA' }}>
       <ScrollView>
+        <TouchableOpacity>
+          <Icon
+            size={30}
+            name="arrow-back"
+            style={styles.backButton}
+            onPress={() => { navigation.goBack(); }}
+          />
+        </TouchableOpacity>
+        <Text style={styles.mainTitle}>Checkout</Text>
         <View style={[styles.subcontainer, {
-          marginTop: '8%', marginHorizontal: '8%', marginBottom: '4%', borderBottomColor: 'grey', borderBottomWidth: 2,
+          marginVertical: '5%', marginHorizontal: '8%', borderBottomColor: '#c4c4c4', borderBottomWidth: 1,
         }]}
         >
-          <Text style={[styles.title, { fontWeight: '700', marginLeft: '0%', marginBottom: '0%' }]}>
+          <Text style={styles.title}>
             Shipping Address
           </Text>
           <View style={{
-            flexDirection: 'row', justifyContent: 'flex-start', marginBottom: '4%',
+            flexDirection: 'row', justifyContent: 'flex-start',
           }}
           >
             <View style={{ justifyContent: 'center', alignItems: 'center', marginHorizontal: '3%' }}>
-              <Icon size={25} color="grey" name="location-sharp" />
+              <Icon size={25} color="#1D763C" name="location-sharp" />
             </View>
             <View style={{
               marginLeft: '0%', flexDirection: 'column', justifyContent: 'center', marginVertical: '2%',
             }}
             >
-              <Text style={[styles.title, { fontWeight: '600' }]}>
+              <Text style={[styles.title, {
+                fontWeight: '600',
+                flexShrink: 1,
+              }]}
+              >
                 {shippingAddress.address}
-                ,
                 {shippingAddress.apartmentLine}
               </Text>
               <Text style={styles.subdetails}>
+                {shippingAddress.city}
+                {shippingAddress.state}
                 {shippingAddress.zipcode}
               </Text>
             </View>
           </View>
         </View>
-        <View style={[styles.subcontainer, { borderBottomColor: 'grey', borderBottomWidth: 2 }]}>
+        <View style={[styles.subcontainer, { borderBottomColor: '#c4c4c4', borderBottomWidth: 1, marginBottom: '5%' }]}>
           <View style={styles.title}>
-            <Text style={[styles.title, {
-              fontWeight: '700', marginLeft: '0%', marginBottom: '0%',
-            }]}
-            >
+            <Text style={styles.title}>
               Review Items
             </Text>
-            <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
+            <Text style={[styles.subdetails, { color: '#34221D' }]}>
               Delivery Date:
               {' '}
               {deliveryDate}
@@ -232,50 +267,31 @@ export default function CheckoutScreen({ route, navigation }) {
         </View>
         <View style={[styles.subcontainer]}>
           <View style={styles.title}>
-            <Text style={[styles.title, {
-              fontWeight: '700', marginLeft: '0%', marginBottom: '0%', marginTop: '8%',
-            }]}
-            >
+            <Text style={styles.title}>
               Order Summary
             </Text>
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
             <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Items(
+              Items (
               {count}
-              )
+              ):
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
               $
               {parseFloat(total).toFixed(2)}
             </Text>
           </View>
-          <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginLeft: '0%', marginRight: '0%',
-          }}
-          >
+          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: '2%' }}>
             <Text style={[styles.subdetails, { marginLeft: '0%' }]}>
-              Delivery Fee:
+              Delivery Fee (Not included in subtotal):
             </Text>
             <Text style={[styles.subdetails, { marginRight: '0%' }]}>
-              $
-              {parseFloat(deliveryFee).toFixed(2)}
+              TBD
             </Text>
           </View>
-          {deliveryFee > 0
-        && (
-        <View style={styles.conditionalShippingFeeContainer}>
-          <Text style={[styles.subdetails, {
-            color: '#C4C4C4',
-            marginLeft: '0%',
-          }]}
-          >
-            {`Add $ ${parseFloat(freeFee).toFixed(2)} to qualify for free shipping!`}
-          </Text>
-        </View>
-        )}
           <View style={{
-            flexDirection: 'row', justifyContent: 'space-between', marginTop: '4%',
+            flexDirection: 'row', justifyContent: 'space-between', marginTop: '12%',
           }}
           >
             <Text style={[styles.title, { marginLeft: '0%' }]}>
@@ -283,23 +299,27 @@ export default function CheckoutScreen({ route, navigation }) {
             </Text>
             <Text style={[styles.title, { marginRight: '0%' }]}>
               $
-              {parseFloat(total + deliveryFee).toFixed(2)}
+              {parseFloat(total).toFixed(2)}
             </Text>
           </View>
         </View>
         <View style={[styles.container, { marginBottom: '8%' }]}>
-          <Button
+          <TouchableOpacity
             mode="contained"
             style={styles.button}
             onPress={() => {
-              pushToOrderTable('helen@gmail.com');
+              pushToOrderTable(currentUser.id, currentUser.email);
               navigation.navigate('Order Successful', {
                 itemList,
               });
             }}
           >
-            Confirm
-          </Button>
+            <Text
+              style={styles.buttonText}
+            >
+              Place Order
+            </Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>
@@ -314,7 +334,6 @@ CheckoutScreen.propTypes = {
     params: PropTypes.shape({
       // eslint-disable-next-line react/forbid-prop-types
       itemList: PropTypes.arrayOf(PropTypes.object),
-      deliveryDate: PropTypes.string.isRequired,
     }).isRequired,
   }).isRequired,
 };

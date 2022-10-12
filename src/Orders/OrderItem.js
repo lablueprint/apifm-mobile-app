@@ -5,7 +5,7 @@ import {
 import { Text } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
 
-const missingImage = require('../assets/imgs/square_logo.png');
+const missingImage = require('../assets/missingImage.png');
 
 const styles = StyleSheet.create({
   container: {
@@ -95,7 +95,7 @@ export default function OrderItem(props) {
       </View>
       <View style={styles.container2}>
         <Text style={styles.itemTotalPrice}>
-          {`$ ${Math.trunc((price * quantity) * 100) / 100}`}
+          {`$${parseFloat((price) * quantity).toFixed(2)}`}
         </Text>
         <Text style={styles.itemPricePer}>
           {`$ ${price} ${type}`}

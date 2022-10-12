@@ -149,45 +149,15 @@ export default function StackNavigation() {
       <stackNavig.Screen name="Forgot Password" component={ForgotPassword} options={{ headerShown: false }} />
       <stackNavig.Screen name="Sign Up Confirmation" component={SignUpConfirmation} options={{ headerShown: false }} />
       <stackNavig.Screen name="Marketplace" component={DrawerRoutes} options={{ headerShown: false }} />
-      <stackNavig.Screen
-        name="Profile"
-        component={DrawerRoutes}
-        options={{ headerShown: false }}
-      />
-      <stackNavig.Screen
-        name="EditAvatar"
-        component={EditAvatarScreen}
-        options={{ headerShown: false }}
-      />
-      <stackNavig.Screen
-        name="Cart"
-        component={CartScreen}
-        options={{
-          title: 'Cart',
-          fontFamily: 'JosefinSans-Regular',
-          headerTitleAlign: 'center',
-          headerStyle: {
-            backgroundColor: '#FFFFFA',
-            borderBottomWidth: 0,
-            elevation: 0,
-          },
-          headerTitleStyle: {
-            fontFamily: 'JosefinSans-Regular',
-            fontSize: 24,
-            color: '#34221D',
-          },
-        }}
-      />
-      <stackNavig.Screen
-        name="Checkout"
-        component={CheckoutScreen}
-        options={{ headerShown: false }}
-      />
+      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Cart" component={CartScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Checkout" component={CheckoutScreen} options={{ headerShown: false }} />
+      <stackNavig.Screen name="Profile" component={DrawerRoutes} options={{ headerShown: false }} />
+      <stackNavig.Screen name="EditAvatar" component={EditAvatarScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Order Successful" component={OrderSuccessfulScreen} options={{ headerShown: false }} />
       <stackNavig.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }} />
-      <stackNavig.Screen name="ProduceDetails" component={ProduceDetailsScreen} options={{ headerShown: false }} />
-      <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} />
-      {/* need to adjust the header to hide the order details */}
+      <stackNavig.Screen name="Orders" component={DrawerRoutes} options={{ headerShown: false }} />
+      <stackNavig.Screen name="OrderDetails" component={OrderDetailsScreen} options={{ headerShown: false }} />
     </stackNavig.Navigator>
   );
 }

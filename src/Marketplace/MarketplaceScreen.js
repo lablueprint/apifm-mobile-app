@@ -9,10 +9,11 @@ import PropTypes from 'prop-types';
 import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSelector } from 'react-redux';
 import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
-import store from '../lib/redux/store';
+import { serviceSelectDeliveryDay } from '../lib/redux/services';
 
 const Airtable = require('airtable');
 
@@ -220,11 +221,13 @@ const styles = StyleSheet.create({
 });
 
 export default function MarketplaceScreen({ navigation }) {
-  const state = store.getState().auth;
-  if (!state.isLoggedIn) {
-    navigation.navigate('Log In');
-  }
-  const currentUser = state.user;
+  const { user: currentUser, isLoggedIn } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigation.navigate('Log In');
+    }
+  }, []);
 
   const today = new Date();
   const tempToday = new Date();
@@ -461,6 +464,13 @@ export default function MarketplaceScreen({ navigation }) {
   };
 
   useEffect(() => {
+    let dayString = null;
+    if (mondayDelivery && !fridayDelivery) {
+      dayString = 'Monday';
+    } else if (!mondayDelivery && fridayDelivery) {
+      dayString = 'Friday';
+    }
+    serviceSelectDeliveryDay(dayString);
     setUnsortedProduce(filterProduce(
       deliveryProduce(allProduce, mondayDelivery, fridayDelivery),
       favoritesFilter,
@@ -474,7 +484,7 @@ export default function MarketplaceScreen({ navigation }) {
     } else {
       setShowAlert(false);
       const orderDeliveryDate = mondayDelivery ? displayMonday : displayFriday;
-      setDeliveryDate(orderDeliveryDate);
+      setDeliveryDate(`${orderDeliveryDate}/${today.getFullYear()}`);
     }
   }, [mondayDelivery, fridayDelivery, seasonalFilter, vegetablesFilter, fruitsFilter]);
 
@@ -573,7 +583,7 @@ export default function MarketplaceScreen({ navigation }) {
             <Modal
               visible={calendarVisibility && !closedMarket && !restrictedMarket}
               onDismiss={() => {
-                setCalendarVisibility(true);
+                setCalendarVisibility(false);
               }}
               contentContainerStyle={styles.calendarPopup}
             >
@@ -773,6 +783,7 @@ export default function MarketplaceScreen({ navigation }) {
                 showProduce={showProduce}
                 produceList={produceList}
                 favorites={favoritesFilter}
+                mondayDelivery={mondayDelivery}
                 deliveryDate={deliveryDate}
               />
             )}
