@@ -6,18 +6,8 @@ import {
   Text, Button, TextInput,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
-import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Feather';
-
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
+import { base } from '../lib/airlock/airlock';
 
 const styles = StyleSheet.create({
   container: {

@@ -1,4 +1,5 @@
 import 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View, Text, Image, TouchableOpacity, StyleSheet,
 } from 'react-native';
@@ -7,7 +8,8 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
-import { logoutUser } from '../lib/airlock/airlock';
+import store from '../lib/redux/store';
+import { logout } from '../lib/redux/sliceAuth';
 
 const placeholder = require('../assets/imgs/placeholder.png');
 const pipa = require('../assets/imgs/pipa.png');
@@ -134,8 +136,9 @@ function CustomDrawer(props) {
       </DrawerContentScrollView>
       <TouchableOpacity
         style={styles.footer}
-        onPress={() => {
-          logoutUser();
+        onPress={async () => {
+          store.dispatch(logout());
+          await AsyncStorage.removeItem('user');
           navigation.navigate('Log In');
         }}
       >

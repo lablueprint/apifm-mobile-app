@@ -111,7 +111,7 @@ export default function LoginScreen({ navigation }) {
         navigation.navigate('Marketplace');
       }
     } catch (e) {
-      alert(e);
+      Alert.alert(e);
     }
   };
 

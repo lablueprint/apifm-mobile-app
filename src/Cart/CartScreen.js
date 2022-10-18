@@ -6,20 +6,10 @@ import {
   Title,
 } from 'react-native-paper';
 import { PropTypes } from 'prop-types';
-import Config from 'react-native-config';
 import Icon from 'react-native-vector-icons/Ionicons';
 import store from '../lib/redux/store';
 import CartProduct from './CartProduct';
-
-const Airtable = require('airtable');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
+import { base } from '../lib/airlock/airlock';
 
 const styles = StyleSheet.create({
   entireScreen: {
@@ -175,7 +165,7 @@ export default function CartScreen({ navigation, route }) {
       name={item.name[0]}
       price={item.price[0]}
       type={item.unit[0]}
-      image={item.image[0].url}
+      image={item.image[0] != null ? item.image[0].url : ''}
       quantities={quantities}
       setQuantities={setQuantities}
       minQuantity={item['minimum quantity'][0]}

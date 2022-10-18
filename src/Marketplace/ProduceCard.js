@@ -5,18 +5,9 @@ import {
 } from 'react-native';
 import { Text } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import Config from 'react-native-config';
+import { base } from '../lib/airlock/airlock';
 
-const Airtable = require('airtable');
 const missingImage = require('../assets/missingImage.png');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   container: {

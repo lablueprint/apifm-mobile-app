@@ -6,7 +6,6 @@ import {
   Text, Provider, Portal, Modal,
 } from 'react-native-paper';
 import PropTypes from 'prop-types';
-import Config from 'react-native-config';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useSelector } from 'react-redux';
@@ -14,8 +13,7 @@ import ProduceGrid from './ProduceGrid';
 import CalendarPopup from './CalendarPopup';
 import FilterPopup from './FilterPopup';
 import { serviceSelectDeliveryDay } from '../lib/redux/services';
-
-const Airtable = require('airtable');
+import { base } from '../lib/airlock/airlock';
 
 const tabonmarketplace = require('../assets/tabonmarketplace.png');
 const tabonfavorites = require('../assets/tabonfavorites.png');
@@ -27,13 +25,6 @@ const exclamation = require('../assets/exclamation.png');
 const sadDurian = require('../assets/saddurian.png');
 const cart = require('../assets/cart.png');
 const filterIcon = require('../assets/filtericon.png');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   circle: {

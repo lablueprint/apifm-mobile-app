@@ -9,18 +9,9 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IconButton from 'react-native-vector-icons/AntDesign';
 import ArrowIcon from 'react-native-vector-icons/Ionicons';
-import Config from 'react-native-config';
+import { base } from '../lib/airlock/airlock';
 
-const Airtable = require('airtable');
 const missingImage = require('../assets/missingImage.png');
-
-const airtableConfig = {
-  apiKey: Config.REACT_APP_AIRTABLE_USER_KEY,
-  baseKey: Config.REACT_APP_AIRTABLE_BASE_KEY,
-};
-
-const base = new Airtable({ apiKey: airtableConfig.apiKey })
-  .base(airtableConfig.baseKey);
 
 const styles = StyleSheet.create({
   arrowCircle: {
@@ -254,6 +245,7 @@ function ProduceDetailsScreen({ navigation, route }) {
       const quantityToUpdate = [];
       await base('CART V3').select({})
         .eachPage((records, fetchNextPage) => {
+          console.log(records);
           if (records.length !== 0) {
             records.forEach(
               (record) => {
@@ -291,6 +283,8 @@ function ProduceDetailsScreen({ navigation, route }) {
           }
         });
       } else {
+        // issue is that item could not be found. unsure as to why since it seems to call
+        // everything correctly
         await base('CART V3').create([
           {
             fields: {
@@ -303,7 +297,7 @@ function ProduceDetailsScreen({ navigation, route }) {
           },
         ], (err) => {
           if (err) {
-            Alert.alert(err.error, err.message);
+            Alert.alert('here', err.message);
           }
         });
       }

@@ -1,14 +1,18 @@
+import { Alert } from 'react-native';
 import Config from 'react-native-config';
 import Airtable from '@calblueprint/airlock';
-import { Alert } from 'react-native';
 import { serviceLogin, serviceLogout } from '../redux/services';
+
+const BASE_ID = Config.REACT_APP_AIRTABLE_BASE_KEY;
 
 Airtable.configure({
   apiKey: 'airlock',
-  // this must be updated by the tester
-  endpointUrl: 'http://airlocktest-env.eba-sip9kamx.us-east-1.elasticbeanstalk.com',
+  endpointUrl: Config.ENDPOINT_URL,
 });
-const base = Airtable.base(Config.REACT_APP_AIRTABLE_BASE_KEY);
+
+const base = Airtable.base(BASE_ID);
+
+export default base;
 
 const wait = (ms, message) => new Promise((_, reject) => {
   setTimeout(() => reject(new Error(message)), ms);
@@ -93,4 +97,6 @@ const logoutUser = async () => {
   }
 };
 
-export { registerUser, loginUser, logoutUser };
+export {
+  registerUser, loginUser, logoutUser, base,
+};
